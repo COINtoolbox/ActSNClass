@@ -1,0 +1,89 @@
+# Inlcude this input when simulating nonIa for all surveys
+GEN_SNDATA_SIM:  26  # 2=terse  8=BLIND  16=CIDRAN
+
+
+NON1A_ROOT: /data/dp62.a/data/analysis/SIMGEN_PUBLIC/NON1A_ROOT
+DNDZ:  POWERLAW  6.8E-5  3.6  # From LSST CC contamination memo
+
+CLEARPROMPT: 0
+EXPOSURE_TIME:  1
+
+GENMAG_SMEAR_FILTER: UBVRIabcdeugriz 0.05
+GENMODEL_ERRSCALE: 0.0
+GENTAU_AV:  0.0  ! no host extinction (added 9/18/2010)
+
+GENRANGE_RA:      -360.   360.0   deg
+GENRANGE_DECL:    -360.   360.5
+
+GENRANGE_TREST:   -40.0  70.0     # rest epoch relative to peak (days)
+
+# As described in Steve's note on CC simulations,
+# use breakdown from Smartt et al, MNRAS 395, 1409 (2009)
+# Ibc  29%  ==> 17 templates => WGT = 0.017 
+# IIn  4%   ==>  3 templates => WGT = 0.013
+# IIP  59%  ==> 24 templates => WGT = 0.025
+# IIL  8%   ==> all wgt goes into NUGENT2L template
+#
+# Types 1, 2, 3    => Ia, II, Ibc
+# Types 21, 22, 23 => IIn, IIP, IIL
+# Types 32, 33     => Ib, Ic
+# Note that the first digit always corresponds to Ia, II, Ibc
+# A type Ib/c that cannot distinguish is tagged as type=3.
+
+NON1A_KEYS: 5 
+         INDEX   WGT   MAGOFF  MAGSMEAR  SNTYPE
+NON1A:     1     0.017   0.0     1.39     3   # Nugent Ibc
+NON1A:     2     0.013  -1.7     0.70     21  # Nugent IIn
+NON1A:     3     0.025  -0.5     1.12     22  # NUgent IIP
+NON1A:     4     0.08    0.0     0.90     23  # Nugent IIL
+
+NON1A:     5     0.017  0.00      0.0     33  # CSP  Ic
+NON1A:     6     0.017  0.00      0.0     33  # CSP  Ic
+NON1A:     7     0.017  0.00      0.0     32  # CSP  Ib
+NON1A:     8     0.017  0.00      0.0     32  # CSP  Ib
+NON1A:     9     0.017  0.00      0.0     32  # CSP  Ib
+NON1A:    10     0.017  0.00      0.0     3   # SNLS-04D1la  Ib/c
+NON1A:    11     0.017  0.00      0.0     33  # SNLS-04D4jv  Ic
+NON1A:    13     0.017  0.00      0.0     32  # SDSS-000020  Ib (111=Ib)
+NON1A:    14     0.017  0.00      0.0     32  # SDSS-002744  Ib
+NON1A:    16     0.017  0.00      0.0     33  # SDSS-004012  Ic (112=Ic)
+NON1A:    18     0.017  0.00      0.0     33  # SDSS-013195  Ic
+NON1A:    22     0.017  0.00      0.0     33  # SDSS-014475  Ic
+NON1A:    23     0.017  0.00      0.0     32  # SDSS-014492  Ib
+NON1A:    29     0.017  0.00      0.0     33  # SDSS-017548  Ic
+NON1A:    45     0.017  0.00      0.0     32  # SDSS-019323  Ib
+NON1A:    28     0.017  0.00      0.0     33  # SDSS-015475  Ic
+
+NON1A:    12     0.025   2.17      0.0   22  # SDSS-000018  IIP
+NON1A:    15     0.025   0.00      0.0   22  # SDSS-003818  IIP
+NON1A:    19     0.025   0.00      0.0   22  # SDSS-013376  IIP
+NON1A:    21     0.025   0.00      0.0   22  # SDSS-014450  IIP
+NON1A:    24     0.025   0.00      0.0   22  # SDSS-014599  IIP
+NON1A:    25     0.025   0.00      0.0   22  # SDSS-015031  IIP
+NON1A:    26     0.025   0.00      0.0   22  # SDSS-015320  IIP
+NON1A:    27     0.025   0.00      0.0   22  # SDSS-015339  IIP
+NON1A:    30     0.025   0.00      0.0   22  # SDSS-017564  IIP
+NON1A:    31     0.025   0.00      0.0   22  # SDSS-017862  IIP
+NON1A:    32     0.025   0.00      0.0   22  # SDSS-018109  IIP
+NON1A:    33     0.025   0.00      0.0   22  # SDSS-018297  IIP
+NON1A:    34     0.025   0.00      0.0   22  # SDSS-018408  IIP
+NON1A:    35     0.025   0.00      0.0   22  # SDSS-018441  IIP
+NON1A:    36     0.025   0.00      0.0   22  # SDSS-018457  IIP
+NON1A:    37     0.025   0.00      0.0   22  # SDSS-018590  IIP
+NON1A:    38     0.025   0.00      0.0   22  # SDSS-018596  IIP
+NON1A:    39     0.025   0.00      0.0   22  # SDSS-018700  IIP
+NON1A:    40     0.025   0.00      0.0   22  # SDSS-018713  IIP
+NON1A:    41     0.025   0.00      0.0   22  # SDSS-018734  IIP
+NON1A:    43     0.025   0.00      0.0   22  # SDSS-018834  IIP
+NON1A:    44     0.025   0.00      0.0   22  # SDSS-018892  IIP
+NON1A:    42     0.025   0.00      0.0   22  # SDSS-018793  IIP
+
+NON1A:    17     0.013   0.00      0.0   21  # SDSS-012842  IIn
+NON1A:    20     0.013   0.00      0.0   21  # SDSS-013449  IIn
+
+# ====== END =====
+
+
+
+
+
