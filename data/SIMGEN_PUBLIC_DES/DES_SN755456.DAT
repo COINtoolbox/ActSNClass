@@ -1,0 +1,75 @@
+SURVEY: DES   
+SNID:   755456   
+IAUC:    UNKNOWN 
+PHOTOMETRY_VERSION: DES 
+SNTYPE:  21 
+FILTERS: griz 
+RA:      0.500000  deg 
+DECL:    -43.000000  deg 
+MAGTYPE: LOG10  
+MAGREF:  AB  
+FAKE:    2   (=> simulated LC with snlc_sim.exe) 
+MWEBV:   0.0111    MW E(B-V) 
+REDSHIFT_HELIO:   0.77075 +- 0.00500  (Helio, z_best) 
+REDSHIFT_FINAL:   0.77075 +- 0.00500  (CMB) 
+REDSHIFT_SPEC:    0.77075 +- 0.00500  
+REDSHIFT_STATUS: OK 
+ 
+HOST_GALAXY_GALID:   11126 
+HOST_GALAXY_PHOTO-Z:   0.7548  +- 0.0133  
+
+
+
+SIM_MODEL:  NONIA  10  (name index) 
+SIM_NON1a:      2   (non1a index) 
+SIM_COMMENT:  SN Type = IIn , MODEL = NUGENT2n  
+SIM_LIBID:  4  
+SIM_REDSHIFT:  0.7640  
+SIM_HOSTLIB_TRUEZ:  0.7600  (actual Z of hostlib) 
+SIM_HOSTLIB_GALID:  11126  
+SIM_DLMU:      43.379803  mag   [ -5*log10(10pc/dL) ]  
+SIM_RA:        0.500000 deg  
+SIM_DECL:      -43.000000 deg  
+SIM_MWEBV:   0.0139   (MilkyWay E(B-V)) 
+SIM_PEAKMAG:   23.64  23.43  23.36  23.44  (griz obs)
+SIM_EXPOSURE:     1.0    1.0    1.0    1.0  (griz obs)
+SIM_PEAKMJD:   56338.871094  days 
+SIM_SALT2x0:   4.447e-18   
+SIM_MAGDIM:    0.000  
+SIM_SEARCHEFF_MASK:  2  (bits 1,2=> found by software,humans) 
+SIM_SEARCHEFF:  1.0000  (spectro-search efficiency (ignores pipelines)) 
+SIM_TRESTMIN:   -35.55   days 
+SIM_TRESTMAX:   -11.81   days 
+SIM_RISETIME_SHIFT:   0.0 days 
+SIM_FALLTIME_SHIFT:   0.0 days 
+
+SEARCH_PEAKMJD:   56339.879  
+
+
+# ============================================ 
+# TERSE LIGHT CURVE OUTPUT: 
+#
+NOBS: 20 
+NVAR: 9 
+VARLIST:  MJD  FLT FIELD   FLUXCAL   FLUXCALERR   SNR    MAG     MAGERR  SIM_MAG
+OBS:  56276.152  g NULL   7.650e+00   4.039e+00   1.89   99.000    5.000   96.783
+OBS:  56276.172  r NULL   1.962e-01   2.883e+00   0.07   99.000    5.000   96.768
+OBS:  56277.164  i NULL  -2.884e+00   3.541e+00  -0.81   99.000    5.000   96.682
+OBS:  56278.164  z NULL   5.526e+00   4.285e+00   1.29   99.000    5.000   96.685
+OBS:  56288.035  g NULL   3.740e+00   1.450e+01   0.26   99.000    5.000   96.783
+OBS:  56288.043  r NULL  -4.328e+00   5.400e+00  -0.80   99.000    5.000   96.768
+OBS:  56288.051  i NULL  -3.772e+00   5.980e+00  -0.63   99.000    5.000   96.682
+OBS:  56288.066  z NULL  -9.435e-01   6.735e+00  -0.14   99.000    5.000   96.685
+OBS:  56292.109  g NULL  -1.140e+01   7.763e+00  -1.47   99.000    5.000   96.783
+OBS:  56292.125  r NULL  -3.846e+00   3.867e+00  -0.99   99.000    5.000   96.768
+OBS:  56296.039  i NULL   3.215e+00   3.474e+00   0.93   99.000    5.000   96.682
+OBS:  56296.051  z NULL  -2.153e+00   4.460e+00  -0.48   99.000    5.000   96.685
+OBS:  56305.043  g NULL  -1.826e+00   2.872e+00  -0.64   99.000    5.000   96.783
+OBS:  56305.051  r NULL  -1.416e+00   2.173e+00  -0.65   99.000    5.000   96.768
+OBS:  56305.055  i NULL  -1.293e+00   3.045e+00  -0.42   99.000    5.000   96.682
+OBS:  56305.070  z NULL   3.697e-01   3.662e+00   0.10   99.000    5.000   96.685
+OBS:  56317.035  g NULL   3.672e+01   1.485e+01   2.47   23.588    0.563   23.403
+OBS:  56317.043  r NULL   3.405e+01   6.232e+00   5.46   23.670    0.220   23.545
+OBS:  56317.051  i NULL   3.981e+01   6.959e+00   5.72   23.500    0.208   23.647
+OBS:  56318.035  z NULL   4.366e+01   1.348e+01   3.24   23.400    0.401   23.743
+END: 

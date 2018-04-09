@@ -1,0 +1,12 @@
+import os
+
+
+def snid2filename(snid,data_path='.'):
+
+    # sanatize path
+    
+    
+
+    sn_file = "DES_SN%s.DAT" % str(snid).zfill(6)
+
+    return os.path.join(data_path,sn_file)
