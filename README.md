@@ -2,6 +2,7 @@
 
 This repository holds the code and data used in *Optimizing spectroscopic follow-up strategies for supernova photometric classification with active learning*, by Ishida et al., 2018.
 
+This is one of the products of [COIN Residence Program #4](http://iaacoin.wix.com/crp2017), which took place in August/2017 in Clermont-Ferrand (France). 
 
 # Install 
 
@@ -9,7 +10,7 @@ To install:
 
 clone the repository, get into it and type:  
 
-python setup.py install --user
+        python setup.py install --user
 
 
 A script explaining how to use this is provided inside the repository [examples/runSNActClass.py](examples/runSNActClass.py)
