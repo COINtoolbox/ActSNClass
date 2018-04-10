@@ -6,9 +6,7 @@ This is one of the products of [COIN Residence Program #4](http://iaacoin.wix.co
 
 # Install 
 
-To install:
-
-clone the repository, get into it and type:  
+In order to install this code you should clone this repository and do:  
 
         python setup.py install --user
 
@@ -16,5 +14,7 @@ clone the repository, get into it and type:
 A script explaining how to use this is provided inside the repository [examples/runSNActClass.py](examples/runSNActClass.py)
 
 # Dependencies
+
+
 
 

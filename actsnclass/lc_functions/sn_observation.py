@@ -1,5 +1,5 @@
 import os
-from snactclass.data_functions.read_SNANA import read_snana_lc
+from actsnclass.data_functions.read_SNANA import read_snana_lc
 import numpy as np
 import matplotlib.pyplot as plt
 import copy
