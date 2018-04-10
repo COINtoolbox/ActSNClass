@@ -1,4 +1,4 @@
-# Active Learning for Supernova Classification <img align="right" src="https://github.com/COINtoolbox/ActSNClass/blob/master/images/COIN_logo_very_small.png" width="200">
+# Active Learning for Supernova Classification <img align="right" src="https://github.com/COINtoolbox/ActSNClass/blob/master/images/COIN_logo_very_small.png">
 
 This repository
 
