@@ -8,11 +8,11 @@ This is one of the products of [COIN Residence Program #4](http://iaacoin.wix.co
 
 The `examples` folder contains all the necessary steps to perform the basic steps in the pipeline:
 
-    1. Light cure fit using the parametric function from [Bazin et al., 2009](https://arxiv.org/abs/0904.1066)
-    2. Separate the photometric sample in query/target
-    3. Get the simulated features used to identify neighbors
-    4. Build pseudo-training sample for the canonical strategy
-    5. Run the active learning algorithm
+1. Light cure fit using the parametric function from [Bazin et al., 2009](https://arxiv.org/abs/0904.1066)
+2. Separate the photometric sample in query/target
+3. Get the simulated features used to identify neighbors
+4. Build pseudo-training sample for the canonical strategy
+5. Run the active learning algorithm
 
 
 # Install 
