@@ -1,9 +1,8 @@
 <table>
   <tr >
-    <td><img src="https://github.com/COINtoolbox/ActSNClass/blob/master/images/COIN_logo_very_small.png"/></td>
+    <td align="right"><img src="https://github.com/COINtoolbox/ActSNClass/blob/master/images/COIN_logo_very_small.png"/></td>
 </table>
 
-![COIN logo](/images/COIN_logo_very_small.png){:height="50%" width="50%"}
 
 To install:
 
