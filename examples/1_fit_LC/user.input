@@ -1,0 +1,67 @@
+path_to_obs	    = ../../data/SIMGEN_PUBLIC_DES/                          # path to data directory
+path_to_lc          = DES_SN551165.DAT                                    # path to raw SN light curve
+snlist              = spec.list                                           # name of file with SN list
+file_root           = DES_SN 					          # root common to all files containing SN light curves	
+
+
+filters		    =  g r i z						  # list of fiters	
+header		    = SNID: SNTYPE: SIM_NON1a:  REDSHIFT_FINAL:	          # variables to be retreeted	
+param_list          = VARLIST:		         			  # identification of list of variables within SN data file	
+redshift_flag       = REDSHIFT_FINAL:		  			  # redshift identification	
+
+
+mjd_flag            = MJD						  # MJD identification	
+filter_flag         = FLT						  # filter identification	
+photon_flag         = FLUXCAL						  # photon count identification	
+photonerr_flag      = FLUXCALERR					  # photon count error identification	
+quality_flag        = SNR						  # SNR identification		  
+epoch_flag	    = OBS:						  # epoch identification	
+Ia_flag             = 0                                                   # flag for SN Ia
+
+type_flag          = SIM_NON1a: 					  # type identification	
+type_cut	   = None						  # type selection cut	
+            
+
+sample_flag	   = SNTYPE:						  # sample identification	
+sample_cut	   = -9   						  # sample selection cut	
+
+quality_cut        = -100						  # SNR selection cut
+epoch_cut          = -3  25                  				  # earliest and latests epochs to be used	
+epoch_predict      = -3  25                  				  # epoch interval to reconstruct light curves	
+epoch_bin          = 1                       				  # gap between two consecutive columns	
+ref_filter         = r                        				  # determination of the day of max brightness
+nepoch_cut         = 5                                                    # minimum number of epochs passing selection cuts
+
+
+n_samples           = 0 	              				  # number of samples from the posterior
+samples_dir         = spec/                  				  # directory to store GP realizations
+nsamp_mcmc          = 200                     				  # number of samples in mcmc
+
+screen             = 0                        				  # hide (0) or show(1) running comments on screen
+save_samples       = 0                        				  # skip (0) or save(1) GP realizations5
+
+n_proc             = 0                        				  # number of processors to use in MCMC
+                                                 			  # if 0 MCMC is done in serial mode
+do_mcmc = 0                                      			  # (1) perform MCMC (0) user MAP
+burn =  100                                      			  # number of samples in burn in (warm-up)
+thin = 1                                         			  # MCMC thin parameter    
+
+
+data_matrix             = spec_matrix.dat        			  # name of file containing data matrix
+dim_reduction_func      = kpca                   			  # name of dimensionality reduction function
+kpca_pars               = kernel gamma ncomp     			  # parameters for dimensionality reduction
+kpca_val                = rbf  1.0   2          			  # value for dimensionality reduction parameters 
+
+classifier_func         = nneighbor              			  # classifier function
+classifier_pars         = n weights              			  # classifier parameters
+classifier_val          = 1 distance              			  # values for classifier parameters
+
+
+transform_types_func    = set_types           				  # function to transform types 
+
+cross_validation_func   = cross_val          				  # cross-validation function
+n_cross_val_particles   = 2                 				  # number of times to separate training/test set 
+cross_val_par           = ncomp  gamma       				  # cross_validation parameters
+ncomp_lim               = 2 11              				  # limits on number of components to be test on the grid
+gamma_lim               = 0.05  20.0        				  # limits on parameter hyper_par
+gamma_nparticles        = 100               				  # number of particles in gamma grid
