@@ -23,8 +23,6 @@ trainDataPath = '../data/train_fitparameters.dat'                      # path to
 trainLabelPath = '../data/train_labels.dat'                            # path to training labels
 cvDataPath = '../data/query_fitparameters.dat'                         # path to query data matrix (light curve fit parameters)
 cvLabelPath = '../data/query_labels.dat'                               # path to query labels
-targetDataPath = '../data/target_fitparameters.dat'
-targetLabelPath = '../data/target_labels.dat'
 vanillaDataPath = '../data/pseudotrain_fitparameters.txt'              # path to pseudo-train data matrix (light curve fit parameters)
 vanillaLabelPath = '../data/pseudotrain_labels.dat'                    # path to pseudo-train labels
 rawDataPath = '../../data/SIMGEN_PUBLIC_DES/'                          # path to raw data
@@ -35,7 +33,7 @@ user_input = {}
 # Data preparation options
 user_input['useOnlyFirstHalf'] = False                         # use True if you wish to ignore part of collumns
 user_input['useFixedRandomState'] = True                       # use the same random seeds throughout the analysis
-user_input['queryFraction'] = 0                                # fraction of data available for query (use >0 only when query/target are not separated before hand)
+user_input['queryFraction'] = 0.8                                # fraction of data available for query (use >0 only when query/target are not separated before hand)
 user_input['trainFraction'] = 1.0                              # fraction of training to be used
 user_input['vanilla'] = True                                   # use True if you wish to run the canonical strategy
 
@@ -95,15 +93,13 @@ myStrategy = ConfigureStrategy(user_input)
 # load data
 (trainingSet, trainingLabels, querySet, queryLabels, pubSet, pubLabels) = \
                          loadData(trainDataPath, trainLabelPath, cvDataPath,
-                   cvLabelPath, cutFirstHalf=user_input['useOnlyFirstHalf'],
-                   pubDataPath=targetDataPath, pubLabelPath=targetLabelPath)
+                   cvLabelPath, cutFirstHalf=user_input['useOnlyFirstHalf'])
 
 # randomise data
 randData = randomiseData(trainingSet, trainingLabels, querySet,
        queryLabels, queryFraction=user_input['queryFraction'],
                         fixRandomState=user_input['useFixedRandomState'],
-                               trainFraction=user_input['trainFraction'],
-                                 pubFeatures=pubSet, pubLabels=pubLabels)
+                               trainFraction=user_input['trainFraction'])
 
 if user_input['vanilla']:
     randData['queryPoolFeatures'] = vanillaFeatures
