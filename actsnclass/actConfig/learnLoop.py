@@ -1,6 +1,6 @@
 import numpy as np
 
-from snactclass.analysis_functions.diagnostics import efficiency, purity, fom
+from actsnclass.analysis_functions.diagnostics import efficiency, purity, fom
 
 def learnLoop(quota, trainData, fullLabels, validationFeatures,
               validationClasses, labeler, mainModelList, queryStrategy,
@@ -79,10 +79,5 @@ def learnLoop(quota, trainData, fullLabels, validationFeatures,
         efficiencies.append(efficiency(predictedClasses,validationClasses,Ia_flag=1))
         purities.append(purity(predictedClasses,validationClasses,Ia_flag=1))
         foms.append(fom(predictedClasses,validationClasses,Ia_flag=1))
-
-    print accuracies
-    print efficiencies
-    print purities
-    print foms
 
     return (accuracies, efficiencies, purities, foms, queryNames, queryClasses, queryLabels, predictedClasses)
