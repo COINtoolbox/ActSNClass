@@ -1,6 +1,7 @@
-SNclass
-=======
-
+<table>
+  <tr >
+    <td><img src="https://github.com/COINtoolbox/ActSNClass/blob/master/images/COIN_logo_very_small.png"/></td>
+</table>
 
 
 To install:
