@@ -1,6 +1,6 @@
 # <img align="right" src="https://github.com/COINtoolbox/ActSNClass/blob/master/images/COIN_logo_very_small.png" width="350"> Active Learning for Supernova Photometric Classification 
 
-This repository holds the code and data used in *Optimizing spectroscopic follow-up strategies for supernova photometric classification with active learning*, by Ishida et al., 2018.
+This repository holds the code and data used in *Optimizing spectroscopic follow-up strategies for supernova photometric classification with active learning*, by [Ishida](www.emilleishida.com), Beck, Gonzalez-Gaitan, de Souza, Krone-Martins, Barrett, Kennamer, Vilalta, Burgess, Quint, Vitorelli, Mahabal and Gangler, 2018.
 
 This is one of the products of [COIN Residence Program #4](http://iaacoin.wix.com/crp2017), which took place in August/2017 in Clermont-Ferrand (France). 
 
