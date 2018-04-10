@@ -34,7 +34,7 @@ In order to install this code you should clone this repository and do:
 
 ## For pre-processing
 
-    [snclass](https://github.com/emilleishida/snclass)
+[snclass](https://github.com/emilleishida/snclass)
 
 
 
