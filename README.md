@@ -34,6 +34,11 @@ In order to install this code you should clone this repository and do:
 
 ## For pre-processing
 
+You only need to install this package if you intend to use the SNANA file handling as shown in the `examples` folder. 
+
+If you already have your data reduced you can skip this part.
+
+
 [snclass](https://github.com/emilleishida/snclass)
 
 
