@@ -17,6 +17,8 @@ The `examples` folder contains all the necessary steps to perform the basic step
 
 # Install 
 
+The current version runs in Python-2.7.
+
 In order to install this code you should clone this repository and do:  
 
         python setup.py install --user
@@ -25,6 +27,7 @@ In order to install this code you should clone this repository and do:
 
 ## General
 
+    - Python=2.7
     - numpy>=1.8.2
     - matplotlib>=1.3.1
     - pandas>=0.19.2
