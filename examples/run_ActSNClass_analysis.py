@@ -5,16 +5,16 @@ CRP #4 was held in Clermont Ferrand, France in August 2017.
 Runs the entire AL pipeline for the static, full light curve analysis.
 """
 
-from snactclass import loadData
-from snactclass import randomiseData
+from actsnclass import loadData
+from actsnclass import randomiseData
 
-from snactclass import learnLoop
-from snactclass.actConfig import ConfigureStrategy
+from actsnclass import learnLoop
+from actsnclass.actConfig import ConfigureStrategy
 
-from snactclass.analysis_functions import save_results
+from actsnclass.analysis_functions import save_results
 
-from snactclass.actConfig import initialDataSetup
-from snactclass.actConfig import initialQuerySetup
+from actsnclass.actConfig import initialDataSetup
+from actsnclass.actConfig import initialQuerySetup
 
 import numpy as np
 
@@ -33,7 +33,7 @@ user_input = {}
 # Data preparation options
 user_input['useOnlyFirstHalf'] = False                         # use True if you wish to ignore part of collumns
 user_input['useFixedRandomState'] = True                       # use the same random seeds throughout the analysis
-user_input['queryFraction'] = 0.8                                # fraction of data available for query (use >0 only when query/target are not separated before hand)
+user_input['queryFraction'] = 0.8                              # fraction of data available for query (use >0 only when query/target are not separated before hand)
 user_input['trainFraction'] = 1.0                              # fraction of training to be used
 user_input['vanilla'] = True                                   # use True if you wish to run the canonical strategy
 
@@ -55,7 +55,7 @@ user_input['treesInRFCommittee'] = 15          # Only used for QBC2
 #'batch_nlunc'    : batch N-least uncertain
 #'batch_semi'     : batch semi-supervised
 
-user_input['choice'] = 'random_RF'                                                       # query strategy
+user_input['choice'] = 'unc_RF'                                                       # query strategy
 user_input['outputFolder'] = user_input['choice'] + '/'                               # folder to dump results
 user_input['diagnosticFile'] = 'diag_' + user_input['choice'] + '_fullsample.csv'     # output diagnostic file 
 user_input['queryFile'] = 'queries_' + user_input['choice']  + '_fullsample.csv'      # output query objs file
@@ -100,7 +100,6 @@ randData = randomiseData(trainingSet, trainingLabels, querySet,
        queryLabels, queryFraction=user_input['queryFraction'],
                         fixRandomState=user_input['useFixedRandomState'],
                                trainFraction=user_input['trainFraction'])
-
 if user_input['vanilla']:
     randData['queryPoolFeatures'] = vanillaFeatures
     randData['queryPoolLabels'] = np.array(vanillaLabels)

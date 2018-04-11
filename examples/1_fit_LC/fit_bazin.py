@@ -16,6 +16,10 @@ from snclass.treat_lc import LC
 from fit_lc_parametric import fit_scipy, bazin
 import pylab as plt
 
+# create directory to store data
+if not os.path.isdir('../data/'):
+    os.makedirs('../data/')
+
 # determinie minimum MJD
 file_list = os.listdir('../../data/SIMGEN_PUBLIC_DES/')
 lc_list = [elem for elem in file_list if 'DES_SN' in elem]
