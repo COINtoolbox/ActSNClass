@@ -10,7 +10,7 @@ Training data are not change, just format is corrected.
 
 
 import numpy as np
-from snactclass import read_snana_lc
+from actsnclass import read_snana_lc
 
 # set random seeds
 np.random.seed(137*231+23*17+2*54*11+7)
