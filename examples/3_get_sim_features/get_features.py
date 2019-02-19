@@ -8,7 +8,7 @@ for the different data samples.
 
 
 import numpy as np
-from snactclass import read_snana_lc
+from actsnclass import read_snana_lc
 import pandas as pd
 
 
