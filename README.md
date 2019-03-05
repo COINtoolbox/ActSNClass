@@ -37,6 +37,8 @@ In order to install this code you should clone this repository and do:
     - scipy>=0.18.1
     - astropy>=2.0.1
     - libact>=0.1.3
+    - gptools>=0.2.3
+    - cython>=0.29.6
 
 ## For pre-processing
 
