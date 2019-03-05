@@ -1,9 +1,9 @@
-from initialSetup import initialDataSetup, initialModelSetup
-from initialSetup import initialQuerySetup
+from actsnclass.actConfig.initialSetup import initialDataSetup, initialModelSetup
+from actsnclass.actConfig.initialSetup import initialQuerySetup
 
-from configure import ConfigureStrategy
+from actsnclass.actConfig.configure import ConfigureStrategy
 
-from learnLoop import learnLoop
+from actsnclass.actConfig.learnLoop import learnLoop
 
-from  batchQuery import BatchQuery, RandomBatchQuery, LeastCertainBatchQuery
-from  batchQuery import SemiSupervisedBatchQuery
+from actsnclass.actConfig.batchQuery import BatchQuery, RandomBatchQuery, LeastCertainBatchQuery
+from actsnclass.actConfig.batchQuery import SemiSupervisedBatchQuery
