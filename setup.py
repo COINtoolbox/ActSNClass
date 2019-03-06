@@ -23,7 +23,9 @@ setup(name='actsnclass',
                           'scipy>=0.18.1',
                           'astropy>=2.0.1',
                           'libact>=0.1.3',
-                          'gptools>=0.2.3'
+                          'gptools>=0.2.3',
+                          'cython>=0.29.6',
+                          'seaborn>=0.9.0'
       ],
       include_package_data=True,
       scripts=['examples/5_runpipeline_fullLC/runSNActClass_analysis.py'],
