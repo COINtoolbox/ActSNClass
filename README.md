@@ -4,7 +4,7 @@ This repository holds the code and data used in [Optimizing spectroscopic follow
 
 This is one of the products of [COIN Residence Program #4](http://iaacoin.wix.com/crp2017), which took place in August/2017 in Clermont-Ferrand (France). 
 
-We kindly ask you to include the full citation if you use this material in your research: [Ishida et al., 2018 -  arXiv:astro-ph/1804.03765](https://arxiv.org/abs/1804.03765).
+We kindly ask you to include the full citation if you use this material in your research: [Ishida et al, 2019, MNRAS, 483 (1), 2–18](https://cosmostatistics-initiative.org/wp-content/uploads/2018/07/actlearning.txt).
 
 
 # Pipeline
@@ -52,3 +52,5 @@ If you already have your data reduced you can skip this part.
 
 
 
+=======
+>>>>>>> 9a33a1539cdaaee3f59b73f26f9a3d94726624cd
