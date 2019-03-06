@@ -41,16 +41,3 @@ In order to install this code you should clone this repository and do:
     - cython>=0.29.6
     - seaborn>=0.9.0
 
-## For pre-processing
-
-You only need to install this package if you intend to use the SNANA file handling as shown in the `examples` folder. 
-
-If you already have your data reduced you can skip this part.
-
-
-[snclass](https://github.com/emilleishida/snclass)
-
-
-
-=======
->>>>>>> 9a33a1539cdaaee3f59b73f26f9a3d94726624cd
