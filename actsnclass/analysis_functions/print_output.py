@@ -10,11 +10,7 @@ import numpy as np
 import pandas as pd
 import os
 
-<<<<<<< HEAD
 from actsnclass.data_functions.read import read_snana_lc
-=======
-from actsnclass.data_functions.read_SNANA import read_snana_lc
->>>>>>> 117a0f0bcc417f5cc9ddd8b9d1c0cda6e93de7c2
 from actsnclass.analysis_functions.ml_result import MLResult
 
 
