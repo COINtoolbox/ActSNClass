@@ -14,7 +14,7 @@ from analysis_functions.print_output import save_results
 
 from data_functions.loadData import loadData
 from data_functions.randomiseData import randomiseData
-from data_functions.read_SNANA import read_snana_lc
+from data_functions.read import read_snana_lc, read_user_input
 from data_functions.snid2filename import snid2filename
 
 from actConfig.initialSetup import initialDataSetup, initialModelSetup
