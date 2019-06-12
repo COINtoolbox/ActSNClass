@@ -94,3 +94,40 @@ def read_snana_lc(file_name, flux_as_DataFrame=False):
         return header, data
 
     return header, flux
+
+
+def read_user_input(filename):
+    """
+    Read user input from file and construct initial dictionary parameter.
+
+    input:    filename (string) -> user input file parameter
+
+    output:   dictionary with formated user choices
+    """
+    op1 = open(filename, 'r')
+    lin1 = op1.readlines()
+    op1.close()
+
+    data1 = [elem.split() for elem in lin1]
+
+    # store options in params dictionary
+    params = dict([(line[0], line[2:line.index('#')])
+                   for line in data1 if len(line) > 1])
+
+    params = check_reduction(params)
+    params = check_classifier(params)
+    params = check_crossval(params)
+    params = check_types(params)
+
+    params['GP_fit'] = {}
+    params['realizations'] = {}
+    params['xarr'] = {}
+    params['GP_obj'] = {}
+    params['GP_std'] = {}
+
+    # check if ``observer'' data already exists
+    if not os.path.isdir(params['path_to_obs'][0]):
+        raise TypeError('Variable "path_to_obs" is not a valid directory!')
+
+    return params
+

@@ -10,8 +10,8 @@ import numpy as np
 import pandas as pd
 import os
 
-from snactclass.data_functions.read_SNANA import read_snana_lc
-from snactclass.analysis_functions.ml_result import MLResult
+from actsnclass.data_functions.read import read_snana_lc
+from actsnclass.analysis_functions.ml_result import MLResult
 
 
 def save_results(accuracies, effs, purs, foms, queryNames, queryClasses,

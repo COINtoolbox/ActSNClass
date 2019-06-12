@@ -25,7 +25,7 @@ setup(name='actsnclass',
                           'libact>=0.1.3'
       ],
       include_package_data=True,
-      scripts=['examples/run_ActSNClass_analysis.py'],
+      scripts=['examples/5_runpipeline_fullLC/runActSNClass_analysis.py'],
       package_dir={'actsnclass': 'actsnclass',
                    'data_functions':'actsnclass/data_functions',
                    'data':'actsnclass/data', 'actConfig':'actsnclass/actConfig',
