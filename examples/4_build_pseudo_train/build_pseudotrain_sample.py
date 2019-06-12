@@ -104,7 +104,7 @@ newTrainLabels = []
 newTrainFeatures = []
 
 for l in range(len(trainFeatFloat)):
-    nbrs = NearestNeighbors(n_neighbors=10, algorithm='auto').fit(data_photo[trainLabels[l][-1]])
+    nbrs = NearestNeighbors(n_neighbors=1, algorithm='auto').fit(data_photo[trainLabels[l][-1]])
     distances, indices = nbrs.kneighbors(np.array(trainFeatFloat[l]).reshape(1, -1))
 
     for k in range(1):
@@ -165,7 +165,7 @@ for line in newTrainLC:
 op9.close()
 
 import pylab as plt
-from snactclass import read_snana_lc
+from actsnclass import read_snana_lc
 import pandas as pd
 
 features = []
