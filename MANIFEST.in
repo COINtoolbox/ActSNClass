@@ -1,5 +1,0 @@
-include CHANGES.md
-include my_class/data/crossValidation_labels.txt
-include my_class/data/crossValidation_lightcurves.txt
-include my_class/data/train_labels.txt
-include my_class/data/train_lightcurves.txt
