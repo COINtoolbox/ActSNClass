@@ -1,3 +1,5 @@
-Active Learning for Supernova Photometric Classification
-========================================================
+ActSNClass
+==========
+
+*Active Learning for Supernova Photometric Classification*
 
