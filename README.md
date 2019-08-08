@@ -8,3 +8,24 @@ This repository holds the code and data used in [Optimizing spectroscopic follow
 This is one of the products of [COIN Residence Program #4](http://iaacoin.wix.com/crp2017), which took place in August/2017 in Clermont-Ferrand (France). 
 
 We kindly ask you to include the full citation if you use this material in your research: [Ishida et al, 2019, MNRAS, 483 (1), 2–18](https://cosmostatistics-initiative.org/wp-content/uploads/2019/06/COIN_ActSNClass.txt).
+
+Full documentation can be found at readthedocs.
+
+# Dependencies
+
+ - Python>=3.6.8  
+ - argparse>=1.1  
+ - matplotlib>=3.1.1  
+ - numpy>=1.17.0  
+ - pandas>=0.25.0  
+ - setuptools>=41.0.1  
+ - scipy>=1.3.0   
+
+# Install
+
+The current version runs in Python-3.6.
+
+In order to install this code you should clone this repository and do:  
+
+        python setup.py install --user
+
