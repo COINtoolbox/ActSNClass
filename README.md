@@ -1,4 +1,7 @@
-# <img align="right" src="actsnclass/images/COIN_logo_very_small.png" width="350"> Active Learning for Supernova Photometric Classification 
+# <img align="right" src="docs/images/COIN_logo_very_small.png" width="350"> ActSNClass
+
+
+## Active Learning for Supernova Photometric Classification 
 
 This repository holds the code and data used in [Optimizing spectroscopic follow-up strategies for supernova photometric classification with active learning](https://arxiv.org/abs/1804.03765), by [Ishida](https://www.emilleishida.com), [Beck](https://github.com/beckrob), [Gonzalez-Gaitan](https://centra.tecnico.ulisboa.pt/team/?id=4337), [de Souza](https://www.rafaelsdesouza.com), [Krone-Martins](https://thegrid.ai/alberto-krone-martins/), [Barrett](http://jimbarrett.co.uk/), [Kennamer](https://github.com/NobleKennamer), [Vilalta](http://www2.cs.uh.edu/~vilalta/), [Burgess](https://grburgess.github.io/), [Quint](https://github.com/b1quint), [Vitorelli](https://github.com/andrevitorelli), [Mahabal](http://www.astro.caltech.edu/~aam/) and [Gangler](https://annuaire.in2p3.fr/agents/Y249R2FuZ2xlciBFbW1hbnVlbCxvdT1wZW9wbGUsZGM9aW4ycDMsZGM9ZnI=/show), 2018.
 
