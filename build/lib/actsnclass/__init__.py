@@ -18,6 +18,7 @@
 
 
 from .fit_lightcurves import LightCurve, fit_bazin_samples
+from .bazin import bazin, fit_scipy
 
-__all__ = ['LightCurve', 'fit_bazin_samples']
+__all__ = ['LightCurve', 'fit_bazin_samples', 'bazin', 'fit_scipy']
 __version__ = '1.0'

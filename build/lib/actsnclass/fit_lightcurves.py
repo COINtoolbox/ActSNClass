@@ -1,8 +1,8 @@
-# Copyright 2019 actsnclass software
+# Copyright 2019 snactclass software
 # Author: Emille E. O. Ishida
 #         Based on initial prototype developed by the CRP #4 team
 #
-# created on 7 August 2019
+# created on 9 August 2019
 #
 # Licensed GNU General Public License v3.0;
 # you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from actsnclass.bazin import fit_scipy, bazin
+from actsnclass.bazin import bazin, fit_scipy
 
 import matplotlib.pylab as plt
 import numpy as np
@@ -58,44 +58,42 @@ class LightCurve(object):
     load_snpcc_lc(path_to_data: str)
         Reads header and photometric information for 1 light curve
     fit_bazin(band: str) -> list
-        Calculates best-fit parameters from the Bazin function in a given filter
+        Calculates best-fit parameters from the Bazin function in 1 filter
     fit_bazin_all()
-        Calculates  best-fit parameters from the Bazin function for all filters
-    plot_bazin_fit(save: bool, show: bool, plot_dir: str)
-        Plot the light curve points and Bazin fitted function
+        Calculates  best-fit parameters from the Bazin func for all filters
 
     Examples
     --------
     >>> from actsnclass import LightCurve
 
-    # path to LC data file
-    >>> path_to_lc = 'data/SIMGEN_PUBLIC_DES/DES_SN321244.DAT'
+    # define path to light curve file
+    >>> path_to_lc = 'data/SIMGEN_PUBLIC_DES/DES_SN.DAT'
 
-    >>> lc = LightCurve()
-    >>> lc.load_snpcc_lc(path_to_lc)         # read LC
-    >>> lc.photometry
-          mjd band     flux  fluxerr   SNR
-    0   56171.051    g -36.7900   78.090 -0.47
-    1   56172.039    r   4.4100   17.580  0.25
-    ..        ...  ...      ...      ...   ...
-    91  56305.055    i  15.5400    3.070  5.06
-    92  56305.070    z  30.0200    3.711  8.09
+    >>> lc = LightCurve()                        # create light curve instance
+    >>> lc.load_snpcc_lc(path_to_lc)             # read data
+    >>> lc.photometry                            # display photometry
+              mjd band     flux  fluxerr   SNR
+    0   56207.188    g   9.6560    4.369  2.21
+    1   56207.195    r   6.3370    3.461  1.83
+    ...        ...  ...      ...      ...   ...
+    96  56336.043    r  14.4300    3.098  4.66
+    97  56336.055    i  18.9500    5.029  3.77
 
-    [93 rows x 5 columns]
+    [98 rows x 5 columns]
 
-     >>> lc.fit_bazin_all()                   # apply Bazin fit to all filters
-     >>> lc.bazin_features
-     [62.0677260096896, -7.959383808822104, 47.37511467606875, 37.4919069623379,
-     ... ... ...
-     -0.2598668353407374, 48.41581554398582, 206.65806244385922, -4.777010246622081]
+    >>> lc.fit_bazin_all()                  # perform Bazin fit in all filters
+    >>> lc.bazin_features                   # display Bazin parameters
+    [62.0677260096896, -7.959383808822104, 47.37511467606875, 37.4919069623379,
+    ... ... ...
+    206.65806244385922, -4.777010246622081]
 
-     >>> lc.plot_bazin_fit(save=True, show=False, plot_dir='../plots/')
-     # This will save a plot with the light curve data and Bazin fit in all fitters
+    # plot light curve fit
+    >>> lc.plot_bazin_fit()
 
-     # In order to fit the entire data set do:
-     >>> data_dir = '../../data/SIMGEN_DES_PUBLIC/'            # directory with raw data
-     >>> output_file = '../../data/Bazin_fit.dat'              # name of output Bazin file
-     >>> fit_bazin_samples(path_to_data_dir=data_dir, features_file=output_file)
+    >>> path_to_data_dir = 'data/SIMGEN_PUBLIC_DES/'     # raw data directory
+    >>> output_file = 'data/proecessed/Bazin.dat'       # output file
+    >>> fit_bazin_samples(path_to_data_dir=path_to_data_dir, features_file=output_file)
+    # a file with all Bazin fits for this data set was produced
     """
 
     def __init__(self):
@@ -241,55 +239,53 @@ class LightCurve(object):
                 for i in range(5):
                     self.bazin_features.append('None')
 
-    def plot_bazin_fit(self, save=True, show=False, plot_dir=' '):
-        """Plot fitted light curve and data points
+    def plot_bazin_fit(self, save=True, show=False, output_file= ' '):
+        """
+        Plot data and Bazin fitted function.
 
         Parameters
         ----------
         save: bool (optional)
-            Save plot to file. Default is True
-        show: bool (optional)
-            Show plot on screen. Default is False
-        plot_dir: str (optional)
-            Directory where to store the plot files
-
-        Returns
-        -------
-        lc: image, if show==True
-            Plot of LC fit and data points
+             Save figure to file. Default is True.
+        show: bool (optinal)
+             Display plot in windown. Default is False.
+        output_file: str
+            Name of file to store the plot.
         """
 
         plt.figure()
-        plt.suptitle('DES_SN' + str(self.id) + ', z = ' + str(self.redshift))
+        plt.suptitle('SN ' + str(self.id) + ' z = ' + str(self.redshift))
         for i in range(len(self.filters)):
-            # filter flag for photometry data
+            # filter flag
             filter_flag = self.photometry['band'] == self.filters[i]
+            x = self.photometry['mjd'][filter_flag].values
+            y = self.photometry['flux'][filter_flag].values
+            yerr = self.photometry['fluxerr'][filter_flag].values
 
-            if sum(filter_flag) > 1:
-                x = self.photometry['mjd'][filter_flag].values
-                y = self.photometry['flux'][filter_flag].values
-                yerr = self.photometry['fluxerr'][filter_flag].values
+            # shift to avoid large numbers in x-axis
+            time = x - min(x)
+            xaxis = np.linspace(0, max(time), 500)[:, np.newaxis]
+            # calculate fitted function
+            fitted_flux = np.array([bazin(t, self.bazin_features[0],
+                                          self.bazin_features[1],
+                                          self.bazin_features[2],
+                                          self.bazin_features[3],
+                                          self.bazin_features[4])
+                                     for t in xaxis])
 
-                # shift time scale to avoid large numbers in x-axis
-                time = self.photometry['mjd'].values - min(self.photometry['mjd'].values)
-                time_axis = np.linspace(0, max(time), 500)[:, np.newaxis]
-
-                fitted_flux = np.array([bazin(t, self.bazin_features[0], self.bazin_features[1], self.bazin_features[2],
-                                        self.bazin_features[3], self.bazin_features[4]) for t in time_axis])
-
-            plt.subplot(2, len(self.filters) / 2 + len(self.filters) % 2, i + 1)
-            plt.title(self.filters[i])
-            if len(x) > 1:
-                plt.errorbar(x - min(x), y, yerr=yerr, fmt='o', color='blue')
-                plt.plot(time_axis, fitted_flux, color='red', lw=1.5)
+            # plot
+            plt.subplot(2, len(self.filters)/2 + len(self.filters) % 2, i + 1)
+            plt.title('Filter: ' + self.filters[i])
+            plt.errorbar(time, y, yerr=yerr, color='blue', fmt='o')
+            plt.plot(xaxis, fitted_flux, color='red', lw=1.5)
             plt.xlabel('MJD - ' + str(min(x)))
-            plt.ylabel('Flux')
+            plt.ylabel('FLUXCAL')
             plt.tight_layout()
 
-        if save:
-            plt.savefig(plot_dir + 'DES_SN' + str(self.id) + '.png')
-        elif show:
-            plt.show()
+            if save:
+                plt.savefig(output_file)
+            if show:
+                plt.show()
 
 
 
@@ -342,9 +338,15 @@ def fit_bazin_samples(path_to_data_dir: str, features_file: str):
 
 
 def main():
-    print(__doc__)
+    """Calculate best-fit parameters for the Bazin function for the entire data set."""
+
+    path_to_lc = 'data/SIMGEN_PUBLIC_DES/DES_SN000017.DAT'
+
+    lc = LightCurve()  # create light curve instance
+    lc.load_snpcc_lc(path_to_lc)  # read data
+    lc.fit_bazin_all()
+    lc.plot_bazin_fit(save=True, show=True, output_file='plots/' + lc.id + '.png')
 
 
 if __name__ == '__main__':
     main()
-fit_scipy
