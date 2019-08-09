@@ -17,8 +17,8 @@
 # limitations under the License.
 
 
-from .fit_lightcurves import LightCurve, fit_bazin_samples
+from .fit_lightcurves import LightCurve, fit_snpcc_bazin
 from .bazin import bazin, fit_scipy
 
 __all__ = ['LightCurve', 'fit_bazin_samples', 'bazin', 'fit_scipy']
-__version__ = '1.0'
+
