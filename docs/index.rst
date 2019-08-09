@@ -1,22 +1,29 @@
 .. actsnclass documentation master file, created by
    sphinx-quickstart on Thu Aug  8 16:11:41 2019.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+
+.. image:: _static/COIN_logo_very_small.png
+
 
 Welcome to actsnclass !
-======================================
+=======================
 
-This tool allows you to reproduce (and expand upon) the results presented in Ishida et al., 2019.
+This tool allows you to reproduce the results presented in `Ishida et al., 2019 <https://cosmostatistics-initiative.org/portfolio-item/active-learning-for-sn-classification/>`_.
 
-.. toctree::
-   :maxdepth: 2
-   :caption: Contents:
-
+Dependencies
+============
 
 
-Indices and tables
-==================
 
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+
+Installing
+==========
+
+Clone this repository and type::
+
+    >> python setup.py install --user
+
+
+This will install ``actsnclass`` tools under your home.
+
+.. contents:: Table of contents
+   :depth: 2
