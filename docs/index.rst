@@ -37,6 +37,8 @@ Clone this repository and type::
 
 This will install ``actsnclass`` tools under your home.
 
+References
+==========
 
 .. toctree::
    :maxdepth: 2
