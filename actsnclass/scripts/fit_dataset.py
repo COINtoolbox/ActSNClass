@@ -18,7 +18,7 @@
 
 import argparse
 
-from actsnclass import fit_bazin_samples
+from actsnclass.fit_lightcurves import fit_snpcc_bazin
 
 
 def main(args):
@@ -29,7 +29,7 @@ def main(args):
     features_file = args.output
 
     # fit the entire sample
-    fit_bazin_samples(path_to_data_dir=data_dir, features_file=features_file)
+    fit_snpcc_bazin(path_to_data_dir=data_dir, features_file=features_file)
 
 if __name__ == '__main__':
 

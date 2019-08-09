@@ -23,7 +23,7 @@ import numpy as np
 import os
 import pandas as pd
 
-__all__ = ['LightCurve', 'fit_bazin_samples']
+__all__ = ['LightCurve', 'fit_snpcc_bazin']
 
 
 class LightCurve(object):
@@ -61,12 +61,15 @@ class LightCurve(object):
         Calculates best-fit parameters from the Bazin function in 1 filter
     fit_bazin_all()
         Calculates  best-fit parameters from the Bazin func for all filters
+    plot_bazin_fit(save: bool, show: bool, output_file: srt)
+        Plot photometric points and Bazin fitted curve
 
     Examples
     --------
     >>> from actsnclass import LightCurve
 
-    # define path to light curve file
+    define path to light curve file
+
     >>> path_to_lc = 'data/SIMGEN_PUBLIC_DES/DES_SN.DAT'
 
     >>> lc = LightCurve()                        # create light curve instance
@@ -78,7 +81,6 @@ class LightCurve(object):
     ...        ...  ...      ...      ...   ...
     96  56336.043    r  14.4300    3.098  4.66
     97  56336.055    i  18.9500    5.029  3.77
-
     [98 rows x 5 columns]
 
     >>> lc.fit_bazin_all()                  # perform Bazin fit in all filters
@@ -87,14 +89,17 @@ class LightCurve(object):
     ... ... ...
     206.65806244385922, -4.777010246622081]
 
-    # plot light curve fit
+    plot light curve fit
+
     >>> lc.plot_bazin_fit(output_file=str(lc.id) + '.png')
 
-    # for fitting the entire sample...
+    for fitting the entire sample...
+
     >>> path_to_data_dir = 'data/SIMGEN_PUBLIC_DES/'     # raw data directory
     >>> output_file = 'data/proecessed/Bazin.dat'       # output file
     >>> fit_bazin_samples(path_to_data_dir=path_to_data_dir, features_file=output_file)
-    # a file with all Bazin fits for this data set was produced
+
+    a file with all Bazin fits for this data set was produced
     """
 
     def __init__(self):
@@ -290,7 +295,7 @@ class LightCurve(object):
 
 
 
-def fit_bazin_samples(path_to_data_dir: str, features_file: str):
+def fit_snpcc_bazin(path_to_data_dir: str, features_file: str):
     """Fit Bazin functions to all filters in training and test samples.
 
     Parameters
@@ -341,13 +346,14 @@ def fit_bazin_samples(path_to_data_dir: str, features_file: str):
 def main():
     """Calculate best-fit parameters for the Bazin function for the entire data set."""
 
-    path_to_lc = 'data/SIMGEN_PUBLIC_DES/DES_SN000017.DAT'
+    #path_to_lc = 'data/SIMGEN_PUBLIC_DES/DES_SN000017.DAT'
 
-    lc = LightCurve()  # create light curve instance
-    lc.load_snpcc_lc(path_to_lc)  # read data
-    lc.fit_bazin_all()
-    lc.plot_bazin_fit(save=True, show=True, output_file='plots/' + lc.id + '.png')
+    #lc = LightCurve()  # create light curve instance
+    #lc.load_snpcc_lc(path_to_lc)  # read data
+    #lc.fit_bazin_all()
+    #lc.plot_bazin_fit(save=True, show=True, output_file='plots/' + lc.id + '.png')
 
+    print( ___doc__ )
 
 if __name__ == '__main__':
     main()
