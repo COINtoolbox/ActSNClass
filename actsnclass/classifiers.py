@@ -19,21 +19,20 @@
 __all__ = ['random_forest']
 
 import numpy as np
-import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
 
 
-def random_forest(train_features: pd.DataFrame, train_labels: np.array,
-                  test_features: pd.DataFrame, nest=1000, seed=42):
+def random_forest(train_features:  np.array, train_labels: np.array,
+                  test_features: np.array, nest=1000, seed=42):
     """Random Forest classifier.
 
     Parameters
     ----------
-    train_features: pd.DataFrame
+    train_features: np.array
         Training sample features.
     train_labels: np.array
         Training sample classes.
-    test_features: pd.DataFrame
+    test_features: np.array
         Test sample features.
     nest: int (optional)
         Number of estimators (trees) in the forest.

@@ -92,6 +92,6 @@ The same result can be achieved using the command line:
 
 .. code-block:: bash
 
-   fit_dataset.py -dd <path_to_data_dir> -o <output_file>
+   >> fit_dataset.py -dd <path_to_data_dir> -o <output_file>
 
 
