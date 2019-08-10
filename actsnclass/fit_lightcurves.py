@@ -246,7 +246,7 @@ class LightCurve(object):
                 for i in range(5):
                     self.bazin_features.append('None')
 
-    def plot_bazin_fit(self, save=True, show=False, output_file= ' '):
+    def plot_bazin_fit(self, save=True, show=False, output_file=' '):
         """
         Plot data and Bazin fitted function.
 
@@ -261,8 +261,6 @@ class LightCurve(object):
         """
 
         plt.figure()
-        plt.suptitle('SN ' + str(self.id) + ' z = ' + str(self.redshift) +
-                     ', type = ' + self.sntype)
 
         for i in range(len(self.filters)):
             plt.subplot(2, len(self.filters) / 2 + len(self.filters) % 2, i + 1)
@@ -278,13 +276,12 @@ class LightCurve(object):
             time = x - min(x)
             xaxis = np.linspace(0, max(time), 500)[:, np.newaxis]
             # calculate fitted function
-            fitted_flux = np.array([bazin(t, self.bazin_features[i* 5],
+            fitted_flux = np.array([bazin(t, self.bazin_features[i * 5],
                                           self.bazin_features[i * 5 + 1],
-                                          self.bazin_features[i* 5 + 2],
+                                          self.bazin_features[i * 5 + 2],
                                           self.bazin_features[i * 5 + 3],
                                           self.bazin_features[i * 5 + 4])
-                                     for t in xaxis])
-
+                                    for t in xaxis])
 
             plt.errorbar(time, y, yerr=yerr, color='blue', fmt='o')
             plt.plot(xaxis, fitted_flux, color='red', lw=1.5)
@@ -296,7 +293,6 @@ class LightCurve(object):
                 plt.savefig(output_file)
             if show:
                 plt.show()
-
 
 
 def fit_snpcc_bazin(path_to_data_dir: str, features_file: str):
