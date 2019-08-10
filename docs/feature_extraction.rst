@@ -65,10 +65,10 @@ It is possible to perform the fit in all filters at once and visualize the resul
    lc.plot_bazin_fit(save=True, show=True,
                      output_file='plots/SN' + str(lc.id) + '.png')   # save to file
 
-.. image:: images/DES_SN848233.png
+.. image:: images/SN848233.png
    :align: center
-   :height: 240.6px
-   :width: 320 px
+   :height: 480 px
+   :width: 640 px
    :alt: Bazing fit to light curve.
 
 
@@ -86,4 +86,12 @@ There are 2 way to perform the Bazin fits for the entire SNPCC data set. Using a
    output_file = 'results/Bazin.dat'                              # output file
    fit_snpcc_bazin(path_to_data_dir=path_to_data_dir, features_file=output_file)
 
-The above will produce a file called `Bazin.dat` in the `results` directory.
+The above will produce a file called ``Bazin.dat`` in the `results` directory.
+
+The same result can be achieved using the command line:
+
+.. code-block:: bash
+
+   fit_dataset.py -dd <path_to_data_dir> -o <output_file>
+
+
