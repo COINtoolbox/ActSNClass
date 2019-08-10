@@ -22,5 +22,6 @@ Light Curves
 *Fitting an entire data set*
 
 .. autosummary::
+   :toctree: api
 
    fit_snpcc_bazin
