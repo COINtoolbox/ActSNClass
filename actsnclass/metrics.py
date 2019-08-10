@@ -22,7 +22,7 @@ __all__ = ['efficiency', 'purity', 'fom', 'accuracy', 'get_snpcc_metric']
 def efficiency(label_pred: list, label_true: list, ia_flag=1):
     """Calculate efficiency.
 
-      Parameters
+    Parameters
     ----------
     label_pred: list
         Predicted labels
@@ -35,6 +35,7 @@ def efficiency(label_pred: list, label_true: list, ia_flag=1):
     -------
     efficiency: float
        Fraction of correctly classified SN Ia.
+
     """
 
     cc_ia = sum([label_pred[i] == label_true[i] and label_true[i] == ia_flag for i in range(len(label_pred))])
@@ -59,6 +60,7 @@ def purity(label_pred: list, label_true: list, ia_flag=1):
     -------
     Purity: float
         Fraction of true SN Ia in the final classified Ia sample.
+
     """
 
     cc_ia = sum([label_pred[i] == label_true[i] and label_true[i] == ia_flag for i in range(len(label_pred))])
@@ -89,6 +91,7 @@ def fom(label_pred: list, label_true: list, ia_flag=1, penalty=3.0):
     -------
     figure of merit: float
         Efficiency x pseudo-purity (purity with a penalty for false positives)
+
     """
 
     cc_ia = sum([label_pred[i] == label_true[i] and label_true[i] == ia_flag for i in range(len(label_pred))])
@@ -115,6 +118,7 @@ def accuracy(label_pred: list, label_true: list):
     -------
     Accuracy: float
         Global fraction of correct classifications.
+
     """
 
     cc = sum([label_pred[i] == label_true[i] for i in range(len(label_pred))])
@@ -145,6 +149,7 @@ def get_snpcc_metric(label_pred: list, label_true: list, ia_flag=1,
         Name of elements in metrics: [accuracy, eff, purity, fom]
     metric_values: list
         list of calculated metrics values for each element
+
     """
 
     calc_eff = efficiency(label_pred=label_pred,

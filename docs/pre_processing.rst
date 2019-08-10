@@ -1,4 +1,4 @@
-.. _featext:
+.. _preprocessing:
 
 Feature Extraction
 ==================
