@@ -129,7 +129,7 @@ class DataBase:
     >>> data.update_samples(indx)
 
     Save results to file
-    
+
     >>> data.save_metrics(loop=0, output_metrics_file=metrics_file)
     >>> data.save_queried_sample(loop=0, queried_sample_file=query_file,
     >>>                          full_sample=False)
