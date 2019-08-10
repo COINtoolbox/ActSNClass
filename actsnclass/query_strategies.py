@@ -63,10 +63,11 @@ def uncertainty_sampling(class_prob: np.array, test_ids: np.array,
     final_order = order[flag]
 
     # return the index of the highest uncertain objects which are queryable
-    return list(final_order[:batch])
+    return list(final_order)[:batch]
 
 
-def random_sampling(test_ids, queryable_ids, batch=1, seed=42) -> list:
+def random_sampling(test_ids: np.array, queryable_ids: np.array,
+                    batch=1, seed=42) -> list:
     """Randomly choose an object from the test sample.
 
     Parameters
@@ -104,4 +105,4 @@ def random_sampling(test_ids, queryable_ids, batch=1, seed=42) -> list:
     flag = np.array(flag)
 
     # return the corresponding batch size
-    return list(indx[flag][:batch])
+    return list(indx[flag])[:batch]

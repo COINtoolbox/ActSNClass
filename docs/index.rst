@@ -98,8 +98,21 @@ The ``actsnclass`` pipeline is composed of 4 important steps:
 
 These are arranged in the adaptable learning process (figure to the right).
 
+Using this package
+------------------
 
+Step 1 is considered pre-processing. The current code does the feature extraction
+using the `Bazin parametric function <https://arxiv.org/abs/0904.1066>`_ for the complete training and test sample
+before any machine learning application is used.
 
+Details of the tools available to evaluate different steps on feature extraction can be found in the
+:ref:`Feature extraction page <preprocessing>`.
+
+Alternatively, you can also perform the full light curve fit for the entire sample from the command line:
+
+.. code-block:: bash
+
+    >>> fit_dataset.py -dd <path_to_data_dir> -o <output_file>
 
 
 
@@ -111,7 +124,7 @@ Table of Contents
 .. toctree::
    :maxdepth: 2
 
-   feature_extraction
+   pre_processing
    reference
 
 

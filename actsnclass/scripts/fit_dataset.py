@@ -22,7 +22,15 @@ from actsnclass.fit_lightcurves import fit_snpcc_bazin
 
 
 def main(args):
-    """Fit the entire sample with the Bazin function."""
+    """Fit the entire sample with the Bazin function.
+
+    All results are saved to file.
+
+    Parameters
+    ----------
+    args: argparse
+        User input obtained via command line.
+    """
 
     # raw data directory
     data_dir = args.input
@@ -31,11 +39,14 @@ def main(args):
     # fit the entire sample
     fit_snpcc_bazin(path_to_data_dir=data_dir, features_file=features_file)
 
+    return None
+
 if __name__ == '__main__':
 
     # get input directory and output file name from user
     parser = argparse.ArgumentParser(description='actsnclass - Fit Light curves module')
-    parser.add_argument('-dd', '--datadir', dest='input', help='Path to directory holding raw data.', required=True)
+    parser.add_argument('-dd', '--datadir', dest='input',
+                        help='Path to directory holding raw data.', required=True)
     parser.add_argument('-o', '--output', dest='output', help='Path to output file.', required=True)
 
     args = parser.parse_args()
