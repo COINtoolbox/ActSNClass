@@ -20,12 +20,12 @@
 from .fit_lightcurves import fit_snpcc_bazin, LightCurve
 from .bazin import bazin, fit_scipy
 from .database import DataBase
-from .metrics import accuracy, efficiency, fom, purity
+from .metrics import accuracy, efficiency, fom, purity, get_snpcc_metric
 from .classifiers import random_forest
 from .query_strategies import random_sampling, uncertainty_sampling
 
 __all__ = ['LightCurve', 'fit_snpcc_bazin', 'bazin', 'fit_scipy',
            'DataBase', 'fom', 'eff', 'purity', 'accuracy',
            'random_forest', 'uncertainty_sampling',
-           'random_sampling']
+           'random_sampling', 'get_snpcc_metric']
 

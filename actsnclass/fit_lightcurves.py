@@ -29,7 +29,7 @@ __all__ = ['LightCurve', 'fit_snpcc_bazin']
 class LightCurve(object):
     """ Light Curve object, holding meta and photometric data.
 
-    Parameters
+    Attributes
     ----------
     bazin_features_names: list
         List of names of the Bazin function parameters.
@@ -38,7 +38,7 @@ class LightCurve(object):
         Concatenated from blue to red.
     dataset_name: str
         Name of the survey or data set being analyzed.
-    fitlers: list
+    filters: list
         List of broad band filters.
     id: int
         SN identification number
@@ -120,7 +120,7 @@ class LightCurve(object):
     def load_snpcc_lc(self, path_to_data: str):
         """Reads one LC from SNPCC data.
 
-        Populates the properties: dataset_name, id, sample, redshift, sncode,
+        Populates the attributes: dataset_name, id, sample, redshift, sncode,
         sntype, photometry and sim_peakmag.
 
         Parameters
@@ -226,7 +226,7 @@ class LightCurve(object):
     def fit_bazin_all(self):
         """Perform Bazin fit for all filters independently and concatenate results.
 
-        Populates the property: bazin_features.
+        Populates the attributes: bazin_features.
         """
 
         for band in self.filters:
