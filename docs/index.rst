@@ -12,33 +12,15 @@ This tool allows you to reproduce the results presented in `Ishida et al., 2019 
 It was based on the original prototype developed during the `COIN Residence Program #4 <http://iaacoin.wixsite.com/crp2017/>`_ , which took place in Clermont Ferrand, France, August 2017.
 
 
-The code has been updated to allow the inclusion of different modules and facilitate contributions.
+The code has been updated to allow a friendly use and expansion.
 
-Analysis steps
-==============
+Getting started
+===============
 
-.. image:: images/active_learning_loop.png
-   :align: right
-   :height: 255.6px
-   :width: 225 px
-   :alt: Active learning loop
-
-The ``actsnclass`` pipeline is composed of 4 different modules:
-
-1. :ref:`Feature extraction <featext>`
-
-2. :ref:`Classifier <classifier>`
-
-3. Learning Strategy
-
-4. Metric evaluation
-
-
-These are arranged in the adaptable learning process (figure to the right).
-
+In order to setup a suitable working environment, clone this repository and make sure you have the necessary packages installed.
 
 Dependencies
-============
+------------
 
 ``actsnclass`` was developed under ``Python3``. The complete list of dependencies is given below:
 
@@ -51,16 +33,75 @@ Dependencies
  - scipy>=1.3.0
  - sklearn>=0.20.3
 
-
 Installing
-==========
+----------
 
-Clone this repository and type::
+Clone this repository,
+
+.. code-block:: bash
+
+    >>> git clone https://github.com/COINtoolbox/ActSNClass
+
+navigate to where you stored it and install it:
+
+.. code-block:: bash
 
     >> python setup.py install --user
 
-
 This will install ``actsnclass`` tools under your home.
+
+Setting up a working directory
+------------------------------
+
+In another location of your choosing, create the following directory structure:
+
+::
+
+    work_dir
+    ├── plots
+    ├── results
+
+The outputs of ``actsnclass`` will be stored in these directories.
+
+In order to set things properly, from the repository you just cloned, and move the data directory to your
+chosen working directory and unpack the data.
+
+.. code-block:: bash
+
+    >>> mv -rf actsnclass/data/ work_dir/
+    >>> cd work_dir/data
+    >>> tar -xzvf SIMGEN_PUBLIC_DES.tar.gz
+
+This data was provided by Rick Kessler, after the publication of results from the
+`SuperNova Photometric Classification Challenge <https://arxiv.org/abs/1008.1024>`_.
+
+
+Analysis steps
+==============
+
+.. image:: images/active_learning_loop.png
+   :align: right
+   :height: 255.6px
+   :width: 225 px
+   :alt: Active learning loop
+
+The ``actsnclass`` pipeline is composed of 4 important steps:
+
+1. Feature extraction
+
+2. Classifier
+
+3. Query Strategy
+
+4. Metric evaluation
+
+
+These are arranged in the adaptable learning process (figure to the right).
+
+
+
+
+
 
 Table of Contents
 =================
