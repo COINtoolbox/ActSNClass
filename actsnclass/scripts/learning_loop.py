@@ -137,7 +137,7 @@ if __name__ == '__main__':
     parser.add_argument('-t', '--training', dest='training', require=True,
                         help='Initial training sample. Options are '
                              '"original" or integer.')
-    
+
     args = parser.parse_args()
 
     main()
