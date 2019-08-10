@@ -98,7 +98,7 @@ class LightCurve(object):
     for fitting the entire sample...
 
     >>> path_to_data_dir = 'data/SIMGEN_PUBLIC_DES/'     # raw data directory
-    >>> output_file = 'data/proecessed/Bazin.dat'       # output file
+    >>> output_file = 'results/Bazin.dat'       # output file
     >>> fit_snpcc_bazin(path_to_data_dir=path_to_data_dir, features_file=output_file)
 
     a file with all Bazin fits for this data set was produced
@@ -261,8 +261,6 @@ class LightCurve(object):
         """
 
         plt.figure()
-        plt.suptitle('SN ' + str(self.id) + ' z = ' + str(self.redshift) +
-                     ', type = ' + str(self.id))
 
         for i in range(len(self.filters)):
             plt.subplot(2, len(self.filters) / 2 + len(self.filters) % 2, i + 1)
@@ -345,19 +343,3 @@ def fit_snpcc_bazin(path_to_data_dir: str, features_file: str):
                 param_file.write('\n')
 
     param_file.close()
-
-
-def main():
-    """Calculate best-fit parameters for the Bazin function for the entire data set."""
-
-    #path_to_lc = 'data/SIMGEN_PUBLIC_DES/DES_SN000017.DAT'
-
-    #lc = LightCurve()  # create light curve instance
-    #lc.load_snpcc_lc(path_to_lc)  # read data
-    #lc.fit_bazin_all()
-    #lc.plot_bazin_fit(save=True, show=True, output_file='plots/' + lc.id + '.png')
-
-    print( ___doc__ )
-
-if __name__ == '__main__':
-    main()
