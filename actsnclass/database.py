@@ -49,7 +49,7 @@ class DataBase:
     metrics_list_names: list
         Values for metric elements.
     predicted_class: np.array
-        Predicted classification. One probability value per class per object.
+        Predicted classes - results from ML classifier.
     queried_sample: list
         Complete information of queried objects.
     queryable_ids: np.array()
@@ -300,10 +300,9 @@ class DataBase:
         """
 
         if method == 'RandomForest':
-            results = random_forest(self.train_features, self.train_labels,
-                                    self.test_features)
-            self.predicted_class = results[0]
-            self.classprob = results[1]
+            self.predicted_class,  self.classprob = \
+                random_forest(self.train_features, self.train_labels,
+                              self.test_features)
 
         else:
             raise ValueError('Only RandomForest classifier is implemented!'
