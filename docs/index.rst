@@ -1,6 +1,8 @@
 .. actsnclass documentation master file, created by
    sphinx-quickstart on Thu Aug  8 16:11:41 2019.
 
+
+
 Welcome to actsnclass !
 =======================
 
@@ -12,11 +14,29 @@ It was based on the original prototype developed during the `COIN Residence Prog
 
 The code has been updated to allow the inclusion of different modules and facilitate contributions.
 
+Analysis steps
+==============
+
+The ``actsnclass`` pipeline is composed of X different modules:
+
+.. image:: images/
+
+1. Feature extraction
+
+2. Classifier
+
+3. Learning Strategy
+
+4. Metric evaluation
+
+
+
+
 
 Dependencies
 ============
 
-``snactclass`` was developed under ``Python3``. The complete list of dependencies is given below:
+``actsnclass`` was developed under ``Python3``. The complete list of dependencies is given below:
 
  - Python>=3.6.8
  - argparse>=1.1
