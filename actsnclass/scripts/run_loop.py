@@ -18,87 +18,22 @@
 
 __all__ = ['learn_loop']
 
-from actsnclass import DataBase
+from actsnclass import learn_loop
 
 import argparse
 
 
-def learn_loop(nquery: int, strategy: str, path_to_features: str,
-               output_diag_file: str, output_queried_file: str,
-               features_method='Bazin', classifier='RandomForest',
-               training='original', batch=1):
-    """Perform the active learning loop. All results are saved to file.
+def main(args):
+    """
+    Command line interface to run the active learning loop.
 
     Parameters
     ----------
-    nquery: int
-        Number of active learning loops to run.
-    strategy: str
-        Query strategy. Options are 'UncSampling' and 'RandomSampling'.
-    path_to_features: str
-        Complete path to input features file.
-    output_diag_file: str
-        Full path to output file to store diagnostics of each loop.
-    output_queried_file: str
-        Full path to output file to store the queried sample.
-    features_method: str (optional)
-        Feature extraction method. Currently only 'Bazin' is implemented.
-    classifier: str (optional)
-        Machine Learning algorithm.
-        Currently only 'RandomForest' is implemented.
-    training: str or int (optional)
-        Choice of initial training sample.
-        If 'original': begin from the train sample flagged in the file
-        If int: choose the required number of samples at random,
-                ensuring that at least half are SN Ia
-        Default is 'original'.
-    batch: int (optional)
-        Size of batch to be queried in each loop. Default is 1.
+    args: argparse
+        Parameters give by the user.
     """
 
-    # initiate object
-    data = DataBase()
-
-    # load Bazin features
-    data.load_features(path_to_features, method=features_method)
-
-    # separate training and test samples
-    data.build_samples(initial_training=training)
-
-    for loop in range(nquery):
-
-        print('Processing... ', loop)
-
-        # classify
-        data.classify(method=classifier)
-
-        # calculate metrics
-        data.evaluate_classification()
-
-        # choose object to query
-        indx = data.make_query(strategy=strategy, batch=batch)
-
-        # update training and test samples
-        data.update_samples(indx)
-
-        # save diagnostics for current state
-        data.save_metrics(loop=loop, output_metrics_file=output_diag_file)
-
-        # save query sample to file
-        data.save_queried_sample(output_queried_file, loop=loop, full_sample=False)
-
-
-def main(args):
-    path_to_data = args.input
-    diag_file = args.diagnostics
-    queried_sample_file = args.queried
-
-    features = args.method
-    classifier = args.classifier
-    strategy = args.strategy
-    nquery = args.nquery
-    initial_training = args.training
-
+    # run active learning loop
     learn_loop(nquery=args.nquery, features_method=args.method,
                classifier=args.classifier,
                strategy=args.strategy, path_to_features=args.input,

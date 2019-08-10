@@ -23,9 +23,10 @@ from .database import DataBase
 from .metrics import accuracy, efficiency, fom, purity, get_snpcc_metric
 from .classifiers import random_forest
 from .query_strategies import random_sampling, uncertainty_sampling
+from .learn_loop import learn_loop
 
 __all__ = ['LightCurve', 'fit_snpcc_bazin', 'bazin', 'fit_scipy',
-           'DataBase', 'fom', 'eff', 'purity', 'accuracy',
+           'DataBase', 'fom', 'efficiency', 'purity', 'accuracy',
            'random_forest', 'uncertainty_sampling',
-           'random_sampling', 'get_snpcc_metric']
+           'random_sampling', 'get_snpcc_metric', 'learn_loop']
 
