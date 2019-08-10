@@ -17,20 +17,24 @@ The code has been updated to allow the inclusion of different modules and facili
 Analysis steps
 ==============
 
-The ``actsnclass`` pipeline is composed of X different modules:
+.. image:: images/active_learning_loop.png
+   :align: right
+   :height: 255.6px
+   :width: 225 px
+   :alt: Active learning loop
 
-.. image:: images/
+The ``actsnclass`` pipeline is composed of 4 different modules:
 
-1. Feature extraction
+1. :ref:`Feature extraction <featext>`
 
-2. Classifier
+2. :ref:`Classifier <classifier>`
 
 3. Learning Strategy
 
 4. Metric evaluation
 
 
-
+These are arranged in the adaptable learning process (figure to the right).
 
 
 Dependencies
@@ -57,12 +61,15 @@ Clone this repository and type::
 
 This will install ``actsnclass`` tools under your home.
 
-References
-==========
+Table of Contents
+=================
+
+.. contents:: :local:
 
 .. toctree::
    :maxdepth: 2
 
+   feature_extraction
    reference
 
 

@@ -31,8 +31,10 @@ class LightCurve(object):
 
     Parameters
     ----------
+    bazin_features_names: list
+        List of names of the Bazin function parameters.
     bazin_features: list
-        List with the 5 best-fit Bazin parameters in filter.
+        List with the 5 best-fit Bazin parameters in all filters.
         Concatenated from blue to red.
     dataset_name: str
         Name of the survey or data set being analyzed.
@@ -70,7 +72,7 @@ class LightCurve(object):
 
     define path to light curve file
 
-    >>> path_to_lc = 'data/SIMGEN_PUBLIC_DES/DES_SN.DAT'
+    >>> path_to_lc = 'data/SIMGEN_PUBLIC_DES/DES_SN431546.DAT'
 
     >>> lc = LightCurve()                        # create light curve instance
     >>> lc.load_snpcc_lc(path_to_lc)             # read data
@@ -96,14 +98,15 @@ class LightCurve(object):
     for fitting the entire sample...
 
     >>> path_to_data_dir = 'data/SIMGEN_PUBLIC_DES/'     # raw data directory
-    >>> output_file = 'data/proecessed/Bazin.dat'       # output file
-    >>> fit_bazin_samples(path_to_data_dir=path_to_data_dir, features_file=output_file)
+    >>> output_file = 'results/Bazin.dat'       # output file
+    >>> fit_snpcc_bazin(path_to_data_dir=path_to_data_dir, features_file=output_file)
 
     a file with all Bazin fits for this data set was produced
     """
 
     def __init__(self):
         self.bazin_features = []
+        self.bazin_features_names = ['a', 'b', 't0', 'tfall', 'trsise']
         self.dataset_name = ' '
         self.filters = []
         self.id = 0
@@ -226,8 +229,6 @@ class LightCurve(object):
         Populates the property: bazin_features.
         """
 
-        self.bazin_features = []
-
         for band in self.filters:
             # build filter flag
             filter_flag = self.photometry['band'] == band
@@ -260,8 +261,13 @@ class LightCurve(object):
         """
 
         plt.figure()
-        plt.suptitle('SN ' + str(self.id) + ' z = ' + str(self.redshift))
+        plt.suptitle('SN ' + str(self.id) + ' z = ' + str(self.redshift) +
+                     ', type = ' + self.sntype)
+
         for i in range(len(self.filters)):
+            plt.subplot(2, len(self.filters) / 2 + len(self.filters) % 2, i + 1)
+            plt.title('Filter: ' + self.filters[i])
+
             # filter flag
             filter_flag = self.photometry['band'] == self.filters[i]
             x = self.photometry['mjd'][filter_flag].values
@@ -272,16 +278,14 @@ class LightCurve(object):
             time = x - min(x)
             xaxis = np.linspace(0, max(time), 500)[:, np.newaxis]
             # calculate fitted function
-            fitted_flux = np.array([bazin(t, self.bazin_features[0],
-                                          self.bazin_features[1],
-                                          self.bazin_features[2],
-                                          self.bazin_features[3],
-                                          self.bazin_features[4])
+            fitted_flux = np.array([bazin(t, self.bazin_features[i* 5],
+                                          self.bazin_features[i * 5 + 1],
+                                          self.bazin_features[i* 5 + 2],
+                                          self.bazin_features[i * 5 + 3],
+                                          self.bazin_features[i * 5 + 4])
                                      for t in xaxis])
 
-            # plot
-            plt.subplot(2, len(self.filters)/2 + len(self.filters) % 2, i + 1)
-            plt.title('Filter: ' + self.filters[i])
+
             plt.errorbar(time, y, yerr=yerr, color='blue', fmt='o')
             plt.plot(xaxis, fitted_flux, color='red', lw=1.5)
             plt.xlabel('MJD - ' + str(min(x)))
