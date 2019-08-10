@@ -345,19 +345,3 @@ def fit_snpcc_bazin(path_to_data_dir: str, features_file: str):
                 param_file.write('\n')
 
     param_file.close()
-
-
-def main():
-    """Calculate best-fit parameters for the Bazin function for the entire data set."""
-
-    #path_to_lc = 'data/SIMGEN_PUBLIC_DES/DES_SN000017.DAT'
-
-    #lc = LightCurve()  # create light curve instance
-    #lc.load_snpcc_lc(path_to_lc)  # read data
-    #lc.fit_bazin_all()
-    #lc.plot_bazin_fit(save=True, show=True, output_file='plots/' + lc.id + '.png')
-
-    print( ___doc__ )
-
-if __name__ == '__main__':
-    main()

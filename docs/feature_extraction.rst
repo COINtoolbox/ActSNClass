@@ -65,6 +65,12 @@ It is possible to perform the fit in all filters at once and visualize the resul
    lc.plot_bazin_fit(save=True, show=True,
                      output_file='plots/SN' + str(lc.id) + '.png')   # save to file
 
+.. image:: images/DES_SN848233.png
+   :align: center
+   :height: 240.6px
+   :width: 320 px
+   :alt: Bazing fit to light curve.
+
 
 Processing all light curves in the data set
 -------------------------------------------
