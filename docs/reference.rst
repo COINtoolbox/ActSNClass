@@ -85,3 +85,21 @@ Metrics
    :toctree: api
 
    get_snpcc_metric
+
+
+Active Learning loop
+====================
+
+.. autosummary::
+   :toctree: api
+
+    learn_loop
+
+Scripts
+=======
+
+.. autosummary::
+   :toctree: api
+
+   fit_dataset
+   run_loop

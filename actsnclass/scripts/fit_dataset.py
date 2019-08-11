@@ -28,8 +28,17 @@ def main(args):
 
     Parameters
     ----------
-    args: argparse
-        User input obtained via command line.
+    -dd: str
+        Path to directory containing raw data.
+    -o: str
+        Path to output feature file.
+
+    Examples
+    --------
+
+    Run directly from the command line.
+
+    >>> fit_dataset.py -dd <path_to_data_dir> -o <output_file>
     """
 
     # raw data directory

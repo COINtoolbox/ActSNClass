@@ -29,8 +29,7 @@ __all__ = ['DataBase']
 
 
 class DataBase:
-    """"
-    DataBase object, upon which the active learning loop is performed.
+    """DataBase object, upon which the active learning loop is performed.
 
     Attributes
     ----------
@@ -108,7 +107,12 @@ class DataBase:
     >>> data.classify(method='RandomForest')
     >>> print(data.classprob)          # check predicted probabilities
     [[0.461 0.539]
-    [0.346 0.654]
+    [0.346print(data.metrics_list_names)           # check metric header
+    ['acc', 'eff', 'pur', 'fom']
+
+    >>> print(data.metrics_list_values)          # check metric values
+    [0.5975434599574068, 0.9024767801857585,
+    0.34684684684684686, 0.13572404702012383] 0.654]
     ...
     [0.398 0.602]
     [0.396 0.604]]
@@ -116,12 +120,7 @@ class DataBase:
     Calculate classification metrics
 
     >>> data.evaluate_classification(metric_label='snpcc')
-    >>> print(data.metrics_list_names)           # check metric header
-    ['acc', 'eff', 'pur', 'fom']
-
-    >>> print(data.metrics_list_values)          # check metric values
-    [0.5975434599574068, 0.9024767801857585,
-    0.34684684684684686, 0.13572404702012383]
+    >>>
 
     Make query, choose object and update samples
 

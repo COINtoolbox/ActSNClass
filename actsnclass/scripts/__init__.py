@@ -16,3 +16,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from .fit_dataset import main as fit_dataset
+from .run_loop import main as run_loop
+
+__all__ = ['fit_dataset', 'run_loop']

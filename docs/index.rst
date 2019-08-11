@@ -125,6 +125,7 @@ Table of Contents
    :maxdepth: 2
 
    pre_processing
+   learn_loop
    reference
 
 
