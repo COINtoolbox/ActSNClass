@@ -22,14 +22,13 @@ You can load this data using:
 .. code-block:: python
    :linenos:
 
-   from actsnclass import LightCurve
+   >>> from actsnclass import LightCurve
 
-   path_to_lc = 'data/SIMGEN_PUBLIC_DES/DES_SN848233.DAT'
+   >>> path_to_lc = 'data/SIMGEN_PUBLIC_DES/DES_SN848233.DAT'
 
-   lc = LightCurve()                        # create light curve instance
-   lc.load_snpcc_lc(path_to_lc)             # read data
-   lc.photometry                            # check structure of photometry
-
+   >>> lc = LightCurve()                        # create light curve instance
+   >>> lc.load_snpcc_lc(path_to_lc)             # read data
+   >>> lc.photometry                            # check structure of photometry
              mjd band     flux  fluxerr   SNR
     0    56194.145    g   7.600    4.680   1.62
     1    56194.156    r   3.875    2.752   1.41
@@ -44,8 +43,8 @@ Once the data is loaded, you can fit each individual filter to the parametric fu
 .. code-block:: python
    :linenos:
 
-   rband_features = lc.fit_bazin('r')
-   print(rband_features)
+   >>> rband_features = lc.fit_bazin('r')
+   >>> print(rband_features)
    [159.25796385, -13.39398527,  55.16210333, 111.81204143, -20.13492354]
 
 The designation for each parameter are stored in:
@@ -53,7 +52,7 @@ The designation for each parameter are stored in:
 .. code-block::python
    :linenos:
 
-   lc.bazin_features_names
+   >>> lc.bazin_features_names
    ['a', 'b', 't0', 'tfall', 'trsise']
 
 It is possible to perform the fit in all filters at once and visualize the result using:
@@ -61,9 +60,9 @@ It is possible to perform the fit in all filters at once and visualize the resul
 .. code-block:: python
    :linenos:
 
-   lc.fit_bazin_all()                            # perform Bazin fit in all filters
-   lc.plot_bazin_fit(save=True, show=True,
-                     output_file='plots/SN' + str(lc.id) + '.png')   # save to file
+   >>> lc.fit_bazin_all()                            # perform Bazin fit in all filters
+   >>> lc.plot_bazin_fit(save=True, show=True,
+                         output_file='plots/SN' + str(lc.id) + '.png')   # save to file
 
 .. image:: images/SN848233.png
    :align: center
@@ -80,11 +79,11 @@ There are 2 way to perform the Bazin fits for the entire SNPCC data set. Using a
 .. code-block:: python
    :linenos:
 
-   from actsnclass import fit_snpcc_bazin
+   >>> from actsnclass import fit_snpcc_bazin
 
-   path_to_data_dir = 'data/SIMGEN_PUBLIC_DES/'            # raw data directory
-   output_file = 'results/Bazin.dat'                              # output file
-   fit_snpcc_bazin(path_to_data_dir=path_to_data_dir, features_file=output_file)
+   >>> path_to_data_dir = 'data/SIMGEN_PUBLIC_DES/'            # raw data directory
+   >>> output_file = 'results/Bazin.dat'                              # output file
+   >>> fit_snpcc_bazin(path_to_data_dir=path_to_data_dir, features_file=output_file)
 
 The above will produce a file called ``Bazin.dat`` in the `results` directory.
 

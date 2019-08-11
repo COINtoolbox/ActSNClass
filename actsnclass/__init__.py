@@ -24,9 +24,12 @@ from .metrics import accuracy, efficiency, fom, purity, get_snpcc_metric
 from .classifiers import random_forest
 from .query_strategies import random_sampling, uncertainty_sampling
 from .learn_loop import learn_loop
+from .scripts.run_loop import main as run_loop
+from .scripts.fit_dataset import main as fit_dataset
 
 __all__ = ['LightCurve', 'fit_snpcc_bazin', 'bazin', 'fit_scipy',
            'DataBase', 'fom', 'efficiency', 'purity', 'accuracy',
            'random_forest', 'uncertainty_sampling',
-           'random_sampling', 'get_snpcc_metric', 'learn_loop']
+           'random_sampling', 'get_snpcc_metric', 'learn_loop',
+           'run_loop', 'fit_dataset']
 
