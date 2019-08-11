@@ -57,8 +57,9 @@ def main(args):
 
     Run directly from the command line:
 
-    >>> run_loop.py -b <batch size> -d <metrics file> -i <features file> \
--n <number of loops> -q <queried sample file> -s <learning strategy> -t <choice of training>
+    >>> run_loop.py -b <batch size> -d <metrics file> -i <features file>
+    >>>             -n <number of loops> -q <queried sample file>
+    >>>             -s <learning strategy> -t <choice of training>
 
     """
 

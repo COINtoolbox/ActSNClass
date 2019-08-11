@@ -13,14 +13,13 @@ For start, we can load the feature information:
 .. code-block:: python
    :linenos:
 
-    >>> from actsnclass import DataBase
+   >>> from actsnclass import DataBase
 
-    >>> path_to_features_file = 'results/Bazin.dat'
+   >>> path_to_features_file = 'results/Bazin.dat'
 
-    >>> data = DataBase()
-    >>> data.load_features(path_to_features_file, method='Bazin')
-
-    Loaded  21284  samples!
+   >>> data = DataBase()
+   >>> data.load_features(path_to_features_file, method='Bazin')
+   Loaded  21284  samples!
 
 Notice that this data has some pre-determine separation between training and test sample:
 
@@ -28,7 +27,6 @@ Notice that this data has some pre-determine separation between training and tes
    :linenos:
 
    >>> data.metadata['sample'].unique()
-
    array(['test', 'train'], dtype=object)
 
 You can choose to start your first iteration of the active learning loop from the original training sample
@@ -101,11 +99,24 @@ In interactive mode, you must define the required variables and use the ``learn_
    >>> from actsnclass import  learn_loop
 
    >>> nloops = 1000                                  # number of iterations
-   >>>
-   >>> learn_loop(nquery=args.nquery, features_method=args.method,
-               classifier=args.classifier,
-               strategy=args.strategy, path_to_features=args.input,
-               output_diag_file=args.diagnostics,
-               output_queried_file=args.queried,
-               training=train, batch=args.batch)
+   >>> method = 'Bazin'                               # only option in v1.0
+   >>> ml = 'RandomForest'                            # only option in v1.0
+   >>> strategy = 'RandomSampling'                    # learning strategy
+   >>> input = 'results/Bazin.dat'                    # input features file
+   >>> diag = 'results/diagnostic.dat'                # output diagnostic file
+   >>> queried = 'results/queried.dat'                # output query file
+   >>> train = 'original'                             # initial training
+   >>> batch = 1                                      # size of batch
+
+   >>> learn_loop(nloops=loops, features_method=method, classifier=ml,
+   >>>            strategy=strategy, path_to_features=input, output_diag_file=diag,
+   >>>            output_queried_file=queried, training=train, batch=batch)
+
+Alternatively you can also run everything from the command line:
+
+.. code-block:: bash
+
+    >>> run_loop.py -b <batch size> -d <metrics file> -i <features file>
+    >>>             -n <number of loops> -q <queried sample file> -s <learning strategy>
+    >>>             -t <choice of training>
 
