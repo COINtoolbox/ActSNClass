@@ -76,7 +76,6 @@ class Canonical(object):
         Identify training and test sample.
     find_neighbors()
         Identify 1 nearest neighbor for each object in training.
-
     """
 
     def __init__(self):

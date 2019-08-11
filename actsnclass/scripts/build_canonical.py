@@ -102,7 +102,7 @@ if __name__ == '__main__':
                         default='', help='File to store comparison plot.'
                                          'If not provided plot is '
                                          'shown on screen.',
-                        dest='output')
+                        dest='output_plot_file')
     parser.add_argument('-s', '--save', required=True, type=bool,
                         dest='save', help='If True, save to file metadata'
                                           'on SNR and peakmag.')
