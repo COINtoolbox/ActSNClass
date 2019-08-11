@@ -100,14 +100,14 @@ In interactive mode, you must define the required variables and use the ``learn_
    >>> method = 'Bazin'                               # only option in v1.0
    >>> ml = 'RandomForest'                            # only option in v1.0
    >>> strategy = 'RandomSampling'                    # learning strategy
-   >>> input = 'results/Bazin.dat'                    # input features file
+   >>> input_file = 'results/Bazin.dat'               # input features file
    >>> diag = 'results/diagnostic.dat'                # output diagnostic file
    >>> queried = 'results/queried.dat'                # output query file
    >>> train = 'original'                             # initial training
    >>> batch = 1                                      # size of batch
 
-   >>> learn_loop(nloops=loops, features_method=method, classifier=ml,
-   >>>            strategy=strategy, path_to_features=input, output_diag_file=diag,
+   >>> learn_loop(nloops=nloops, features_method=method, classifier=ml,
+   >>>            strategy=strategy, path_to_features=input_file, output_diag_file=diag,
    >>>            output_queried_file=queried, training=train, batch=batch)
 
 Alternatively you can also run everything from the command line:

@@ -244,7 +244,7 @@ class DataBase:
                 train_ia_flag = self.train_metadata['type'] == 'Ia'
                 self.train_labels = np.array([int(item) for item in train_ia_flag])
 
-                test_ia_flag = self.metadata['type'] == 'Ia'
+                test_ia_flag = self.test_metadata['type'] == 'Ia'
                 self.test_labels = np.array([int(item) for item in test_ia_flag])
             else:
                 raise ValueError("Only 'Ia x non-Ia' are implemented! "
