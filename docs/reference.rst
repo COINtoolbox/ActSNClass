@@ -5,10 +5,13 @@ Reference / API
 .. currentmodule:: actsnclass
 
 
-Light Curves
-============
+Pre-processing
+==============
 
-*Processing a light curve*
+Full light curve analysis
+-------------------------
+
+*Performing feature extraction for 1 light curve*
 
 .. autosummary::
    :toctree: api
@@ -26,6 +29,27 @@ Light Curves
 
    fit_snpcc_bazin
 
+
+Building the Canonical sample
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+*The Canonical object for holding the entire sample.*
+
+.. autosummary::
+   :toctree: api
+
+   Canonical
+   Canonical.snpcc_get_canonical_info
+   Canonical.snpcc_identify_samples
+   Canonical.find_neighbors
+
+*Functions to populate the Canonical object*
+
+.. autosummary::
+   :toctree: api
+
+   build_snpcc_canonical
+   plot_snpcc_train_canonical
 
 DataBase
 ========

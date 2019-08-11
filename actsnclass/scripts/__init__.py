@@ -18,5 +18,6 @@
 
 from .fit_dataset import main as fit_dataset
 from .run_loop import main as run_loop
+from .build_canonical import main as build_canonical
 
-__all__ = ['fit_dataset', 'run_loop']
+__all__ = ['fit_dataset', 'run_loop', 'build_canonical']

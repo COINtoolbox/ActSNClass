@@ -16,7 +16,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-__all__ = ['learn_loop']
+__all__ = ['learn_loop', 'main']
 
 from actsnclass import learn_loop
 

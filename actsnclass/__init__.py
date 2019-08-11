@@ -16,20 +16,38 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
-from .fit_lightcurves import fit_snpcc_bazin, LightCurve
 from .bazin import bazin, fit_scipy
-from .database import DataBase
-from .metrics import accuracy, efficiency, fom, purity, get_snpcc_metric
+from .build_snpcc_canonical import build_snpcc_canonical
+from .build_snpcc_canonical import Canonical, plot_snpcc_train_canonical
 from .classifiers import random_forest
-from .query_strategies import random_sampling, uncertainty_sampling
+from .database import DataBase
+from .fit_lightcurves import fit_snpcc_bazin, LightCurve
 from .learn_loop import learn_loop
-from .scripts.run_loop import main as run_loop
+from .metrics import accuracy, efficiency, fom, purity, get_snpcc_metric
+from .query_strategies import random_sampling, uncertainty_sampling
+from .scripts.build_canonical import main as build_canonical
 from .scripts.fit_dataset import main as fit_dataset
+from .scripts.run_loop import main as run_loop
 
-__all__ = ['LightCurve', 'fit_snpcc_bazin', 'bazin', 'fit_scipy',
-           'DataBase', 'fom', 'efficiency', 'purity', 'accuracy',
-           'random_forest', 'uncertainty_sampling',
-           'random_sampling', 'get_snpcc_metric', 'learn_loop',
-           'run_loop', 'fit_dataset']
 
+
+__all__ = ['accuracy',
+           'bazin',
+           'build_canonical',
+           'build_snpcc_canonical',
+           'Canonical',
+           'DataBase',
+           'efficiency',
+           'fit_dataset',
+           'fit_scipy',
+           'fit_snpcc_bazin',
+           'fom',
+           'get_snpcc_metric',
+           'learn_loop',
+           'LightCurve',
+           'plot_snpcc_train_canonical',
+           'purity',
+           'random_forest',
+           'random_sampling',
+           'run_loop',
+           'uncertainty_sampling']
