@@ -73,7 +73,7 @@ def main(args):
                          '"original" or integer!')
 
     # run active learning loop
-    learn_loop(nloop=args.nquery, features_method=args.method,
+    learn_loop(nloops=args.nquery, features_method=args.method,
                classifier=args.classifier,
                strategy=args.strategy, path_to_features=args.input,
                output_diag_file=args.diagnostics,
