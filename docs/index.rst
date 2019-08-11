@@ -115,6 +115,16 @@ Alternatively, you can also perform the full light curve fit for the entire samp
 
     >>> fit_dataset.py -dd <path_to_data_dir> -o <output_file>
 
+Once the data has been processed you can apply the full Active Learning loop according to your needs.
+A detail description on how to use this tool is provided in the :ref:`Learning Loop page <learnloop>`.
+
+The command line option require a few more inputs than the feature extraction stage, but it is also available:
+
+.. code-block:: bash
+
+   >>> run_loop.py -i <input features file> -b <batch size> -n <number of loops>
+   >>>             -d <output metrics file> -q <output queried sample file>
+   >>>             -s <learning strategy> -t <choice of initial training>
 
 
 Table of Contents

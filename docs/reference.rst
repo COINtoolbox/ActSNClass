@@ -137,5 +137,6 @@ Scripts
 .. autosummary::
    :toctree: api
 
+   build_canonical
    fit_dataset
    run_loop
