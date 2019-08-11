@@ -32,6 +32,7 @@ Dependencies
  - setuptools>=41.0.1
  - scipy>=1.3.0
  - sklearn>=0.20.3
+ - seaborn>=0.9.0
 
 Installing
 ----------

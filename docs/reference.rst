@@ -119,6 +119,18 @@ Active Learning loop
 
     learn_loop
 
+
+Plotting
+========
+
+.. autosummary::
+   :toctree: api
+
+    Canvas
+    Canvas.load_diagnostics
+    Canvas.set_plot_dimensions
+    Canvas.plot_diagnostics
+
 Scripts
 =======
 
