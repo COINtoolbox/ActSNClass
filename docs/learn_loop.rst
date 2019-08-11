@@ -37,18 +37,18 @@ training sample. The code below build the respective samples and performs the cl
    :linenos:
 
    >>> data.build_samples(initial_training='original', nclass=2)
-
    Training set size:  1093
    Test set size:  20191
 
    >>> data.classify(method='RandomForest')
    >>> data.classprob                        # check classification probabilities
-
    array([[0.461, 0.539],
           [0.346, 0.654],
           ...,
           [0.398, 0.602],
           [0.396, 0.604]])
+
+.. If you wish to start from scratch, just set the `initial_training=N` where `N` is the number of objects in you want in the initial training. The code will then randomly select `N` objects from the entire sample as the initial training sample. It will also impose that at least half of them are SNe Ias.
 
 For a binary classification, the  output from the classifier for each object (line) is presented as a pair of floats, the first column
 corresponding to the probability of the given object being a Ia and the second column its complement.
@@ -81,10 +81,8 @@ and save results for this one loop to file:
 
 You should now have in your ``results`` directory a ``metrics.dat`` file which looks like this:
 
-.. code-block:: bash
-        day accuracy efficiency purity fom query_id
-    0 0.4560942994403447 0.5545490350531705 0.23933367329593744 0.05263972502898026 81661
-
+.. literalinclude:: images/example_diagnostic.dat
+ :lines: 1-2
 
 
 Running a number of iterations in sequence
