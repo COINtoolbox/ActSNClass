@@ -3,6 +3,9 @@
 Active Learning loop
 ====================
 
+Details on running 1 loop
+-------------------------
+
 Once the data has been pre-processed, analysis steps 2-4 can be performed directly using the ``DataBase`` object.
 
 For start, we can load the feature information:
@@ -65,15 +68,44 @@ Given the output from the classifier we can calculate the metric(s) of choice:
     [0.5975434599574068, 0.9024767801857585,
     0.34684684684684686, 0.13572404702012383]
 
-and save results to file:
+and save results for this one loop to file:
 
 .. code-block:: python
    :linenos:
 
     >>> path_to_features_file = 'results/Bazin.dat'
     >>> metrics_file = 'results/metrics.dat'
-    >>> queried_sample_file = 'results/queried_sample.da
+    >>> queried_sample_file = 'results/queried_sample.dat'
 
    >>> data.save_metrics(loop=0, output_metrics_file=metrics_file)
    >>> data.save_queried_sample(loop=0, queried_sample_file=query_file,
    >>>                          full_sample=False)
+
+You should now have in your ``results`` directory a ``metrics.dat`` file which looks like this:
+
+.. code-block:: bash
+        day accuracy efficiency purity fom query_id
+    0 0.4560942994403447 0.5545490350531705 0.23933367329593744 0.05263972502898026 81661
+
+
+
+Running a number of iterations in sequence
+------------------------------------------
+
+We provide a function where all the above steps can be done in sequence for a number of iterations.
+In interactive mode, you must define the required variables and use the ``learn_loop`` function:
+
+.. code-block:: python
+   :linenos:
+
+   >>> from actsnclass import  learn_loop
+
+   >>> nloops = 1000                                  # number of iterations
+   >>>
+   >>> learn_loop(nquery=args.nquery, features_method=args.method,
+               classifier=args.classifier,
+               strategy=args.strategy, path_to_features=args.input,
+               output_diag_file=args.diagnostics,
+               output_queried_file=args.queried,
+               training=train, batch=args.batch)
+

@@ -28,37 +28,37 @@ def main(args):
 
     Parameters
     ----------
-    -b: int
-        Number of active learning loops to run.
-    -s: str
-        Query strategy. Options are 'UncSampling' and 'RandomSampling'.
-    -i: str
-        Complete path to input features file.
     -d: str
         Full path to output file to store diagnostics of each loop.
+    -i: str
+        Complete path to input features file.
+    -n: int
+        Number of active learning loops to run.
     -q: str
         Full path to output file to store the queried sample.
-    -m: str (optional)
-        Feature extraction method. Currently only 'Bazin' is implemented.
+    -s: str
+        Query strategy. Options are 'UncSampling' and 'RandomSampling'.
+    -b: int (optional)
+       Size of batch to be queried in each loop. Default is 1.
     -c: str (optional)
         Machine Learning algorithm.
         Currently only 'RandomForest' is implemented.
-    -t: str or int
-        Choice of initial training sample.
-        If 'original': begin from the train sample flagged in the file
-        If int: choose the required number of samples at random,
-                ensuring that at least half are SN Ia
-        Default is 'original'.
-    -b: int (optional)
-        Size of batch to be queried in each loop. Default is 1.
+    -m: str (optional)
+        Feature extraction method. Currently only 'Bazin' is implemented.
+    -t: str or int (optional)
+       Choice of initial training sample.
+       If 'original': begin from the train sample flagged in the file
+       If int: choose the required number of samples at random,
+               ensuring that at least half are SN Ia
+       Default is 'original'.
 
     Examples
     --------
 
     Run directly from the command line:
 
-    >>> run_loop.py -b 1 -d results/metrics.dat -i results/Bazin.dat \
--n 1000 -q results/queried.dat -s UncSampling -t original
+    >>> run_loop.py -b <batch size> -d <metrics file> -i <features file> \
+-n <number of loops> -q <queried sample file> -s <learning strategy> -t <choice of training>
 
     """
 
@@ -67,11 +67,12 @@ def main(args):
         train = 'original'
     elif isinstance(int(args.training), int):
         train = int(args.training)
-
-    print(args.training)
+    else:
+        raise ValueError('-t or --training option must be '
+                         '"original" or integer!')
 
     # run active learning loop
-    learn_loop(nquery=args.nquery, features_method=args.method,
+    learn_loop(nloop=args.nquery, features_method=args.method,
                classifier=args.classifier,
                strategy=args.strategy, path_to_features=args.input,
                output_diag_file=args.diagnostics,
@@ -113,6 +114,6 @@ if __name__ == '__main__':
                         help='Initial training sample. Options are '
                              '"original" or integer.', type=str)
 
-    args = parser.parse_args()
+    from_user = parser.parse_args()
 
-    main(args)
+    main(from_user)
