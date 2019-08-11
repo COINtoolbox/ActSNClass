@@ -21,7 +21,7 @@ __all__ = ['learn_loop']
 from actsnclass import DataBase
 
 
-def learn_loop(nquery: int, strategy: str, path_to_features: str,
+def learn_loop(nloop: int, strategy: str, path_to_features: str,
                output_diag_file: str, output_queried_file: str,
                features_method='Bazin', classifier='RandomForest',
                training='original', batch=1):
@@ -29,7 +29,7 @@ def learn_loop(nquery: int, strategy: str, path_to_features: str,
 
     Parameters
     ----------
-    nquery: int
+    nloop: int
         Number of active learning loops to run.
     strategy: str
         Query strategy. Options are 'UncSampling' and 'RandomSampling'.
@@ -63,7 +63,7 @@ def learn_loop(nquery: int, strategy: str, path_to_features: str,
     # separate training and test samples
     data.build_samples(initial_training=training)
 
-    for loop in range(nquery):
+    for loop in range(nloop):
 
         print('Processing... ', loop)
 
