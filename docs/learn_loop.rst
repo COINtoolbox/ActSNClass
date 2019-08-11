@@ -48,7 +48,7 @@ training sample. The code below build the respective samples and performs the cl
           [0.398, 0.602],
           [0.396, 0.604]])
 
-.. If you wish to start from scratch, just set the `initial_training=N` where `N` is the number of objects in you want in the initial training. The code will then randomly select `N` objects from the entire sample as the initial training sample. It will also impose that at least half of them are SNe Ias.
+.. hint:: If you wish to start from scratch, just set the `initial_training=N` where `N` is the number of objects in you want in the initial training. The code will then randomly select `N` objects from the entire sample as the initial training sample. It will also impose that at least half of them are SNe Ias.
 
 For a binary classification, the  output from the classifier for each object (line) is presented as a pair of floats, the first column
 corresponding to the probability of the given object being a Ia and the second column its complement.
@@ -118,3 +118,18 @@ Alternatively you can also run everything from the command line:
     >>>             -n <number of loops> -q <queried sample file> -s <learning strategy>
     >>>             -t <choice of training>
 
+The queryable sample
+--------------------
+
+In the example shown above, when reading the data from the features file there was only 2 possibilities for the
+`sample` variable:
+
+.. code-block:: python
+   :linenos:
+
+   >>> data.metadata['sample'].unique()
+   array(['test', 'train'], dtype=object)
+
+This corresponds to an unrealistic scenario where we are able to obtain spectra for any object at any time.
+
+.. hint:: If you wish to restrict the sample available for querying, just change the `sample` variable to `queryable`. Whenever this keywork is encountered in a file of extracted features, the code automatically restricts the query selection to the objects flagged as `queryable`.

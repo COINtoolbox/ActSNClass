@@ -215,7 +215,7 @@ class DataBase:
             Choice of initial training sample.
             If 'original': begin from the train sample flagged in the file
             If int: choose the required number of samples at random,
-                    ensuring that at least half are SN Ia
+            ensuring that at least half are SN Ia.
         nclass: int (optional)
             Number of classes to consider in the classification
             Currently only nclass == 2 is implemented.
@@ -423,7 +423,7 @@ class DataBase:
         # add header to metrics file
         if not os.path.exists(output_metrics_file) or loop == 0:
             with open(output_metrics_file, 'w') as metrics:
-                metrics.write('day ')
+                metrics.write('loop ')
                 for name in self.metrics_list_names:
                     metrics.write(name + ' ')
                 metrics.write('query_id' + '\n')
