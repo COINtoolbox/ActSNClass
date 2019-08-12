@@ -48,7 +48,7 @@ def learn_loop(nloops: int, strategy: str, path_to_features: str,
         Choice of initial training sample.
         If 'original': begin from the train sample flagged in the file
         If int: choose the required number of samples at random,
-                ensuring that at least half are SN Ia
+        ensuring that at least half are SN Ia
         Default is 'original'.
     batch: int (optional)
         Size of batch to be queried in each loop. Default is 1.

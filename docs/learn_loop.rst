@@ -60,11 +60,11 @@ Given the output from the classifier we can calculate the metric(s) of choice:
 
    >>> data.evaluate_classification(metric_label='snpcc')
    >>> print(data.metrics_list_names)           # check metric header
-    ['acc', 'eff', 'pur', 'fom']
+   ['acc', 'eff', 'pur', 'fom']
 
-    >>> print(data.metrics_list_values)          # check metric values
-    [0.5975434599574068, 0.9024767801857585,
-    0.34684684684684686, 0.13572404702012383]
+   >>> print(data.metrics_list_values)          # check metric values
+   [0.5975434599574068, 0.9024767801857585,
+   0.34684684684684686, 0.13572404702012383]
 
 and save results for this one loop to file:
 
@@ -132,4 +132,4 @@ In the example shown above, when reading the data from the features file there w
 
 This corresponds to an unrealistic scenario where we are able to obtain spectra for any object at any time.
 
-.. hint:: If you wish to restrict the sample available for querying, just change the `sample` variable to `queryable`. Whenever this keywork is encountered in a file of extracted features, the code automatically restricts the query selection to the objects flagged as `queryable`.
+.. hint:: If you wish to restrict the sample available for querying, just change the `sample` variable to `queryable` for the objects available for querying. Whenever this keywork is encountered in a file of extracted features, the code automatically restricts the query selection to the objects flagged as `queryable`.

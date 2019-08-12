@@ -25,12 +25,11 @@ from .fit_lightcurves import fit_snpcc_bazin, LightCurve
 from .learn_loop import learn_loop
 from .metrics import accuracy, efficiency, fom, purity, get_snpcc_metric
 from .query_strategies import random_sampling, uncertainty_sampling
-from .plot_results import  Canvas
+from .plot_results import Canvas
 from .scripts.build_canonical import main as build_canonical
 from .scripts.fit_dataset import main as fit_dataset
 from .scripts.make_diagnostic_plots import main as make_diagnostic_plots
 from .scripts.run_loop import main as run_loop
-
 
 
 __all__ = ['accuracy',

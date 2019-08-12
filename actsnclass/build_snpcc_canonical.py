@@ -60,7 +60,6 @@ class Canonical(object):
         Metadata on sim peakmag and SNR for SN Ibcs in the train sample.
     train_ibc_id: np.array
         Set of ids for all SN Ibc in the train sample.
-
     train_ii_data: pd.DataFrame
         Metadata on sim peakmag and SNR for SN IIs in the train sample.
     train_ii_id: np.array
@@ -68,8 +67,7 @@ class Canonical(object):
 
     Methods
     -------
-    snpcc_get_canonical_info(path_to_rawdata_dir: str,
-                            canonical_output_file: str, compute: bool,
+    snpcc_get_canonical_info(path_to_rawdata_dir: str, canonical_output_file: st,, compute: bool,
                             save: bool, canonical_input_file: str)
         Load SNPCC metada data required to characterize objects.
     snpcc_identify_samples()

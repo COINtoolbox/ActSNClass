@@ -41,10 +41,12 @@ def main(user_input):
 
     Examples
     --------
-    Use it directly from the command line:
+    Use it directly from the command line.
+    For example, if you wish to make a diagnostic plot for the random sampling and
+    uncertainty sampling together, do:
 
-    >>> make_diagnostic_plots.py -m [<path to rand sampling diag>, <path to unc sampling diag>]
-    >>>     -o <path to output plot file> -s [RandomSampling, UncSampling]
+    >>> make_diagnostic_plots.py -m <path to rand sampling diag> <path to unc sampling diag>
+    >>>     -o <path to output plot file> -s RandomSampling UncSampling
 
     """
 
@@ -52,15 +54,15 @@ def main(user_input):
     cv = Canvas()
 
     # load data
-    cv.load_diagnostics(path_to_files=user_input.metrics,
-                        strategies_list=user_input.strategies)
+    cv.load_diagnostics(path_to_files=list(user_input.metrics),
+                        strategies_list=list(user_input.strategies))
 
     # set plot dimensions
     cv.set_plot_dimensions()
 
     # save plot to file
     cv.plot_diagnostics(output_plot_file=user_input.output,
-                        strategies_list=user_input.strategies)
+                        strategies_list=list(user_input.strategies))
 
 
 if __name__ == '__main__':
@@ -69,14 +71,14 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='actsnclass - '
                                                  'Learn loop module')
     parser.add_argument('-m', '--metrics-files-list', dest='metrics',
-                        required=True, help='List of path to diagnostics'
-                                            'files for different learning'
-                                            'strategies.', type=list)
+                        required=True, type=str,
+                        help='List of path to diagnostics files for '
+                             'different learning strategies.', nargs='+')
     parser.add_argument('-o', '--output-plot', dest='output',
                         required=True, type=str,
                         help='Complete path to output plot file.')
     parser.add_argument('-s', '--strategy-names-list', dest='strategies',
-                        required=True, type=list,
+                        required=True, type=str, nargs='+',
                         help='List of strategies names. This should be'
                              'in the same order as the given list of '
                              'diagnostics files.')

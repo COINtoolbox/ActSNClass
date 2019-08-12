@@ -238,7 +238,7 @@ class DataBase:
                 queryable_flag = self.metadata['sample'].values == 'queryable'
                 self.queryable_ids = self.metadata[queryable_flag]['id'].values
             else:
-                self.queryable_ids = self.metadata['id'].values
+                self.queryable_ids = self.test_metadata['id'].values
 
             if nclass == 2:
                 train_ia_flag = self.train_metadata['type'] == 'Ia'
@@ -258,14 +258,15 @@ class DataBase:
 
             # make sure half are Ias and half are non-Ias
             while sum(temp_labels == 'Ia') != initial_training // 2 + 1:
+                # this is an array of 5 indexes
                 train_indexes = np.random.randint(low=0,
                                                   high=self.metadata.shape[0],
                                                   size=initial_training)
                 temp_labels = self.metadata['type'].values[train_indexes]
 
             # set training
-            train_ia_flag = self.metadata['type'].values[train_indexes] == 'Ia'
-            self.train_labels = np.array([int(item) for item in train_ia_flag])
+            train_flag = self.metadata['type'].values[train_indexes] == 'Ia'
+            self.train_labels = np.array([int(item) for item in train_flag])
             self.train_features = self.features.values[train_indexes]
             self.train_metadata = pd.DataFrame(self.metadata.values[train_indexes],
                                                columns=self.metadata_names)
@@ -278,6 +279,15 @@ class DataBase:
             self.test_features = self.features.values[test_indexes]
             self.test_metadata = pd.DataFrame(self.metadata.values[test_indexes],
                                               columns=self.metadata_names)
+
+            if 'queryable' in self.metadata['sample'].values:
+                test_flag = np.array([True if i in test_indexes else False
+                                      for i in range(self.metadata.shape[0])])
+                queryable_flag = self.metadata['sample'] == 'queryable'
+                combined_flag = np.logical_and(test_flag, queryable_flag)
+                self.queryable_ids = self.metadata[combined_flag]['id'].values
+            else:
+                self.queryable_ids = self.test_metadata['id'].values
 
         else:
             raise ValueError('"Initial training" should be '
