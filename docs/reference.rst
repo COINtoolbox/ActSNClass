@@ -51,6 +51,18 @@ Canonical sample
    build_snpcc_canonical
    plot_snpcc_train_canonical
 
+Build time domain data base
+===========================
+
+.. autosummary::
+   :toctree: api
+
+   SNPCCPhotometry
+   SNPCCPhotometry.get_lim_mjds
+   SNPCCPhotometry.create_daily_file
+   SNPCCPhotometry.build_one_epoch
+
+
 DataBase
 ========
 
@@ -138,6 +150,7 @@ Scripts
    :toctree: api
 
    build_canonical
+   build_time_domain
    fit_dataset
    make_diagnostic_plots
    run_loop
