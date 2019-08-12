@@ -139,4 +139,5 @@ Scripts
 
    build_canonical
    fit_dataset
+   make_diagnostic_plots
    run_loop
