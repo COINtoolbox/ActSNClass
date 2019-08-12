@@ -407,3 +407,11 @@ def plot_snpcc_train_canonical(sample: Canonical, output_plot_file=''):
         plt.close()
     else:
         plt.show()
+
+
+def main():
+    return None
+
+
+if __name__ == '__main__':
+    main()

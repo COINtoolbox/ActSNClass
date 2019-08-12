@@ -55,3 +55,11 @@ def random_forest(train_features:  np.array, train_labels: np.array,
     prob = clf.predict_proba(test_features)       # get probabilities
 
     return predictions, prob
+
+
+def main():
+    return None
+
+
+if __name__ == '__main__':
+    main()

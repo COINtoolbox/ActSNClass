@@ -378,3 +378,11 @@ def fit_snpcc_bazin(path_to_data_dir: str, features_file: str):
                 param_file.write('\n')
 
     param_file.close()
+
+
+def main():
+    return None
+
+
+if __name__ == '__main__':
+    main()
