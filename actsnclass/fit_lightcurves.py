@@ -43,7 +43,7 @@ class LightCurve(object):
     id: int
         SN identification number
     photometry: pd.DataFrame
-        Photometry information. Keys --> [mjd, band, flux, fluxerr, SNR]
+        Photometry information. Keys --> [mjd, band, flux, fluxerr, SNR, MAG, MAGERR].
     redshift: float
         Redshift
     sample: str
@@ -196,6 +196,8 @@ class LightCurve(object):
         self.photometry['flux'] = np.array([float(item) for item in photometry_raw[:, header.index('FLUXCAL')]])
         self.photometry['fluxerr'] = np.array([float(item) for item in photometry_raw[:, header.index('FLUXCALERR')]])
         self.photometry['SNR'] = np.array([float(item) for item in photometry_raw[:, header.index('SNR')]])
+        self.photometry['MAG'] = np.array([float(item) for item in photometry_raw[:, header.index('MAG')]])
+        self.photometry['MAGERR'] = np.array([float(item) for item in photometry_raw[:, header.index('MAGERR')]])
 
     def fit_bazin(self, band: str):
         """Extract Bazin features for one filter.
