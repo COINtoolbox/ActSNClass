@@ -25,6 +25,7 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     py_modules=['fit_lightcurves', 'bazin'],
     scripts=['actsnclass/scripts/fit_dataset.py',
+             'actsnclass/scripts/make_diagnostic_plots.py',
              'actsnclass/scripts/run_loop.py',
              'actsnclass/scripts/build_canonical.py'],
     url='https://github.com/COINtoolbox/ActSNClass',

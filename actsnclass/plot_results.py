@@ -78,7 +78,7 @@ class Canvas(object):
     >>> path_to_files = ['results/metrics_canonical.dat',
     >>>                  'results/metrics_random.dat',
     >>>                  'results/metrics_unc.dat']
-    >>> strategies_list = ['canonical', 'rand_sampling', 'unc_sampling']
+    >>> strategies_list = ['Canonical', 'RandomSampling', 'UncSampling']
     >>> output_plot = 'plots/diag1_unc.png'
 
     Initiate the Canvas object, read and plot the results for
@@ -105,18 +105,18 @@ class Canvas(object):
         self.nmetrics = 0
         self.metrics_names = []
         self.unc_sampling = pd.DataFrame()
-        self.colors = {'canonical': '#dd0100',      # red
-                       'rand_sampling': '#fac901',  # yellow
-                       'unc_sampling': '#225095'}   # blue
-        self.labels = {'canonical': 'Canonical',
-                       'rand_sampling': 'Passive Learning',
-                       'unc_sampling': 'AL - Uncertainty Sampling'}
-        self.markers = {'canonical': '--',
-                        'rand_sampling': ':',
-                        'unc_sampling': '-.'}
-        self.strategies = {'canonical': self.canonical,
-                           'rand_sampling': self.rand_sampling,
-                           'unc_sampling': self.unc_sampling}
+        self.colors = {'Canonical': '#dd0100',      # red
+                       'RandomSampling': '#fac901',  # yellow
+                       'UncSampling': '#225095'}   # blue
+        self.labels = {'Canonical': 'Canonical',
+                       'RandomSampling': 'Passive Learning',
+                       'UncSampling': 'AL - Uncertainty Sampling'}
+        self.markers = {'Canonical': '--',
+                        'RandomSampling': ':',
+                        'UncSampling': '-.'}
+        self.strategies = {'Canonical': self.canonical,
+                           'RandomSampling': self.rand_sampling,
+                           'UncSampling': self.unc_sampling}
 
     def load_diagnostics(self, path_to_files: list, strategies_list: list):
         """Load figure of merit diagnostics and identify set of metrics.
@@ -226,17 +226,7 @@ class Canvas(object):
 
 
 def main():
-
-    path_to_metric = ['results/metrics_canonical_bazin_randforest_randsampling_origtrain_batch1.dat',
-                      'results/metrics_bazin_randforest_randsampling_origtrain_batch1.dat',
-                      'results/metrics_bazin_randforest_uncsampling_origtrain_batch1.dat']
-    strategy = ['canonical', 'rand_sampling', 'unc_sampling']
-    output_plot = 'plots/diag1_unc.png'
-
-    cv = Canvas()
-    cv.load_diagnostics(path_to_files=path_to_metric, strategies_list=strategy)
-    cv.set_plot_dimensions()
-    cv.plot_diagnostics(output_plot_file=output_plot, strategies_list=strategy)
+    return None
 
 
 if __name__ == '__main__':

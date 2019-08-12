@@ -57,9 +57,9 @@ def main(args):
 
     Run directly from the command line:
 
-   >>> run_loop.py -i <input features file> -b <batch size> -n <number of loops>
-   >>>             -d <output metrics file> -q <output queried sample file>
-   >>>             -s <learning strategy> -t <choice of initial training>
+    >>> run_loop.py -i <input features file> -b <batch size> -n <number of loops>
+    >>>             -d <output metrics file> -q <output queried sample file>
+    >>>             -s <learning strategy> -t <choice of initial training>
 
     """
 
