@@ -16,7 +16,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import numpy as np
 import os
 
 from actsnclass import LightCurve
@@ -27,14 +26,35 @@ class SNPCCPhotometry(object):
 
     This class only works for Bazin feature extraction method.
 
+    Attributes
+    ----------
+    bazin_header: str
+        Reader to be added to features files for each day.
+    max_epoch: float
+        Maximum MJD for the entire data set.
+    min_epoch: float
+        Minimum MJD for the entire data set.
+    rmag_lim: float
+        Maximum r-band magnitude allowing a query.
+
+    Methods
+    -------
+    get_lim_mjds(raw_data_dir)
+        Get minimum and maximum MJD for complete sample.
+    create_daily_file(raw_data_dir: str, day: int, output_dir: str, header: str)
+        Create one file for a given day of the survey.
+        Only populates the file with header. It will erase existing files!
+    build_one_epoch(raw_data_dir: str, day_of_survey: int, time_domain_dir: str, feature_method: str, dataset: str)
+        Selects objects with observed points until given MJD, performs feature extraction
+        and evaluate if query is possible. Save results to file.
     """
     def __init__(self):
         self.bazin_header = 'id redshift type code sample gA gB gt0 ' + \
                             'gtfall gtrise rA rB rt0 rtfall rtrise iA ' + \
                             'iB it0 itfall itrise zA zB zt0 ztfall ztrise\n '
+        self.max_epoch = 56351.5
+        self.min_epoch = 56170.5
         self.rmag_lim = 24
-        self.max_epoch =  56351.5
-        self.min_epoch =  56170.5
 
     def get_lim_mjds(self, raw_data_dir):
         """Get minimum and maximum MJD for complete sample.
@@ -63,7 +83,7 @@ class SNPCCPhotometry(object):
 
         for elem in lc_list:
 
-            print ('Searching obj n. ', lc_list.index(elem))
+            print('Searching obj n. ', lc_list.index(elem))
 
             lc = LightCurve()                        # create light curve instance
             lc.load_snpcc_lc(raw_data_dir + elem)                      # read data
@@ -76,37 +96,34 @@ class SNPCCPhotometry(object):
 
         return [min(min_day), max(max_day)]
 
-    def create_daily_files(self, raw_data_dir: str,
-                           output_dir: str, header='Bazin'):
-        """Create one file for each day of the survey.
+    def create_daily_file(self, output_dir: str,
+                          day: int, header='Bazin'):
+        """Create one file for a given day of the survey.
 
-        Each file contains only header for the features file.
+        The file contains only header for the features file.
 
         Parameters
         ----------
         output_dir: str
             Complete path to raw data directory.
+        day: int
+            Day passed since the beginning of the survey.
         header: str (optional)
             List of elements to be added to the header.
             Separate by 1 space.
             Default option uses header for Bazin features file.
         """
 
-        for i in range(int(self.min_epoch), int(self.max_epoch)):
+        features_file = output_dir + 'day_' + str(day) + '.dat'
 
-            # the 0.5 is necessary because MJD start at midnight
-            # and for our purposes we need to start counting at noon
-            day = int(i - self.min_epoch - 0.5)
-            features_file = output_dir + 'day_' + str(day) + '.dat'
+        if header == 'Bazin':
+            # add headers to files
+            with open(features_file, 'w') as param_file:
+                param_file.write(self.bazin_header)
 
-            if header == 'Bazin':
-                # add headers to files
-                with open(features_file, 'w') as param_file:
-                    param_file.write(self.bazin_header)
-
-            else:
-                with open(features_file, 'w') as param_file:
-                    param_file.write(header)
+        else:
+            with open(features_file, 'w') as param_file:
+                param_file.write(header)
 
     def build_one_epoch(self, raw_data_dir: str, day_of_survey: int,
                         time_domain_dir: str, feature_method='Bazin',
@@ -154,6 +171,14 @@ class SNPCCPhotometry(object):
                     count_surv = count_surv + 1
                     print('... ... ... Survivied: ', count_surv)
 
+                    # see if query is possible
+                    queryable = \
+                        lc.check_queryable(mjd=self.min_epoch + day_of_survey,
+                                           r_lim=self.rmag_lim)
+
+                    if queryable:
+                        lc.sample = 'queryable'
+
                     # save features to file
                     with open(features_file, 'a') as param_file:
                         param_file.write(str(lc.id) + ' ' +
@@ -171,8 +196,7 @@ def main():
     output_dir = 'results/time_domain/'
 
     data = SNPCCPhotometry()
-    data.create_daily_files(raw_data_dir=path_to_data, output_dir=output_dir)
-    data.build_one_epoch(raw_data_dir=path_to_data, day_of_survey=20,
+    data.build_one_epoch(raw_data_dir=path_to_data, day_of_survey=22,
                          time_domain_dir=output_dir)
 
 

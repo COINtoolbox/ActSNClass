@@ -57,6 +57,8 @@ class LightCurve(object):
 
     Methods
     -------
+    check_queryable(mjd: float, r_lim: float)
+        Check if this light can be queried in a given day.
     load_snpcc_lc(path_to_data: str)
         Reads header and photometric information for 1 light curve
     fit_bazin(band: str) -> list
@@ -198,6 +200,39 @@ class LightCurve(object):
         self.photometry['SNR'] = np.array([float(item) for item in photometry_raw[:, header.index('SNR')]])
         self.photometry['MAG'] = np.array([float(item) for item in photometry_raw[:, header.index('MAG')]])
         self.photometry['MAGERR'] = np.array([float(item) for item in photometry_raw[:, header.index('MAGERR')]])
+
+    def check_queryable(self, mjd: float, r_lim: float):
+        """Check if this light can be queried in a given day.
+
+        This checks only r-band mag limit in a given epoch.
+        It there is no observation on that day, use the last available
+        observation.
+
+        Parameters
+        ----------
+        mjd: float
+            MJD where the query will take place.
+        r_lim: float
+            r-band magnitude limit below which query is possible.
+
+        Returns
+        -------
+        bool
+            If true, sample is changed to `queryable`.
+        """
+
+        # create photo flag
+        photo_flag = self.photometry['mjd'].values <= mjd
+        rband_flag = self.photometry['band'].values == 'r'
+        surv_flag = np.logical_and(photo_flag, rband_flag)
+
+        # check surviving photometry
+        surv_mag = self.photometry['MAG'].values[surv_flag]
+
+        if len(surv_mag) > 0 and 0 < surv_mag[-1] <= r_lim:
+            return True
+        else:
+            return False
 
     def fit_bazin(self, band: str):
         """Extract Bazin features for one filter.

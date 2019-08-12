@@ -16,10 +16,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from .build_time_domain import main as build_time_domain
 from .fit_dataset import main as fit_dataset
 from .run_loop import main as run_loop
 from .build_canonical import main as build_canonical
 from .make_diagnostic_plots import main as make_diagnostic_plots
 
-__all__ = ['fit_dataset', 'run_loop', 'build_canonical',
+__all__ = ['build_time_domain', 'fit_dataset', 'run_loop', 'build_canonical',
            'make_diagnostic_plots']
