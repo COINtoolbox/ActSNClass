@@ -20,7 +20,7 @@ It was constructed using the following steps:
 This will allow you to construct a Canonical sample holding the same characteristics and size of the original training sample
 but composed of different objects.
 
-``actsnclass`` allows you to perform this task using the :mod:`Canonical <build_snpcc_canonical>` module:
+``actsnclass`` allows you to perform this task using the py:mod:`actsnclass.build_snpcc_canonical` module:
 
 .. code-block:: python
    :linenos:
@@ -47,20 +47,38 @@ Once the samples is constructed you can compare the distribution in ``[z, g_pkma
 
    >>> plot_snpcc_train_canonical(sample, output_plot_file='plots/compare_canonical_train.png')
 
+
 .. image:: images/canonical.png
    :align: center
-   :height: 480 px
+   :height: 224 px
    :width: 640 px
    :alt: Comparison between original training and canonical samples.
 
 
-In the command line, you can do all at once:
+In the command line, using the same parameters as in the code above, you can do all at once:
 
 .. code-block:: bash
 
-   >>> build_canonical.py -c True -d <path to raw data dir>
-   >>>       -f <features file> -m <output file for metadata>
-   >>>       -o <output file for canonical sample> -p <comparison plot file>
+   >>> build_canonical.py -c True -d data/SIMGEN_PUBLIC_DES/
+   >>>       -f results/Bazin.dat -m results/Bazin_metadata.dat
+   >>>       -o results/Bazin_SNPCC_canonical.dat -p plots/compare_canonical_train.png
    >>>       -s True
 
 
+You can check that the file ``results/Bazin_SNPCC_canonical.dat`` is very similar to the original features file.
+The only difference is that now a few of the ``sample`` variables are set to ``queryable``:
+
+.. literalinclude:: images/sample_canonical.dat
+ :lines: 1-2, 9-14
+
+This means that you can use the :py:mod:`actsnclass.learn_loop` module in combination with a ``RandomSampling`` strategy but
+reading data from the canonical sample. In this way, at each iteration the code will select a random object from the test sample
+but a query will only be made is the selected object belongs to the canonical sample.
+
+In the command line, this looks like:
+
+.. code-block:: bash
+
+   >>> run_loop.py -i results/Bazin_SNPCC_canonical.dat -b <batch size> -n <number of loops>
+   >>>             -d <output metrics file> -q <output queried sample file>
+   >>>             -s RandomSampling -t <choice of initial training>
