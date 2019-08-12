@@ -126,6 +126,18 @@ The command line option require a few more inputs than the feature extraction st
    >>>             -d <output metrics file> -q <output queried sample file>
    >>>             -s <learning strategy> -t <choice of initial training>
 
+Acknowledgements
+****************
+
+This work is heavily based on the first prototype developed  during `COIN Residence Program #4 <https://iaacoin.wixsite.com/crp2017>`_, held in Clermont Ferrand, France, 2017 and financially supported by `Universite Clermont Auvergne <https://en.uca.fr/english-version/>`_ and `La Region Auvergne-Rhone-Alpes <https://www.auvergnerhonealpes.fr/>`_. We thank Emmanuel Gangler for encouraging the accomplishment of this event.
+
+COIN receives financial support from `CNRS <http://www.cnrs.fr/>`_ as part of its MOMENTUM programme over the 2018-2020 period, under the project *Active Learning for Large Scale Sky Surveys*.
+
+This work would not be possible without intensive consultation to online platforms and
+discussion forums. Although it is not possible to provide a complete list of the open source
+material consulted in the construction of this material, we recognize their importance and
+**deeply thank everyone who contributes to open learning platforms**.
+
 
 Table of Contents
 =================
@@ -133,6 +145,7 @@ Table of Contents
 .. toctree::
    :maxdepth: 2
 
+   canonical
    pre_processing
    learn_loop
    reference
