@@ -189,16 +189,3 @@ class SNPCCPhotometry(object):
                         for item in lc.bazin_features:
                             param_file.write(str(item) + ' ')
                         param_file.write('\n')
-
-
-def main():
-    path_to_data = 'data/SIMGEN_PUBLIC_DES/'
-    output_dir = 'results/time_domain/'
-
-    data = SNPCCPhotometry()
-    data.build_one_epoch(raw_data_dir=path_to_data, day_of_survey=22,
-                         time_domain_dir=output_dir)
-
-
-if __name__ == '__main__':
-    main()
