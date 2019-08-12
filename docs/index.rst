@@ -129,9 +129,9 @@ The command line option require a few more inputs than the feature extraction st
 Acknowledgements
 ****************
 
-This work is heavily based on the first prototype developed  during `COIN Residence Program #4 <https://iaacoin.wixsite.com/crp2017>`_, held in Clermont Ferrand, France, 2017 and financially supported by `Universite Clermont Auvergne <https://en.uca.fr/english-version/>`_ and `La Region Auvergne-Rhone-Alpes <https://www.auvergnerhonealpes.fr/>`_. We thank Emmanuel Gangler for encouraging the realization of this event.
+This work is heavily based on the first prototype developed  during COIN Residence Program (`CRP#4 <https://iaacoin.wixsite.com/crp2017>`_), held in Clermont Ferrand, France, 2017 and financially supported by `Universite Clermont Auvergne <https://en.uca.fr/english-version/>`_ and `La Region Auvergne-Rhone-Alpes <https://www.auvergnerhonealpes.fr/>`_. We thank Emmanuel Gangler for encouraging the realization of this event.
 
-COIN receives financial support from `CNRS <http://www.cnrs.fr/>`_ as part of its MOMENTUM programme over the 2018-2020 period, under the project *Active Learning for Large Scale Sky Surveys*.
+The `COsmostatistics INitiative (COIN) <https://cosmostatistics-initiative.org>`_ receives financial support from `CNRS <http://www.cnrs.fr/>`_ as part of its MOMENTUM programme over the 2018-2020 period, under the project *Active Learning for Large Scale Sky Surveys*.
 
 This work would not be possible without intensive consultation to online platforms and
 discussion forums. Although it is not possible to provide a complete list of the open source
@@ -149,6 +149,7 @@ Table of Contents
    canonical
    prepare_time_domain
    learn_loop
+   plotting
    reference
 
 

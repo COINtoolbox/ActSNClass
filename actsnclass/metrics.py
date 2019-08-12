@@ -164,3 +164,11 @@ def get_snpcc_metric(label_pred: list, label_true: list, ia_flag=1,
     metric_names = ['accuracy', 'efficiency', 'purity', 'fom']
 
     return metric_names, metric_values
+
+
+def main():
+    return None
+
+
+if __name__ == '__main__':
+    main()

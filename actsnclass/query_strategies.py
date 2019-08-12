@@ -106,3 +106,11 @@ def random_sampling(test_ids: np.array, queryable_ids: np.array,
 
     # return the corresponding batch size
     return list(indx[flag])[:batch]
+
+
+def main():
+    return None
+
+
+if __name__ == '__main__':
+    main()

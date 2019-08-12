@@ -4,7 +4,6 @@ Reference / API
 
 .. currentmodule:: actsnclass
 
-
 Pre-processing
 ==============
 
@@ -29,6 +28,14 @@ Full light curve analysis
 
    fit_snpcc_bazin
 
+*Basic light curve analysis tools*
+
+.. autosummary::
+   :toctree: api
+
+   bazin
+   err_func
+   fit_scipy
 
 Canonical sample
 ================
@@ -147,7 +154,6 @@ Scripts
 =======
 
 .. autosummary::
-   :toctree: api
 
    build_canonical
    build_time_domain

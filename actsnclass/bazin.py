@@ -98,3 +98,11 @@ def fit_scipy(time, flux):
     result = least_squares(errfunc, guess, args=(time, flux), method='lm')
 
     return result.x
+
+
+def main():
+    return None
+
+
+if __name__ == '__main__':
+    main()

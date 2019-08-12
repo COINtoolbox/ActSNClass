@@ -84,3 +84,11 @@ def learn_loop(nloops: int, strategy: str, path_to_features: str,
 
         # save query sample to file
         data.save_queried_sample(output_queried_file, loop=loop, full_sample=False)
+
+
+def main():
+    return None
+
+
+if __name__ == '__main__':
+    main()
