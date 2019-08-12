@@ -130,8 +130,6 @@ The command line option require a few more inputs than the feature extraction st
 Table of Contents
 =================
 
-.. contents:: :local:
-
 .. toctree::
    :maxdepth: 2
 

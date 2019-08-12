@@ -67,8 +67,7 @@ class Canonical(object):
 
     Methods
     -------
-    snpcc_get_canonical_info(path_to_rawdata_dir: str, canonical_output_file: st,, compute: bool,
-                            save: bool, canonical_input_file: str)
+    snpcc_get_canonical_info(path_to_rawdata_dir: str, canonical_output_file: st, compute: bool, save: bool, canonical_input_file: str)
         Load SNPCC metada data required to characterize objects.
     snpcc_identify_samples()
         Identify training and test sample.
