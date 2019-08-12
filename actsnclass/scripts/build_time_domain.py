@@ -48,7 +48,7 @@ def main(user_choice):
     for item in day:
         data = SNPCCPhotometry()
         data.create_daily_file(output_dir=output_dir, day=item)
-        data.build_one_epoch(raw_data_dir=path_to_data, day_of_survey=day,
+        data.build_one_epoch(raw_data_dir=path_to_data, day_of_survey=int(item),
                              time_domain_dir=output_dir)
 
 
@@ -59,7 +59,7 @@ if __name__ == '__main__':
 
     parser.add_argument('-d', '--day', dest='day_of_survey', required=True,
                         nargs='+', help='Day after survey starts.')
-    parser.add_argument('-p', '--path-to-data', required=True, type=bool,
+    parser.add_argument('-p', '--path-to-data', required=True, type=str,
                         dest='raw_data_dir',
                         help='Complete path to raw data directory.')
     parser.add_argument('-o', '--output', dest='output', required=True,

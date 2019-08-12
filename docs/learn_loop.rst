@@ -90,7 +90,7 @@ Running a number of iterations in sequence
 ------------------------------------------
 
 We provide a function where all the above steps can be done in sequence for a number of iterations.
-In interactive mode, you must define the required variables and use the ``learn_loop`` function:
+In interactive mode, you must define the required variables and use the :py:mod:`actsnclass.learn_loop` function:
 
 .. code-block:: python
    :linenos:
