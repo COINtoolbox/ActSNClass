@@ -30,8 +30,8 @@ Full light curve analysis
    fit_snpcc_bazin
 
 
-Building the Canonical sample
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Canonical sample
+================
 
 *The Canonical object for holding the entire sample.*
 

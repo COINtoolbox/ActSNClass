@@ -49,7 +49,7 @@ def main(args):
        Choice of initial training sample.
        If 'original': begin from the train sample flagged in the file
        If int: choose the required number of samples at random,
-               ensuring that at least half are SN Ia
+       ensuring that at least half are SN Ia.
        Default is 'original'.
 
     Examples

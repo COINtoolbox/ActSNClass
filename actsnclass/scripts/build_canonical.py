@@ -52,9 +52,9 @@ def main(user_choices):
     -------
     Use directly from the command line:
 
-    >>> build_canonical.py -c True -d data/SIMGEN_PUBLIC_DES/
-    >>>       -f results/Bazin.dat -m results/SNPCC_metadata.dat
-    >>>       -o results/Bazin_SNPCC_canonical.dat -p plots/comparison.png
+    >>> build_canonical.py -c True -d <path to raw data dir>
+    >>>       -f <features file> -m <output file for metadata>
+    >>>       -o <output file for canonical sample> -p <comparison plot file>
     >>>       -s True
 
     """
