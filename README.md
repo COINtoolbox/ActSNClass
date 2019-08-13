@@ -13,6 +13,8 @@ Full documentation can be found at [readthedocs](https://actsnclass.readthedocs.
 
 # Dependencies
 
+### For code:
+
  - Python>=3.7  
  - argparse>=1.1  
  - matplotlib>=3.1.1  
@@ -22,10 +24,15 @@ Full documentation can be found at [readthedocs](https://actsnclass.readthedocs.
  - scipy>=1.3.0
  - scikit-learn>=0.20.3
  - seaborn>=0.9.0
+ 
+ 
+ ### For documentation:
+ 
+  - sphinx>=2.1.2
 
 # Install
 
-The current version runs in Python-3.6.
+The current version runs in Python-3.7.
 
 In order to install this code you should clone this repository and do:  
 
