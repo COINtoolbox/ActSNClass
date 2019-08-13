@@ -60,6 +60,8 @@ def main(user_choices):
 
     """
 
+    print(user_choices.compute)
+
     sample = build_snpcc_canonical(path_to_raw_data=user_choices.raw_data_dir,
                                    path_to_features=user_choices.features,
                                    compute=user_choices.compute,
@@ -71,17 +73,28 @@ def main(user_choices):
     plot_snpcc_train_canonical(sample, user_choices.output_plot_file)
 
 
+def str2bool(v):
+    if isinstance(v, bool):
+        return v
+    if v.lower() in ('yes', 'true', 't', 'y', '1'):
+        return True
+    elif v.lower() in ('no', 'false', 'f', 'n', '0'):
+        return False
+    else:
+        raise argparse.ArgumentTypeError('Boolean value expected.')
+
+
 if __name__ == '__main__':
 
     # get input directory and output file name from user
     parser = argparse.ArgumentParser(description='actsnclass - '
                                                  'Build Canonical module')
 
-    parser.add_argument('-c', '--compute', required=True, type=bool,
+    parser.add_argument('-c', '--compute', required=True, type=str2bool,
                         dest='compute', help='If True, compute metadata '
                                              'on SNR and peak mag.')
     parser.add_argument('-d', '--raw-data-dir', dest='raw_data_dir',
-                        required=False, type=str, default='',
+                        required=False, type=str, default=None,
                         help='Path to raw data directory. Needed only'
                              'if "compute == False".')
     parser.add_argument('-f', '--features', required=True, type=str,
@@ -92,7 +105,7 @@ if __name__ == '__main__':
                              'from file. It is only used if '
                              '"compute == False".')
     parser.add_argument('-m', '--output-meta-data-file', required=False,
-                        dest='output_meta', type=str, default='',
+                        dest='output_meta', type=str, default=None,
                         help='Path to output file where to store '
                              'metadata on SNR and peak mag. Only used'
                              'if "save == True".')
@@ -100,11 +113,11 @@ if __name__ == '__main__':
                         dest='output', help='Path to store '
                                             'full canonical sample.')
     parser.add_argument('-p', '--output-plot-file', required=False, type=str,
-                        default='', help='File to store comparison plot.'
+                        default=None, help='File to store comparison plot.'
                                          'If not provided plot is '
                                          'shown on screen.',
                         dest='output_plot_file')
-    parser.add_argument('-s', '--save', required=True, type=bool,
+    parser.add_argument('-s', '--save', required=True, type=str2bool,
                         dest='save', help='If True, save to file metadata'
                                           'on SNR and peakmag.')
 
