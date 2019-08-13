@@ -117,10 +117,6 @@ class Canonical(object):
             If name is give, 'compute' must be False.
         """
 
-        if compute and canonical_input_file:
-            raise ValueError('Set "compute" to False if you wish to '
-                             'read from a file!')
-
         if compute:
             # read file names
             file_list_all = os.listdir(path_to_rawdata_dir)
@@ -375,7 +371,7 @@ def plot_snpcc_train_canonical(sample: Canonical, output_plot_file=''):
     kde_rcanonical = KernelDensity(kernel='gaussian', bandwidth=0.5).fit(np.array(rcanonical).reshape(-1, 1))
     log_dens_rcanonical = kde_rcanonical.score_samples(rcanonical_axis)
 
-    plt.figure(figsize=(20,7))
+    plt.figure(figsize=(20, 7))
     plt.subplot(1, 3, 1)
     plt.plot(ztrain_axis, np.exp(log_dens_ztrain), label='original train')
     plt.plot(zcanonical_axis, np.exp(log_dens_zcanonical), label='canonical')
