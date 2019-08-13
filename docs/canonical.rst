@@ -59,11 +59,11 @@ In the command line, using the same parameters as in the code above, you can do 
 
 .. code-block:: bash
 
-   >>> build_canonical.py -c True -d data/SIMGEN_PUBLIC_DES/
-   >>>       -f results/Bazin.dat -m results/Bazin_metadata.dat
-   >>>       -o results/Bazin_SNPCC_canonical.dat -p plots/compare_canonical_train.png
-   >>>       -s True
-
+    >>> build_canonical.py -c <if True compute metadata>
+    >>>       -d <path to raw data dir>
+    >>>       -f <input features file> -m <output file for metadata>
+    >>>       -o <output file for canonical sample> -p <comparison plot file>
+    >>>       -s <if True save metadata to file>
 
 You can check that the file ``results/Bazin_SNPCC_canonical.dat`` is very similar to the original features file.
 The only difference is that now a few of the ``sample`` variables are set to ``queryable``:

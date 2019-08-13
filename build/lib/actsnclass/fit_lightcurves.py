@@ -43,7 +43,7 @@ class LightCurve(object):
     id: int
         SN identification number
     photometry: pd.DataFrame
-        Photometry information. Keys --> [mjd, band, flux, fluxerr, SNR]
+        Photometry information. Keys --> [mjd, band, flux, fluxerr, SNR, MAG, MAGERR].
     redshift: float
         Redshift
     sample: str
@@ -57,6 +57,8 @@ class LightCurve(object):
 
     Methods
     -------
+    check_queryable(mjd: float, r_lim: float)
+        Check if this light can be queried in a given day.
     load_snpcc_lc(path_to_data: str)
         Reads header and photometric information for 1 light curve
     fit_bazin(band: str) -> list
@@ -136,11 +138,12 @@ class LightCurve(object):
         self.filters = ['g', 'r', 'i', 'z']
 
         # set SN types
-        snii = ['2', '3', '4', '12', '15', '17', '19', '20', '21', '24', '25', '26',
-                '27', '30', '31', '32', '33', '34', '35', '36', '37', '38', '39', '40', '41', '42', '43', '44']
+        snii = ['2', '3', '4', '12', '15', '17', '19', '20', '21', '24', '25',
+                '26', '27', '30', '31', '32', '33', '34', '35', '36', '37',
+                '38', '39', '40', '41', '42', '43', '44']
 
-        snibc = ['1', '5', '6', '7', '8', '9', '10', '11', '13', '14', '16', '18',
-                 '22', '23', '29', '45', '28']
+        snibc = ['1', '5', '6', '7', '8', '9', '10', '11', '13', '14', '16',
+                 '18', '22', '23', '29', '45', '28']
 
         # read light curve data
         op = open(path_to_data, 'r')
@@ -196,6 +199,41 @@ class LightCurve(object):
         self.photometry['flux'] = np.array([float(item) for item in photometry_raw[:, header.index('FLUXCAL')]])
         self.photometry['fluxerr'] = np.array([float(item) for item in photometry_raw[:, header.index('FLUXCALERR')]])
         self.photometry['SNR'] = np.array([float(item) for item in photometry_raw[:, header.index('SNR')]])
+        self.photometry['MAG'] = np.array([float(item) for item in photometry_raw[:, header.index('MAG')]])
+        self.photometry['MAGERR'] = np.array([float(item) for item in photometry_raw[:, header.index('MAGERR')]])
+
+    def check_queryable(self, mjd: float, r_lim: float):
+        """Check if this light can be queried in a given day.
+
+        This checks only r-band mag limit in a given epoch.
+        It there is no observation on that day, use the last available
+        observation.
+
+        Parameters
+        ----------
+        mjd: float
+            MJD where the query will take place.
+        r_lim: float
+            r-band magnitude limit below which query is possible.
+
+        Returns
+        -------
+        bool
+            If true, sample is changed to `queryable`.
+        """
+
+        # create photo flag
+        photo_flag = self.photometry['mjd'].values <= mjd
+        rband_flag = self.photometry['band'].values == 'r'
+        surv_flag = np.logical_and(photo_flag, rband_flag)
+
+        # check surviving photometry
+        surv_mag = self.photometry['MAG'].values[surv_flag]
+
+        if len(surv_mag) > 0 and 0 < surv_mag[-1] <= r_lim:
+            return True
+        else:
+            return False
 
     def fit_bazin(self, band: str):
         """Extract Bazin features for one filter.
@@ -341,3 +379,11 @@ def fit_snpcc_bazin(path_to_data_dir: str, features_file: str):
                 param_file.write('\n')
 
     param_file.close()
+
+
+def main():
+    return None
+
+
+if __name__ == '__main__':
+    main()
