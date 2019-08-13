@@ -43,3 +43,6 @@ This will generate:
    :height: 448 px
    :width: 640 px
    :alt: Plot diagnostics evolution.
+
+
+OBS: the color pallete for this project was chosen to resemble the work of `Piet Mondrian <https://en.wikipedia.org/wiki/Piet_Mondrian>`_.

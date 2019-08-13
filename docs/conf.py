@@ -30,9 +30,11 @@ author = 'Emille E. O. Ishida'
 extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.autosummary',
               'sphinx.ext.mathjax',
-              'sphinx.ext.napoleon', 'sphinx_automodapi.automodapi']
+              'sphinx.ext.napoleon']
+              #'sphinx_automodapi.smart_resolver',
+              #'sphinx_automodapi.automodapi']
 
-napoleon_google_docstring = False
+napoleon_google_docstring = False,
 napoleon_numpy_docstring = True
 napoleon_use_param = False
 napoleon_use_ivar = True
