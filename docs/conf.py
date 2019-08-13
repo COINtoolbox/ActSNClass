@@ -28,7 +28,7 @@ author = 'Emille E. O. Ishida'
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 
-master_doc = 'index' 
+master_doc = 'index'
 extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.autosummary',
               'sphinx.ext.mathjax',
