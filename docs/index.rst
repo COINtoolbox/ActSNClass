@@ -129,11 +129,11 @@ The command line option require a few more inputs than the feature extraction st
 
 
 We also provide detail explanation on how to use this package to produce other stages of the pipeline like:
-:ref:`prepare the Canonical sample <canonical>`_, :ref:`prepare data for time domain <timedomain>`_ and
-:ref:`produce plots <plotting>`_.
+:ref:`prepare the Canonical sample <canonical>`, :ref:`prepare data for time domain <timedomain>` and
+:ref:`produce plots <plotting>`.
 
 We also provide detail descriptions on how to contribute with other modules in the
-:ref:`How to contribute <contribute>`_ tab.
+:ref:`How to contribute <contribute>` tab.
 
 
 Enjoy!!
