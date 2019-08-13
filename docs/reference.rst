@@ -31,11 +31,10 @@ Full light curve analysis
 *Basic light curve analysis tools*
 
 .. autosummary::
-   :toctree: api
 
-   bazin
-   err_func
-   fit_scipy
+   snactclass.bazin.bazin
+   snactclass.bazin.err_func
+   snactclass.bazin.fit_scipy
 
 Canonical sample
 ================
