@@ -325,7 +325,7 @@ def build_snpcc_canonical(path_to_raw_data: str, path_to_features: str,
     return sample
 
 
-def plot_snpcc_train_canonical(sample: Canonical, output_plot_file=''):
+def plot_snpcc_train_canonical(sample: Canonical, output_plot_file=False):
     """Plot comparison between training and canonical samples.
 
     Parameters
@@ -400,7 +400,7 @@ def plot_snpcc_train_canonical(sample: Canonical, output_plot_file=''):
 
     if output_plot_file:
         plt.savefig(output_plot_file)
-        plt.close()
+        plt.close('all')
     else:
         plt.show()
 

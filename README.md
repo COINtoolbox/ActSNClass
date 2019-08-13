@@ -13,7 +13,7 @@ Full documentation can be found at [readthedocs](https://actsnclass.readthedocs.
 
 # Dependencies
 
- - Python>=3.6.8  
+ - Python>=3.7  
  - argparse>=1.1  
  - matplotlib>=3.1.1  
  - numpy>=1.17.0  
