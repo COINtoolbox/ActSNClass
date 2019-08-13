@@ -7,7 +7,7 @@ Reference / API
 Pre-processing
 ==============
 
-Full light curve analysis
+Light curve analysis
 -------------------------
 
 *Performing feature extraction for 1 light curve*
