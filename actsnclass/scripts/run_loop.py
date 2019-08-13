@@ -18,7 +18,7 @@
 
 __all__ = ['learn_loop', 'main']
 
-from actsnclass import learn_loop
+from actsnclass.learn_loop import learn_loop
 
 import argparse
 
