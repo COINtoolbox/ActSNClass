@@ -1,10 +1,12 @@
 .. actsnclass documentation master file, created by
    sphinx-quickstart on Thu Aug  8 16:11:41 2019.
 
-
-
+=======================
 Welcome to actsnclass !
 =======================
+--------------------------------------------------------
+Active Learning for Supernova Photometric Classification
+--------------------------------------------------------
 
 
 
