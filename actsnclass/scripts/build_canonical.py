@@ -52,10 +52,11 @@ def main(user_choices):
     -------
     Use directly from the command line:
 
-    >>> build_canonical.py -c True -d <path to raw data dir>
-    >>>       -f <features file> -m <output file for metadata>
+    >>> build_canonical.py -c <if True compute metadata>
+    >>>       -d <path to raw data dir>
+    >>>       -f <input features file> -m <output file for metadata>
     >>>       -o <output file for canonical sample> -p <comparison plot file>
-    >>>       -s True
+    >>>       -s <if True save metadata to file>
 
     """
 
