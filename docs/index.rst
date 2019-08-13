@@ -25,7 +25,6 @@ Dependencies
 ``actsnclass`` was developed under ``Python3``. The complete list of dependencies is given below:
 
  - Python>=3.6.8
- - argparse>=1.1
  - matplotlib>=3.1.1
  - numpy>=1.17.0
  - pandas>=0.25.0
@@ -162,6 +161,7 @@ Table of Contents
    prepare_time_domain
    learn_loop
    plotting
+   contribute
    reference
 
 
