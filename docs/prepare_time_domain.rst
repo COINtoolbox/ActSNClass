@@ -1,4 +1,4 @@
-.. _time_domain:
+.. _timedomain:
 
 Prepare data for time domain
 ============================

@@ -126,6 +126,18 @@ The command line option require a few more inputs than the feature extraction st
    >>>             -d <output metrics file> -q <output queried sample file>
    >>>             -s <learning strategy> -t <choice of initial training>
 
+
+We also provide detail explanation on how to use this package to produce other stages of the pipeline like:
+:ref:`prepare the Canonical sample <canonical>`_, :ref:`prepare data for time domain <timedomain>`_ and
+:ref:`produce plots <plotting>`_.
+
+We also provide detail descriptions on how to contribute with other modules in the
+:ref:`How to contribute <contribute>`_ tab.
+
+
+Enjoy!!
+
+
 Acknowledgements
 ****************
 
