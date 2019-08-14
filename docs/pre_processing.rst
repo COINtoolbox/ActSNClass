@@ -22,7 +22,7 @@ You can load this data using:
 .. code-block:: python
    :linenos:
 
-   >>> from actsnclass import LightCurve
+   >>> from actsnclass.fit_lightcurves import LightCurve
 
    >>> path_to_lc = 'data/SIMGEN_PUBLIC_DES/DES_SN848233.DAT'
 
