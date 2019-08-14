@@ -24,7 +24,7 @@ from actsnclass import DataBase
 def learn_loop(nloops: int, strategy: str, path_to_features: str,
                output_diag_file: str, output_queried_file: str,
                features_method='Bazin', classifier='RandomForest',
-               training='original', batch=1):
+               training='original', batch=1, screen=True):
     """Perform the active learning loop. All results are saved to file.
 
     Parameters
@@ -52,20 +52,24 @@ def learn_loop(nloops: int, strategy: str, path_to_features: str,
         Default is 'original'.
     batch: int (optional)
         Size of batch to be queried in each loop. Default is 1.
+    screen: bool (optional)
+        If True, print on screen number of light curves processed.
     """
 
     # initiate object
     data = DataBase()
 
     # load features
-    data.load_features(path_to_features, method=features_method)
+    data.load_features(path_to_features, method=features_method,
+                       screen=screen)
 
     # separate training and test samples
     data.build_samples(initial_training=training)
 
     for loop in range(nloops):
 
-        print('Processing... ', loop)
+        if screen:
+            print('Processing... ', loop)
 
         # classify
         data.classify(method=classifier)
