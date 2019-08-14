@@ -17,7 +17,7 @@ The class :py:class:`actsnclass.Canvas` enables you do to it using:
 .. code-block:: python
    :linenos:
 
-   >>> from actsnclass import Canvas
+   >>> from actsnclass.plot_results import Canvas
 
    >>> # define parameters
    >>> path_to_files = ['results/metrics_canonical.dat',
