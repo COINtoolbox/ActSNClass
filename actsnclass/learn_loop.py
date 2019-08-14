@@ -81,7 +81,7 @@ def learn_loop(nloops: int, strategy: str, path_to_features: str,
 
         # save diagnostics for current state
         data.save_metrics(loop=loop, output_metrics_file=output_diag_file,
-                          batch=batch)
+                          batch=batch, epoch=loop)
 
         # save query sample to file
         data.save_queried_sample(output_queried_file, loop=loop,
