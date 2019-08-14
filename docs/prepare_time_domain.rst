@@ -23,7 +23,7 @@ You can perform the entire analysis for one day of the survey using the :py:mod:
 .. code-block:: python
    :linenos:
 
-   >>> from actsnclass import SNPCCPhotometry
+   >>> from actsnclass.time_domain import SNPCCPhotometry
 
    >>> path_to_data = 'data/SIMGEN_PUBLIC_DES/'
    >>> output_dir = 'results/time_domain/'

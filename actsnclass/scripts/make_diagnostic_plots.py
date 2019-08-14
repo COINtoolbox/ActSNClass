@@ -18,7 +18,7 @@
 
 import argparse
 
-from actsnclass import Canvas
+from actsnclass.plot_results import Canvas
 
 __all__ = ['main']
 
