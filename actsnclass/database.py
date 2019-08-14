@@ -381,7 +381,7 @@ class DataBase:
                              '"RandomSampling are implemented! \n '
                              'Feel free to add other options. ')
 
-    def update_samples(self, query_indx: list, loop: int):
+    def update_samples(self, query_indx: list, loop: int, epoch=0):
         """Add the queried obj(s) to training and remove them from test.
 
         Update properties: train_headers, train_features, train_labels,
@@ -400,8 +400,11 @@ class DataBase:
             # add object to the query sample
             query_header = self.test_metadata.values[obj]
             query_features = self.test_features[obj]
-            all_queries.append(np.append([loop, query_header],
-                                         query_features, axis=0))
+            line = [epoch]
+            for item in query_header:
+                line.append(item)
+            for item1 in query_features:
+                line.append(item1)
 
             # add object to the training sample
             new_header = pd.DataFrame([query_header], columns=self.metadata_names)
@@ -419,10 +422,12 @@ class DataBase:
             self.test_labels = np.delete(self.test_labels, obj, axis=0)
             self.test_features = np.delete(self.test_features, obj, axis=0)
 
+            all_queries.append(line)
+
         # update queried samples
         self.queried_sample.append(all_queries)
 
-    def save_metrics(self, loop: int, output_metrics_file: str, batch=1):
+    def save_metrics(self, loop: int, output_metrics_file: str, epoch: int, batch=1):
         """Save current metrics to file.
 
         If loop == 0 the 'output_metrics_file' will be created or overwritten.
@@ -436,6 +441,8 @@ class DataBase:
             Full path to file to store metrics results.
         batch: int
             Number of queries in each loop.
+        epoch: int
+            Days since the beginning of the survey.
         """
 
         # add header to metrics file
@@ -450,15 +457,15 @@ class DataBase:
 
         # write to file
         with open(output_metrics_file, 'a') as metrics:
-            metrics.write(str(loop) + ' ')
+            metrics.write(str(epoch) + ' ')
             for value in self.metrics_list_values:
                 metrics.write(str(value) + ' ')
             for j in range(batch):
-                metrics.write(str(self.queried_sample[j]) + ' ')
+                metrics.write(str(self.queried_sample[loop][j][1]) + ' ')
             metrics.write('\n')
 
     def save_queried_sample(self, queried_sample_file: str, loop: int,
-                            full_sample=False):
+                            full_sample=False, batch=1):
         """Save queried sample to file.
 
         Parameters
@@ -490,9 +497,10 @@ class DataBase:
 
             # save query sample to file
             with open(queried_sample_file, 'a') as query:
-                for elem in self.queried_sample[loop]:
-                    query.write(str(elem) + ' ')
-                query.write('\n')
+                for batch in range(batch):
+                    for elem in self.queried_sample[loop][batch]:
+                        query.write(str(elem) + ' ')
+                    query.write('\n')
 
 
 def main():

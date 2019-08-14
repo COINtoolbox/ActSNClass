@@ -18,6 +18,8 @@
 
 __all__ = ['get_sample_tomorrow', 'timedomain_loop']
 
+import numpy as np
+
 from actsnclass import DataBase
 
 
@@ -60,7 +62,7 @@ def get_sample_tomorrow(info_today: DataBase, info_tomorrow: DataBase):
             info_today.metadata.at[loc_today, 'sample'] = sample_tomorrow
 
     for k in range(len(today_ids)):
-        if today_ids not in tomorow_ids:
+        if np.isin(today_ids[k], tomorow_ids):
             info_today.metadata.at[k, 'sample'] = 'test'
 
         return info_today
@@ -69,7 +71,7 @@ def get_sample_tomorrow(info_today: DataBase, info_tomorrow: DataBase):
 def timedomain_loop(days: list, strategy: str, path_to_data_dir: str,
                     output_diag_file: str, output_queried_file: str,
                     features_method='Bazin', classifier='RandomForest',
-                    training='original', batch=1):
+                    training=5, batch=1):
     """Perform the active learning loop in time domain.
 
     Trains the machine learning model in day X and queries in day X+1.
@@ -116,8 +118,10 @@ def timedomain_loop(days: list, strategy: str, path_to_data_dir: str,
     # separate training and test samples
     info_today.build_samples(initial_training=training)
 
-    for epoch in range(days[0], days[1] - 1):
+    # cont loop
+    loop = 0
 
+    for epoch in range(days[0], days[1] - 1):
         print('Processing... ', epoch)
 
         # classify
@@ -128,7 +132,7 @@ def timedomain_loop(days: list, strategy: str, path_to_data_dir: str,
 
         # name of features file for tomorrow
         features_tomorrow = path_to_data_dir + \
-                           'day_' + str(epoch + 1) + '.dat'
+                            'day_' + str(epoch + 1) + '.dat'
 
         # read data for next day
         info_tomorrow = DataBase()
@@ -141,42 +145,51 @@ def timedomain_loop(days: list, strategy: str, path_to_data_dir: str,
         indx = update_today.make_query(strategy=strategy, batch=batch)
 
         # update training and test samples
-        update_today.update_samples(indx, loop=epoch)
+        update_today.update_samples(indx, loop=loop, epoch=epoch)
 
         # save diagnostics for current state
-        update_today.save_metrics(loop=epoch, output_metrics_file=output_diag_file,
-                                  batch=batch)
+        update_today.save_metrics(loop=loop, output_metrics_file=output_diag_file,
+                                  batch=batch, epoch=epoch)
 
         # save query sample to file
-        update_today.save_queried_sample(output_queried_file, loop=epoch,
+        update_today.save_queried_sample(output_queried_file, loop=loop,
                                          full_sample=False)
+
+        # update loop count
+        loop = loop + 1
 
         # update information from today
         del info_tomorrow
         info_today = update_today
 
+
 def main():
     path_to_data_dir = 'results/time_domain/data/'
-    features_method='Bazin'
-    days=[19,22]
-    # name of features file for today
-    features_today = path_to_data_dir + 'day_' + str(days[0]) + '.dat'
+    features_method = 'Bazin'
+    classifier = 'RandomForest'
+    training = 5
+    batch = 1
+    strategy = 'RandomSampling'
+    days = [19, 182]
+    output_diag_file = 'results/time_domain/diag_rand.dat'
+    output_queried_file = 'results/time_domain/queried_rand.dat'
+    output_plot = 'plots/time_domain.png'
 
-    # load features
-    info_today = DataBase()
-
-    info_today.load_features(features_today, method=features_method)
-    print('KKKKKKKKKK')
-    print(info_today.metadata)
-
-    timedomain_loop(days=days, strategy='RandomSampling',
+    timedomain_loop(days=days, strategy=strategy,
                     path_to_data_dir=path_to_data_dir,
-                    output_diag_file='results/time_domain/diag_rand.dat',
-                    output_queried_file='results/time_domain/queried_rand.dat',
-                    features_method = features_method, classifier = 'RandomForest',
-                    training = 'original', batch = 1)
+                    output_diag_file=output_diag_file,
+                    output_queried_file=output_queried_file,
+                    features_method=features_method, classifier=classifier,
+                    training=training, batch=batch)
+
+    from actsnclass.plot_results import Canvas
+    cv=Canvas()
+    cv.load_diagnostics([output_diag_file], [strategy])
+    cv.set_plot_dimensions()
+    cv.plot_diagnostics(output_plot, [strategy])
 
     return None
+
 
 if __name__ == '__main__':
     main()
