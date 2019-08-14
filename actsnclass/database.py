@@ -153,7 +153,7 @@ class DataBase:
         self.train_metadata = pd.DataFrame()
         self.train_labels = np.array([])
 
-    def load_bazin_features(self, path_to_bazin_file: str):
+    def load_bazin_features(self, path_to_bazin_file: str, screen=False):
         """Load Bazin features from file.
 
         Populate properties: data, features, feature_list, header
@@ -163,6 +163,8 @@ class DataBase:
         ----------
         path_to_bazin_file: str
             Complete path to Bazin features file.
+        screen: bool (optional)
+            If True, print on screen number of light curves processed.
         """
 
         # read matrix with Bazin features
@@ -179,9 +181,11 @@ class DataBase:
         self.features = self.data[self.features_names]
         self.metadata = self.data[self.metadata_names]
 
-        print('Loaded ', self.metadata.shape[0], ' samples!')
+        if print:
+            print('Loaded ', self.metadata.shape[0], ' samples!')
 
-    def load_features(self, path_to_file: str, method='Bazin'):
+    def load_features(self, path_to_file: str, method='Bazin',
+                      screen=False):
         """Load features according to the chosen feature extraction method.
 
         Populates properties: data, features, feature_list, header
@@ -194,10 +198,12 @@ class DataBase:
         method: str (optional)
             Feature extraction method. The current implementation only
             accepts method=='Bazin'
+        screen: bool (optional)
+            If True, print on screen number of light curves processed.
         """
 
         if method == 'Bazin':
-            self.load_bazin_features(path_to_file)
+            self.load_bazin_features(path_to_file, screen=screen)
         else:
             raise ValueError('Only Bazin features are implemented! '
                              '\n Feel free to add other options.')
