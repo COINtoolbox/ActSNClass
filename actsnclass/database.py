@@ -381,7 +381,7 @@ class DataBase:
                              '"RandomSampling are implemented! \n '
                              'Feel free to add other options. ')
 
-    def update_samples(self, query_indx: list):
+    def update_samples(self, query_indx: list, loop: int):
         """Add the queried obj(s) to training and remove them from test.
 
         Update properties: train_headers, train_features, train_labels,
@@ -391,14 +391,17 @@ class DataBase:
         ----------
         query_indx: list
             List of indexes identifying objects to be moved.
+        loop: int
+            Store number of loop when this query was made.
         """
 
+        all_queries = []
         for obj in query_indx:
             # add object to the query sample
             query_header = self.test_metadata.values[obj]
             query_features = self.test_features[obj]
-            self.queried_sample.append(np.append(query_header,
-                                                 query_features, axis=0))
+            all_queries.append(np.append([loop, query_header],
+                                         query_features, axis=0))
 
             # add object to the training sample
             new_header = pd.DataFrame([query_header], columns=self.metadata_names)
@@ -416,7 +419,10 @@ class DataBase:
             self.test_labels = np.delete(self.test_labels, obj, axis=0)
             self.test_features = np.delete(self.test_features, obj, axis=0)
 
-    def save_metrics(self, loop: int, output_metrics_file: str):
+        # update queried samples
+        self.queried_sample.append(all_queries)
+
+    def save_metrics(self, loop: int, output_metrics_file: str, batch=1):
         """Save current metrics to file.
 
         If loop == 0 the 'output_metrics_file' will be created or overwritten.
@@ -428,6 +434,8 @@ class DataBase:
             Number of learning loops finished at this stage.
         output_metrics_file: str
             Full path to file to store metrics results.
+        batch: int
+            Number of queries in each loop.
         """
 
         # add header to metrics file
@@ -436,14 +444,18 @@ class DataBase:
                 metrics.write('loop ')
                 for name in self.metrics_list_names:
                     metrics.write(name + ' ')
-                metrics.write('query_id' + '\n')
+                for j in range(batch):
+                    metrics.write('query_id' + str(j + 1))
+                metrics.write('\n')
 
         # write to file
         with open(output_metrics_file, 'a') as metrics:
             metrics.write(str(loop) + ' ')
             for value in self.metrics_list_values:
                 metrics.write(str(value) + ' ')
-            metrics.write(str(self.queried_sample[loop][0]) + '\n')
+            for j in range(batch):
+                metrics.write(str(self.queried_sample[j]) + ' ')
+            metrics.write('\n')
 
     def save_queried_sample(self, queried_sample_file: str, loop: int,
                             full_sample=False):
@@ -471,6 +483,7 @@ class DataBase:
                 # add header to query sample file
                 full_header = self.metadata_names + self.features_names
                 with open(queried_sample_file, 'w') as query:
+                    query.write('day ')
                     for item in full_header:
                         query.write(item + ' ')
                     query.write('\n')
