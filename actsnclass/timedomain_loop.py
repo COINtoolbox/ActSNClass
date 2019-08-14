@@ -232,7 +232,7 @@ def main():
     classifier = 'RandomForest'
     training = 'original'
     batch = 1
-    strategy = 'RandomSampling'
+    strategy = 'UncSampling'
     days = [19, 182]
     output_diag_file = 'results/time_domain/diag_rand_original.dat'
     output_queried_file = 'results/time_domain/queried_rand_original.dat'
