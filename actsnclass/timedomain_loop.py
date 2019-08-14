@@ -68,6 +68,53 @@ def get_sample_tomorrow(info_today: DataBase, info_tomorrow: DataBase):
         return info_today
 
 
+def get_training_sample(train_option, info_today: DataBase,
+                        path_to_full_features: str, features_method='Bazin'):
+    """
+    Update training samples according to user choice.
+
+    Parameters
+    ----------
+    train_option
+    info_today
+    path_to_full_features
+    features_method
+
+    Returns
+    -------
+
+    """
+    if train_option == 'original':
+        # read_full light curve data
+        full_data = DataBase()
+        full_data.load_features(path_to_file=path_to_full_features,
+                                method=features_method)
+        full_data.build_samples(initial_training='original')
+
+        # get ids of objs in the original sample
+        fulldata_train_ids = full_data.train_metadata['id'].values
+
+        # update values in the matrix today
+        info_today.build_samples(initial_training='original')
+        info_today.train_labels = full_data.train_labels
+        info_today.train_features = full_data.train_features
+        info_today.train_metadata = full_data.train_metadata
+
+        # remove objects in original training from today's test sample
+        test_today_ids = info_today.test_metadata['id'].values
+        test_surv_flag = np.array([~np.isin(obj, fulldata_train_ids)
+                                   for obj in test_today_ids])
+        info_today.test_metadata = info_today.test_metadata[test_surv_flag]
+        info_today.test_features = info_today.test_features[test_surv_flag]
+        info_today.test_labels = info_today.test_labels[test_surv_flag]
+
+    else:
+        # separate training and test samples
+        info_today.build_samples(initial_training=train_option)
+
+    return info_today, fulldata_train_ids
+
+
 def timedomain_loop(days: list, strategy: str, path_to_data_dir: str,
                     output_diag_file: str, output_queried_file: str,
                     features_method='Bazin', classifier='RandomForest',
@@ -106,6 +153,9 @@ def timedomain_loop(days: list, strategy: str, path_to_data_dir: str,
         Default is 5.
     batch: int (optional)
         Size of batch to be queried in each loop. Default is 1.
+    path_to_full_features: str (optional)
+        Path to full light curve features files.
+        This is only used if training == 'original'.
     """
 
     # name of features file for today
@@ -114,36 +164,12 @@ def timedomain_loop(days: list, strategy: str, path_to_data_dir: str,
     # load features
     info_today = DataBase()
     info_today.load_features(features_today, method=features_method)
-    info_today.build_samples(initial_training=5)
 
     # get full LC original training
-    if training == 'original':
-        # read_full light curve data
-        full_data = DataBase()
-        full_data.load_features(path_to_file=path_to_full_features,
-                                method=features_method)
-        full_data.build_samples(initial_training='original')
-
-        # get ids of objs in the original sample
-        fulldata_train_ids = full_data.train_metadata['id'].values
-
-        # update values in the matrix today
-        info_today.build_samples(initial_training='original')
-        info_today.train_labels = full_data.train_labels
-        info_today.train_features = full_data.train_features
-        info_today.train_metadata  = full_data.train_metadata
-
-        # remove objects in original training from today's test sample
-        test_today_ids = info_today.test_metadata['id'].values
-        test_surv_flag = np.array([np.isin(obj, fulldata_train_ids)
-                                   for obj in test_today_ids])
-        info_today.test_metadata = info_today.test_metadata[test_surv_flag]
-        info_today.test_features = info_today.test_features[test_surv_flag]
-        info_today.test_labels = info_today.test_labels[test_surv_flag]
-
-    else:
-        # separate training and test samples
-        info_today.build_samples(initial_training=training)
+    info_today, fulldata_train_ids = \
+        get_training_sample(training, info_today,
+                            path_to_full_features=path_to_full_features,
+                            features_method=features_method)
 
     # cont loop
     loop = 0
@@ -184,6 +210,16 @@ def timedomain_loop(days: list, strategy: str, path_to_data_dir: str,
 
         # update loop count
         loop = loop + 1
+
+        # check if samples in test today not in original training
+        if training == 'original':
+            uptoday_test_ids = update_today.test_metadata['id'].values
+
+            test_surv_flag = np.array([~np.isin(obj, fulldata_train_ids)
+                                       for obj in uptoday_test_ids])
+            update_today.test_metadata = update_today.test_metadata[test_surv_flag]
+            update_today.test_labels = update_today.test_labels[test_surv_flag]
+            update_today.test_features = update_today.test_features[test_surv_flag]
 
         # update information from today
         del info_tomorrow
