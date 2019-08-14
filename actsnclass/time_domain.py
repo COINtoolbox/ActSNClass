@@ -51,7 +51,7 @@ class SNPCCPhotometry(object):
     def __init__(self):
         self.bazin_header = 'id redshift type code sample gA gB gt0 ' + \
                             'gtfall gtrise rA rB rt0 rtfall rtrise iA ' + \
-                            'iB it0 itfall itrise zA zB zt0 ztfall ztrise\n '
+                            'iB it0 itfall itrise zA zB zt0 ztfall ztrise\n'
         self.max_epoch = 56351.5
         self.min_epoch = 56170.5
         self.rmag_lim = 24
@@ -123,7 +123,7 @@ class SNPCCPhotometry(object):
 
         else:
             with open(features_file, 'w') as param_file:
-                param_file.write(header)
+                param_file.write(self.header)
 
     def build_one_epoch(self, raw_data_dir: str, day_of_survey: int,
                         time_domain_dir: str, feature_method='Bazin',
@@ -169,7 +169,7 @@ class SNPCCPhotometry(object):
                 if len(lc.bazin_features) > 0 and \
                         'None' not in lc.bazin_features:
                     count_surv = count_surv + 1
-                    print('... ... ... Survivied: ', count_surv)
+                    print('... ... ... Survived: ', count_surv)
 
                     # see if query is possible
                     queryable = \
@@ -186,6 +186,6 @@ class SNPCCPhotometry(object):
                                          str(lc.sntype) + ' ')
                         param_file.write(str(lc.sncode) + ' ' +
                                          str(lc.sample) + ' ')
-                        for item in lc.bazin_features:
+                        for item in lc.bazin_features[:-1]:
                             param_file.write(str(item) + ' ')
-                        param_file.write('\n')
+                        param_file.write(str(lc.bazin_features[-1]) + '\n')

@@ -57,7 +57,7 @@ def learn_loop(nloops: int, strategy: str, path_to_features: str,
     # initiate object
     data = DataBase()
 
-    # load Bazin features
+    # load features
     data.load_features(path_to_features, method=features_method)
 
     # separate training and test samples
@@ -77,13 +77,15 @@ def learn_loop(nloops: int, strategy: str, path_to_features: str,
         indx = data.make_query(strategy=strategy, batch=batch)
 
         # update training and test samples
-        data.update_samples(indx)
+        data.update_samples(indx, loop=loop)
 
         # save diagnostics for current state
-        data.save_metrics(loop=loop, output_metrics_file=output_diag_file)
+        data.save_metrics(loop=loop, output_metrics_file=output_diag_file,
+                          batch=batch)
 
         # save query sample to file
-        data.save_queried_sample(output_queried_file, loop=loop, full_sample=False)
+        data.save_queried_sample(output_queried_file, loop=loop,
+                                 full_sample=False)
 
 
 def main():
