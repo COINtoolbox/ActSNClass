@@ -43,7 +43,7 @@ def get_sample_tomorrow(info_today: DataBase, info_tomorrow: DataBase):
 
     # isolate ids information
     today_ids = info_today.metadata['id'].values
-    tomorow_ids = info_tomorrow.metadata['id'].values
+    tomorrow_ids = info_tomorrow.metadata['id'].values
 
     # for each element in tomorrow's sample
     for i in range(info_tomorrow.metadata.shape[0]):
@@ -62,7 +62,7 @@ def get_sample_tomorrow(info_today: DataBase, info_tomorrow: DataBase):
             info_today.metadata.at[loc_today, 'sample'] = sample_tomorrow
 
     for k in range(len(today_ids)):
-        if np.isin(today_ids[k], tomorow_ids):
+        if np.isin(today_ids[k], tomorrow_ids):
             info_today.metadata.at[k, 'sample'] = 'test'
 
         return info_today
@@ -71,7 +71,7 @@ def get_sample_tomorrow(info_today: DataBase, info_tomorrow: DataBase):
 def timedomain_loop(days: list, strategy: str, path_to_data_dir: str,
                     output_diag_file: str, output_queried_file: str,
                     features_method='Bazin', classifier='RandomForest',
-                    training=5, batch=1):
+                    training=5, batch=1, path_to_full_features=''):
     """Perform the active learning loop in time domain.
 
     Trains the machine learning model in day X and queries in day X+1.
@@ -103,7 +103,7 @@ def timedomain_loop(days: list, strategy: str, path_to_data_dir: str,
         If 'original': begin from the train sample flagged in the file
         If int: choose the required number of samples at random,
         ensuring that at least half are SN Ia
-        Default is 'original'.
+        Default is 5.
     batch: int (optional)
         Size of batch to be queried in each loop. Default is 1.
     """
@@ -114,9 +114,36 @@ def timedomain_loop(days: list, strategy: str, path_to_data_dir: str,
     # load features
     info_today = DataBase()
     info_today.load_features(features_today, method=features_method)
+    info_today.build_samples(initial_training=5)
 
-    # separate training and test samples
-    info_today.build_samples(initial_training=training)
+    # get full LC original training
+    if training == 'original':
+        # read_full light curve data
+        full_data = DataBase()
+        full_data.load_features(path_to_file=path_to_full_features,
+                                method=features_method)
+        full_data.build_samples(initial_training='original')
+
+        # get ids of objs in the original sample
+        fulldata_train_ids = full_data.train_metadata['id'].values
+
+        # update values in the matrix today
+        info_today.build_samples(initial_training='original')
+        info_today.train_labels = full_data.train_labels
+        info_today.train_features = full_data.train_features
+        info_today.train_metadata  = full_data.train_metadata
+
+        # remove objects in original training from today's test sample
+        test_today_ids = info_today.test_metadata['id'].values
+        test_surv_flag = np.array([np.isin(obj, fulldata_train_ids)
+                                   for obj in test_today_ids])
+        info_today.test_metadata = info_today.test_metadata[test_surv_flag]
+        info_today.test_features = info_today.test_features[test_surv_flag]
+        info_today.test_labels = info_today.test_labels[test_surv_flag]
+
+    else:
+        # separate training and test samples
+        info_today.build_samples(initial_training=training)
 
     # cont loop
     loop = 0
@@ -167,20 +194,22 @@ def main():
     path_to_data_dir = 'results/time_domain/data/'
     features_method = 'Bazin'
     classifier = 'RandomForest'
-    training = 5
+    training = 'original'
     batch = 1
     strategy = 'RandomSampling'
     days = [19, 182]
-    output_diag_file = 'results/time_domain/diag_rand.dat'
-    output_queried_file = 'results/time_domain/queried_rand.dat'
-    output_plot = 'plots/time_domain.png'
+    output_diag_file = 'results/time_domain/diag_rand_original.dat'
+    output_queried_file = 'results/time_domain/queried_rand_original.dat'
+    output_plot = 'plots/time_domain_original.png'
+    path_to_full_features = 'results/Bazin.dat'
 
     timedomain_loop(days=days, strategy=strategy,
                     path_to_data_dir=path_to_data_dir,
                     output_diag_file=output_diag_file,
                     output_queried_file=output_queried_file,
                     features_method=features_method, classifier=classifier,
-                    training=training, batch=batch)
+                    training=training, batch=batch,
+                    path_to_full_features=path_to_full_features)
 
     from actsnclass.plot_results import Canvas
     cv=Canvas()
