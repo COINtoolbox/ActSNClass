@@ -134,3 +134,17 @@ In the example shown above, when reading the data from the features file there w
 This corresponds to an unrealistic scenario where we are able to obtain spectra for any object at any time.
 
 .. hint:: If you wish to restrict the sample available for querying, just change the `sample` variable to `queryable` for the objects available for querying. Whenever this keywork is encountered in a file of extracted features, the code automatically restricts the query selection to the objects flagged as `queryable`.
+
+
+Active Learning loop in time domain
+===================================
+
+Considering that you have previously prepared the time domain data, you can run the active learning loop
+in its current form either by using the :py:mod:`actsnclass.time_domain_loop` or by using the command line
+interface:
+
+.. code-block::bash
+
+    >>> run_time_domain.py -d <first day of survey> <last day of survey>
+    >>>        -m <output metrics file> -q <output queried file> -f <features directory>
+    >>>        -s <learning strategy> -fm <path to full light curve features file >

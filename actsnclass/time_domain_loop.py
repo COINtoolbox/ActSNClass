@@ -46,8 +46,9 @@ def get_original_training(path_to_features, method='Bazin', screen=False):
 def time_domain_loop(days: list,  output_diag_file: str,
                      output_queried_file: str,
                      path_to_features_dir: str, strategy: str,
-                     batch=1,  classifier='RandomForest',
-                     features_method='Bazin', path_to_full_lc_features="",
+                     batch=1, canonical = False,  classifier='RandomForest',
+                     features_method='Bazin', path_to_canonical="",
+                     path_to_full_lc_features="",
                      screen=True, training='original'):
     """Perform the active learning loop. All results are saved to file.
 
@@ -66,11 +67,16 @@ def time_domain_loop(days: list,  output_diag_file: str,
         Query strategy. Options are 'UncSampling' and 'RandomSampling'.
     batch: int (optional)
         Size of batch to be queried in each loop. Default is 1.
+    canonical: bool (optional)
+        If True, restrict the search to the canonical sample.
     classifier: str (optional)
         Machine Learning algorithm.
         Currently only 'RandomForest' is implemented.
     features_method: str (optional)
         Feature extraction method. Currently only 'Bazin' is implemented.
+    path_to_canonical: str (optional)
+        Path to canonical sample features files.
+        It is only used if "strategy==canonical".
     path_to_full_lc_features: str (optional)
         Path to full light curve features file.
         Only used if training is a number.
@@ -92,21 +98,28 @@ def time_domain_loop(days: list,  output_diag_file: str,
     data.load_features(path_to_features, method=features_method,
                        screen=screen)
 
-    # separate training and test samples
-    data.build_samples(initial_training=training)
-
-    # change training and queryable
+    # change training
     if training == 'original':
-
+        data.build_samples(initial_training='original')
         full_lc_features = get_original_training(path_to_features=path_to_full_lc_features)
         data.train_metadata = full_lc_features.train_metadata
         data.train_labels = full_lc_features.train_labels
         data.train_features = full_lc_features.train_features
 
+    else:
+        data.build_samples(initial_training=int(training))
+
+    # get list of canonical ids
+    if canonical:
+        canonical = DataBase()
+        canonical.load_features(path_to_file=path_to_canonical)
+        data.queryable_ids = canonical.queryable_ids
+
+
     for night in range(int(days[0]), int(days[-1]) - 1):
 
         if screen:
-            print('Processing night: ', str(night))
+            print('Processing night: ', night)
 
         # cont loop
         loop = night - int(days[0])
@@ -146,7 +159,11 @@ def time_domain_loop(days: list,  output_diag_file: str,
         data.test_metadata = data_tomorrow.test_metadata
         data.test_labels = data_tomorrow.test_labels
         data.test_features = data_tomorrow.test_features
-        data.queryable_ids = data_tomorrow.queryable_ids
+
+        if strategy == 'canonical':
+            data.queryable_ids = canonical.queryable_ids
+        else:
+            data.queryable_ids = data_tomorrow.queryable_ids
 
 
 def main():
