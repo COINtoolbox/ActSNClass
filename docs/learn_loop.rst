@@ -147,16 +147,30 @@ interface:
 
     >>> run_time_domain.py -d <first day of survey> <last day of survey>
     >>>        -m <output metrics file> -q <output queried file> -f <features directory>
-    >>>        -s <learning strategy> -t <choice of initial training> -fm <path to full light curve features file >
+    >>>        -s <learning strategy> -t <choice of initial training>
 
 Make sure you check the full documentation of the module to understand which variables are required depending
 on the case you wish to run.
 
 For example, to run with SNPCC data, the larges survey interval you can run is between 19 and 182 days,
-the corresponding option will be `- 19 182`, also although the  :
+the corresponding option will be `-d 19 182`.
 
-.. code-block:: bash
-   -d 19 182
+In the example above, if you choose to start from the original training sample, `-t original` you must also
+input the path to the file containing the full light curve analysis - so the full initial training can
+be read. This option corresponds to `-t original -fm <path to full lc features>`.
 
-Once you have one at least one option you can
+More details can be found in the corresponding `docstring <https://github.com/COINtoolbox/ActSNClass/blob/master/actsnclass/scripts/run_time_domain.py>`_.
 
+
+Once you ran one or more options, you can use the :py:mod:`actsnclass.plot_results` module, as described in the :ref:`produce plots <plotting>` page.
+The result will be something like the plot below (accounting for variations due to initial training).
+
+
+.. image:: images/time_domain.png
+   :align: center
+   :height: 448 px
+   :width: 640 px
+   :alt: Example of time domain output.
+
+
+.. warning:: At this point there is no canonical sample option implemented for the time domain module.

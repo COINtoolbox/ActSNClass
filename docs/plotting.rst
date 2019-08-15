@@ -1,5 +1,4 @@
 .. _plotting:
-   :noindex:
 
 Plotting
 ========
