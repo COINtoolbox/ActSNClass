@@ -136,6 +136,7 @@ Active Learning loop
    :toctree: api
 
     learn_loop
+    time_domain_loop
 
 
 Plotting
@@ -159,3 +160,4 @@ Scripts
    fit_dataset
    make_diagnostic_plots
    run_loop
+   run_time_domain

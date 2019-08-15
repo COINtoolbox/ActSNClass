@@ -68,7 +68,7 @@ def main(user_choice):
 
     >>> run_time_domain.py -d <first day of survey> <last day of survey>
     >>>        -m <output metrics file> -q <output queried file> -f <features directory>
-    >>>        -s <learning strategy>
+    >>>        -s <learning strategy> -fm <path to full light curve features >
 
     Be aware to check the default options as well!
     """
@@ -95,6 +95,17 @@ def main(user_choice):
                      features_method=feature_method,
                      path_to_full_lc_features=path_to_full_lc_features,
                      screen=screen, training=training)
+
+
+def str2bool(v):
+    if isinstance(v, bool):
+        return v
+    if v.lower() in ('yes', 'true', 't', 'y', '1'):
+        return True
+    elif v.lower() in ('no', 'false', 'f', 'n', '0'):
+        return False
+    else:
+        raise argparse.ArgumentTypeError('Boolean value expected.')
 
 
 if __name__ == '__main__':
@@ -124,19 +135,19 @@ if __name__ == '__main__':
                         required=False, default='RandomForest',
                         help='Classifier. Currently only accepts '
                              '"RandomForest".')
-    parser.add_argument('-fm', '--feature-method', dest='feature_method',
+    parser.add_argument('-fm', '--feature-method', dest='feat_method',
                         required=False, default='Bazin',
                         help='Feature extraction method. Currently only accepts '
                              '"Bazin".')
     parser.add_argument('-fl', '--full-light-curve',
-                        dest='path_to_full_lc_features', required=False,
+                        dest='full_features', required=False,
                         default=' ', help='Path to full light curve features.'
                                           'Only used if '
                                           '"training==original".')
     parser.add_argument('-sc', '--screen', dest='screen', required=False,
-                        default=True, help='If True, display size info on '
-                                           'training and test sample on'
-                                           'screen.')
+                        default=True, type=str2bool,
+                        help='If True, display size info on training and '
+                             'test sample on screen.')
     parser.add_argument('-t', '--training', dest='training', required=False,
                         default='original', help='Choice of initial training'
                                                  'sample. It can be "original"'
