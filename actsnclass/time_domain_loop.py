@@ -24,16 +24,19 @@ from actsnclass import DataBase
 def get_original_training(path_to_features, method='Bazin', screen=False):
     """Read original full light curve training sample
 
-
     Parameters
     ----------
-    path_to_features
-    method
-    screen
+    path_to_features: str
+        Complete path to file holding full light curve features.
+    method: str (optional)
+        Feature extraction method. Only option implemented is "Bazin".
+    screen: bool (optional)
+        If true, show on screen comments on the dimensions of some key elements.
 
     Returns
     -------
-
+    snactclass.DataBase
+        Information about the original full light curve analys.
     """
 
     data = DataBase()
