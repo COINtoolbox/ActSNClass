@@ -34,7 +34,21 @@ Full documentation can be found at [readthedocs](https://actsnclass.readthedocs.
 
 The current version runs in Python-3.7.
 
-In order to install this code you should clone this repository and do:  
+We recommend you use anaconda to create a suitable environment.
 
-        python setup.py install --user
+To set up the enviroment clone this repository, navigate to its location in the 
+terminal and do::  
+
+    >> conda env create -f environment.yml
+
+Once the environment is created, activate it using::
+
+    >> conda activate ActSNClass
+    
+You will notice a `(ActSNCLass)` to the left of your terminal line.
+This means everything is ok!
+
+In order to install this code you should clone this repository and do::  
+
+    (ActSNClass) >> python setup.py install
 
