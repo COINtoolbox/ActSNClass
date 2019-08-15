@@ -132,11 +132,20 @@ Metrics
 Active Learning loop
 ====================
 
+*Full light curve*
+
 .. autosummary::
    :toctree: api
 
     learn_loop
-    time_domain_loop
+
+*Time domain*
+
+.. autosummary::
+   :toctree: api
+
+    get_original_training
+    time_domain_loop.time_domain_loop
 
 
 Plotting
