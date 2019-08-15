@@ -382,16 +382,6 @@ def fit_snpcc_bazin(path_to_data_dir: str, features_file: str):
 
 
 def main():
-    path_to_data_dir = 'data/SIMGEN_PUBLIC_DES/'
-    file_list=['DES_SN687582.DAT', 'DES_SN043679.DAT', 'DES_SN172648.DAT']
-
-    i=0
-    lc = LightCurve()
-    lc.load_snpcc_lc(path_to_data_dir + file_list[i])
-    lc.fit_bazin_all()
-
-    if 'None' not in lc.bazin_features:
-        lc.plot_bazin_fit(save=True, output_file='plots/light_curves/' + str(lc.id) + '.png', show=True)
     return None
 
 
