@@ -143,7 +143,7 @@ Considering that you have previously prepared the time domain data, you can run 
 in its current form either by using the :py:mod:`actsnclass.time_domain_loop` or by using the command line
 interface:
 
-.. code-block::bash
+.. code-block:: bash
 
     >>> run_time_domain.py -d <first day of survey> <last day of survey>
     >>>        -m <output metrics file> -q <output queried file> -f <features directory>
