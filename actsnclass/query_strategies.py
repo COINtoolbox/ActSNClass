@@ -22,7 +22,8 @@ import numpy as np
 
 
 def uncertainty_sampling(class_prob: np.array, test_ids: np.array,
-                         queryable_ids: np.array, batch=1) -> list:
+                         queryable_ids: np.array, batch=1,
+                         dump=False) -> list:
     """Search for the sample with highest uncertainty in predicted class.
 
     Parameters
@@ -36,6 +37,10 @@ def uncertainty_sampling(class_prob: np.array, test_ids: np.array,
     batch: int (optional)
         Number of objects to be chosen in each batch query.
         Default is 1.
+    dump: bool (optional)
+        If True display on screen the shift in index and
+        the difference in estimated probabilities of being Ia
+        caused by constraints on the sample available for querying.
 
     Returns
     -------
@@ -61,6 +66,11 @@ def uncertainty_sampling(class_prob: np.array, test_ids: np.array,
     # arrange queryable elements in increasing order
     flag = np.array(flag)
     final_order = order[flag]
+
+    if dump:
+        print('*** Displacement caused by constraints on query****')
+        print(' 0 -> ', list(order).index(final_order[0]))
+        print(class_prob[order[0]], '-- > ', class_prob[final_order[0]])
 
     # return the index of the highest uncertain objects which are queryable
     return list(final_order)[:batch]

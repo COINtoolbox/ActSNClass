@@ -31,6 +31,7 @@ from .scripts.build_time_domain import main as build_time_domain
 from .scripts.fit_dataset import main as fit_dataset
 from .scripts.make_diagnostic_plots import main as make_diagnostic_plots
 from .scripts.run_loop import main as run_loop
+from .scripts.run_time_domain import main as run_time_domain
 from .time_domain import SNPCCPhotometry
 
 
@@ -55,5 +56,6 @@ __all__ = ['accuracy',
            'random_forest',
            'random_sampling',
            'run_loop',
+           'run_time_domain',
            'SNPCCPhotometry',
            'uncertainty_sampling']

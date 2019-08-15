@@ -52,8 +52,8 @@ class SNPCCPhotometry(object):
         self.bazin_header = 'id redshift type code sample gA gB gt0 ' + \
                             'gtfall gtrise rA rB rt0 rtfall rtrise iA ' + \
                             'iB it0 itfall itrise zA zB zt0 ztfall ztrise\n'
-        self.max_epoch = 56351.5
-        self.min_epoch = 56170.5
+        self.max_epoch = 56352
+        self.min_epoch = 56171
         self.rmag_lim = 24
 
     def get_lim_mjds(self, raw_data_dir):

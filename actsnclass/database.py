@@ -165,6 +165,7 @@ class DataBase:
             Complete path to Bazin features file.
         screen: bool (optional)
             If True, print on screen number of light curves processed.
+            Default is False.
         """
 
         # read matrix with Bazin features
@@ -181,7 +182,7 @@ class DataBase:
         self.features = self.data[self.features_names]
         self.metadata = self.data[self.metadata_names]
 
-        if print:
+        if screen:
             print('Loaded ', self.metadata.shape[0], ' samples!')
 
     def load_features(self, path_to_file: str, method='Bazin',
@@ -200,6 +201,7 @@ class DataBase:
             accepts method=='Bazin'
         screen: bool (optional)
             If True, print on screen number of light curves processed.
+            Default is False.
         """
 
         if method == 'Bazin':
@@ -208,7 +210,8 @@ class DataBase:
             raise ValueError('Only Bazin features are implemented! '
                              '\n Feel free to add other options.')
 
-    def build_samples(self, initial_training='original', nclass=2):
+    def build_samples(self, initial_training='original', nclass=2,
+                      screen=False):
         """Separate train and test samples.
 
         Populate properties: train_features, train_header, test_features,
@@ -225,6 +228,8 @@ class DataBase:
         nclass: int (optional)
             Number of classes to consider in the classification
             Currently only nclass == 2 is implemented.
+        screen: bool (optional)
+            If True display the dimensions of training and test samples.
         """
 
         # separate original training and test samples
@@ -299,8 +304,9 @@ class DataBase:
             raise ValueError('"Initial training" should be '
                              '"original" or integer.')
 
-        print('Training set size: ', self.train_metadata.shape[0])
-        print('Test set size: ', self.test_metadata.shape[0])
+        if screen:
+            print('Training set size: ', self.train_metadata.shape[0])
+            print('Test set size: ', self.test_metadata.shape[0])
 
     def classify(self, method='RandomForest'):
         """Apply a machine learning classifier.
@@ -342,7 +348,8 @@ class DataBase:
             raise ValueError('Only snpcc metric is implemented!'
                              '\n Feel free to add other options.')
 
-    def make_query(self, strategy='UncSampling', batch=1) -> list:
+    def make_query(self, strategy='UncSampling', batch=1,
+                   dump=False) -> list:
         """Identify new object to be added to the training sample.
 
         Parameters
@@ -355,6 +362,10 @@ class DataBase:
         batch: int (optional)
             Number of objects to be chosen in each batch query.
             Default is 1.
+        dump: bool (optional)
+            If true, display on screen information about the
+            displacement in order and classificaion probability due to
+            constraints on queryable sample.
 
         Returns
         -------
@@ -368,7 +379,7 @@ class DataBase:
             query_indx = uncertainty_sampling(class_prob=self.classprob,
                                               queryable_ids=self.queryable_ids,
                                               test_ids=self.test_metadata['id'].values,
-                                              batch=batch)
+                                              batch=batch, dump=dump)
             return query_indx
 
         elif strategy == 'RandomSampling':
