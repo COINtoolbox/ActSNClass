@@ -45,4 +45,13 @@ This will generate:
    :alt: Plot diagnostics evolution.
 
 
+Alternatively, you can use  it directly from the command line.
+
+For example, the result above could also be obtained doing:
+
+.. code-block:: bash
+
+    >>> make_diagnostic_plots.py -m <path to canonical diag> <path to rand sampling diag>  <path to unc sampling diag>
+    >>>        -o <path to output plot file> -s Canonical RandomSampling UncSampling
+
 OBS: the color pallete for this project was chosen to resemble the work of `Piet Mondrian <https://en.wikipedia.org/wiki/Piet_Mondrian>`_.

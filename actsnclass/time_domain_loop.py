@@ -88,7 +88,7 @@ def time_domain_loop(days: list,  output_diag_file: str,
     data = DataBase()
 
     # load features for the first day
-    path_to_features = path_to_features_dir + 'day_' + str(days[0]) + '.dat'
+    path_to_features = path_to_features_dir + 'day_' + str(int(days[0])) + '.dat'
     data.load_features(path_to_features, method=features_method,
                        screen=screen)
 
@@ -103,13 +103,13 @@ def time_domain_loop(days: list,  output_diag_file: str,
         data.train_labels = full_lc_features.train_labels
         data.train_features = full_lc_features.train_features
 
-    for night in range(days[0], days[-1] - 1):
+    for night in range(int(days[0]), int(days[-1]) - 1):
 
         if screen:
             print('Processing night: ', str(night))
 
         # cont loop
-        loop = night - days[0]
+        loop = night - int(days[0])
 
         # classify
         data.classify(method=classifier)
