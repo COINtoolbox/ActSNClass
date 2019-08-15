@@ -147,4 +147,16 @@ interface:
 
     >>> run_time_domain.py -d <first day of survey> <last day of survey>
     >>>        -m <output metrics file> -q <output queried file> -f <features directory>
-    >>>        -s <learning strategy> -fm <path to full light curve features file >
+    >>>        -s <learning strategy> -t <choice of initial training> -fm <path to full light curve features file >
+
+Make sure you check the full documentation of the module to understand which variables are required depending
+on the case you wish to run.
+
+For example, to run with SNPCC data, the larges survey interval you can run is between 19 and 182 days,
+the corresponding option will be `- 19 182`, also although the  :
+
+.. code-block:: bash
+   -d 19 182
+
+Once you have one at least one option you can
+
