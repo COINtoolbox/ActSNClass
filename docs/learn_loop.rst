@@ -173,4 +173,4 @@ The result will be something like the plot below (accounting for variations due 
    :alt: Example of time domain output.
 
 
-.. warning:: At this point there is no canonical sample option implemented for the time domain module.
+.. warning:: At this point there is no `Canonical sample` option implemented for the time domain module.
