@@ -1,3 +1,8 @@
+[![crp4](https://img.shields.io/badge/CRP-%234-blue)](https://iaacoin.wixsite.com/crp2017)
+[![Paper DOI](https://img.shields.io/badge/Paper%20DOI-10.1093%2Fmnras%2Fsty3015-green)](https://doi.org/10.1093/mnras/sty3015) 
+[![arXiv](https://img.shields.io/badge/arxiv-astro--ph%2F1804.03765-red)](https://arxiv.org/abs/1804.03765) 
+
+
 # <img align="right" src="docs/images/COIN_logo_very_small.png" width="350"> ActSNClass
 
 
