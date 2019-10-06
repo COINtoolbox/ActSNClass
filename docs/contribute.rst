@@ -39,15 +39,15 @@ The function below show how the basic structure required to deal with 1 light cu
    >>>    ####################
    >>>
    >>>    # structure of light curve
-   >>>    lc = pd.DataFrame()
-   >>>    lc.dataset_name = XXXX               # name of the data set
-   >>>    lc.filters = [X, Y, Z]               # list of filters
-   >>>    lc.id = XXX                          # identification number
-   >>>    lc.redshift = X                      # redshift (optional, important for building canonical)
-   >>>    lc.sample = XXXXX                    # train, test or queryable (none is mandatory)
-   >>>    lc.sntype = X                        # Ia or non-Ia
-   >>>    lc.photometry = pd.DataFrame()       # min keys: MJD, filter, FLUX, FLUXERR
-   >>>                                         # bonus: MAG, MAGERR, SNR
+   >>>    lc = {}
+   >>>    lc['dataset_name'] = XXXX               # name of the data set
+   >>>    lc['filters'] = [X, Y, Z]               # list of filters
+   >>>    lc['id'] = XXX                          # identification number
+   >>>    lc['redshift'] = X                      # redshift (optional, important for building canonical)
+   >>>    lc['sample'] = XXXXX                    # train, test or queryable (none is mandatory)
+   >>>    lc['sntype'] = X                        # Ia or non-Ia
+   >>>    lc['photometry' = pd.DataFrame()        # min keys: MJD, filter, FLUX, FLUXERR
+   >>>                                            # bonus: MAG, MAGERR, SNR
    >>>    return lc
 
 Feel free to also provide other keywords which might be important to handle your data.
