@@ -21,7 +21,7 @@ from .build_snpcc_canonical import build_snpcc_canonical
 from .build_snpcc_canonical import Canonical, plot_snpcc_train_canonical
 from .classifiers import random_forest
 from .database import DataBase
-from .fit_lightcurves import fit_snpcc_bazin, LightCurve
+from .fit_lightcurves import fit_snpcc_bazin, LightCurve, fit_resspect_bazin
 from .learn_loop import learn_loop
 from .metrics import accuracy, efficiency, fom, purity, get_snpcc_metric
 from .query_strategies import random_sampling, uncertainty_sampling
@@ -46,6 +46,7 @@ __all__ = ['accuracy',
            'fit_dataset',
            'fit_scipy',
            'fit_snpcc_bazin',
+           'fit_resspect_bazin',
            'fom',
            'get_snpcc_metric',
            'learn_loop',
