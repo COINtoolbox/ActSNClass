@@ -245,8 +245,11 @@ class LightCurve(object):
         snid: int
             Identification number for the desired light curve.
         """
+  
+        all_photo = pd.read_csv(photo_file, index_col=False)
+        if ' ' in all_photo.keys()[0]:
+            all_photo = pd.read_csv(photo_file, sep=' ', index_col=False)
 
-        all_photo = pd.read_csv(photo_file)
         flag = all_photo['SNID'] == snid
         photo = all_photo[flag]
            
@@ -371,20 +374,24 @@ class LightCurve(object):
             y = self.photometry['flux'][filter_flag].values
             yerr = self.photometry['fluxerr'][filter_flag].values
 
-            # shift to avoid large numbers in x-axis
-            time = x - min(x)
-            xaxis = np.linspace(0, max(time), 500)[:, np.newaxis]
-            # calculate fitted function
-            fitted_flux = np.array([bazin(t, self.bazin_features[i * 5],
-                                          self.bazin_features[i * 5 + 1],
-                                          self.bazin_features[i * 5 + 2],
-                                          self.bazin_features[i * 5 + 3],
-                                          self.bazin_features[i * 5 + 4])
-                                    for t in xaxis])
+            if len(x) > 4:
+                # shift to avoid large numbers in x-axis
+                time = x - min(x)
+                xaxis = np.linspace(0, max(time), 500)[:, np.newaxis]
+                # calculate fitted function
+                fitted_flux = np.array([bazin(t, self.bazin_features[i * 5],
+                                              self.bazin_features[i * 5 + 1],
+                                              self.bazin_features[i * 5 + 2],
+                                              self.bazin_features[i * 5 + 3],
+                                              self.bazin_features[i * 5 + 4])
+                                        for t in xaxis])
 
-            plt.errorbar(time, y, yerr=yerr, color='blue', fmt='o')
-            plt.plot(xaxis, fitted_flux, color='red', lw=1.5)
-            plt.xlabel('MJD - ' + str(min(x)))
+                plt.errorbar(time, y, yerr=yerr, color='blue', fmt='o')
+                plt.plot(xaxis, fitted_flux, color='red', lw=1.5)
+                plt.xlabel('MJD - ' + str(min(x)))
+
+            else:
+                plt.xlabel('MJD')
             plt.ylabel('FLUXCAL')
             plt.tight_layout()
 
@@ -461,7 +468,9 @@ def fit_resspect_bazin(path_photo_file: str, path_header_file:str,
     count_surv = 0
 
     # read header information
-    header = pd.read_csv(path_header_file)
+    header = pd.read_csv(path_header_file, index_col=False)
+    if ' ' in header.keys()[0]:
+        header = pd.read_csv(path_header_file, sep=' ', index_col=False)
 
     # add headers to files
     with open(output_file, 'w') as param_file:
