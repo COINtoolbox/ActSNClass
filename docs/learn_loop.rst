@@ -95,7 +95,7 @@ In interactive mode, you must define the required variables and use the :py:mod:
 .. code-block:: python
    :linenos:
 
-   >>> from actsnclass import  learn_loop
+   >>> from actsnclass.learn_loop import  learn_loop
 
    >>> nloops = 1000                                  # number of iterations
    >>> method = 'Bazin'                               # only option in v1.0
