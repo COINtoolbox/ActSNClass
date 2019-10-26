@@ -59,6 +59,8 @@ class LightCurve(object):
     -------
     check_queryable(mjd: float, r_lim: float)
         Check if this light can be queried in a given day.
+    evaluate_bazin(param: list, time: np.array) -> np.array
+        Evaluate the Bazin function given parameter values.
     load_snpcc_lc(path_to_data: str)
         Reads header and photometric information for 1 light curve
     load_resspect_lc(photo_file: str, snid: int)
@@ -250,7 +252,11 @@ class LightCurve(object):
         if ' ' in all_photo.keys()[0]:
             all_photo = pd.read_csv(photo_file, sep=' ', index_col=False)
 
-        flag = all_photo['SNID'] == snid
+        if 'SNID' in all_photo.keys():
+            flag = all_photo['SNID'] == snid
+        elif 'snid' in all_photo.keys():
+            flag = all_photo['snid'] == snid
+
         photo = all_photo[flag]
            
         self.dataset_name = 'RESSPECT'              # name of data set
@@ -322,6 +328,47 @@ class LightCurve(object):
         bazin_param = fit_scipy(time - time[0], flux)
 
         return bazin_param
+
+    def evaluate_bazin(self, param: list, time: np.array):
+        """Evaluate the Bazin function given parameter values.
+
+        Parameters
+        ----------
+        param: list
+            List of Bazin parameters in order [a, b, t0, tfall, trise] 
+            for all filters, concatenated from blue to red
+        time: np.array or list
+            Time since maximum where to evaluate the Bazin fit.
+
+        Returns
+        -------
+        np.array
+            Value of the Bazin function in each required time
+        """
+        # store flux values and starting points
+        flux = []
+        first_obs = []
+        tmax_all = []
+
+        for k in range(len(self.filters)):
+            # find day of maximum
+            x = range(400)
+            y = [bazin(epoch, param[0 + k * 5], 
+                      param[1 + k * 5], param[2 + k * 5], param[3 + k * 5], param[4 + k * 5])
+                      for epoch in x]
+
+            t_max = x[y.index(max(y))]
+            tmax_all.append(t_max)
+            
+            for item in time:
+                epoch = t_max + item
+                flux.append(bazin(epoch, param[0 + k * 5], 
+                      param[1 + k * 5], param[2 + k * 5], param[3 + k * 5], param[4 + k * 5]))
+
+            first_obs.append(t_max + time[0])
+
+        return np.array(flux), first_obs, tmax_all
+        
 
     def fit_bazin_all(self):
         """Perform Bazin fit for all filters independently and concatenate results.
@@ -506,7 +553,6 @@ def fit_resspect_bazin(path_photo_file: str, path_header_file:str,
                 param_file.write('\n')
 
     param_file.close()
-
 
 def main():
     return None

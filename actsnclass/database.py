@@ -70,6 +70,8 @@ class DataBase:
     -------
     load_bazin_features(path_to_bazin_file: str)
         Load Bazin features from file
+    load_photometry_features(path_to_photometry_file:str)
+        Load photometric light curves from file
     load_features(path_to_file: str, method: str)
         Load features according to the chosen feature extraction method.
     build_samples(initial_training: str or int, nclass: int)
@@ -153,7 +155,8 @@ class DataBase:
         self.train_metadata = pd.DataFrame()
         self.train_labels = np.array([])
 
-    def load_bazin_features(self, path_to_bazin_file: str, screen=False):
+    def load_bazin_features(self, path_to_bazin_file: str, screen=False,
+                            survey='DES'):
         """Load Bazin features from file.
 
         Populate properties: data, features, feature_list, header
@@ -166,16 +169,29 @@ class DataBase:
         screen: bool (optional)
             If True, print on screen number of light curves processed.
             Default is False.
+        survey: str (optional)
+            Name of survey. Used to infer the filter set.
+	    Options are DES or LSST. Default is DES.
         """
 
         # read matrix with Bazin features
-        self.data = pd.read_csv(path_to_bazin_file, sep=' ', index_col=False)
+        self.data = pd.read_csv(path_to_bazin_file, index_col=False)
+        if ' ' in self.data.keys()[0]:
+            self.data = pd.read_csv(path_to_bazin_file, sep=' ', index_col=False)
 
         # list of features to use
-        self.features_names = ['gA', 'gB', 'gt0', 'gtfall', 'gtrise', 'rA',
-                               'rB', 'rt0', 'rtfall', 'rtrise', 'iA', 'iB',
-                               'it0', 'itfall', 'itrise', 'zA', 'zB', 'zt0',
-                               'ztfall', 'ztrise']
+        if survey == 'DES':
+            self.features_names = ['gA', 'gB', 'gt0', 'gtfall', 'gtrise', 'rA',
+                                   'rB', 'rt0', 'rtfall', 'rtrise', 'iA', 'iB',
+                                   'it0', 'itfall', 'itrise', 'zA', 'zB', 'zt0',
+                                   'ztfall', 'ztrise']
+        else:
+            self.features_names = ['uA', 'uB', 'ut0', 'utfall', 'utrise',
+                                   'gA', 'gB', 'gt0', 'gtfall', 'gtrise',
+                                   'rA', 'rB', 'rt0', 'rtfall', 'rtrise',
+                                   'iA', 'iB', 'it0', 'itfall', 'itrise',
+                                   'zA', 'zB', 'zt0', 'ztfall', 'ztrise',
+                                   'YA', 'YB', 'Yt0', 'Ytfall', 'Ytrise']
 
         self.metadata_names = ['id', 'redshift', 'type', 'code', 'sample']
 
@@ -185,8 +201,38 @@ class DataBase:
         if screen:
             print('Loaded ', self.metadata.shape[0], ' samples!')
 
-    def load_features(self, path_to_file: str, method='Bazin',
-                      screen=False):
+    def load_photometry_features(self, path_to_photometry_file: str, screen=False):
+        """Load photometry features from file.
+
+        Populate properties: data, features, feature_list, header
+        and header_list.
+
+        Parameters
+        ----------
+        path_to_photometry_file: str
+            Complete path to photometry features file.
+        screen: bool (optional)
+            If True, print on screen number of light curves processed.
+            Default is False.
+        """
+
+        # read matrix with Bazin features
+        self.data = pd.read_csv(path_to_photometry_file, index_col=False)
+        if ' ' in self.data.keys()[0]:
+            self.data = pd.read_csv(path_to_photometry_file, sep=' ', index_col=False)
+
+        # list of features to use
+        self.features_names = self.data.keys()[5:]
+
+        self.metadata_names = ['id', 'redshift', 'type', 'code', 'sample']
+
+        self.features = self.data[self.features_names]
+        self.metadata = self.data[self.metadata_names]
+
+        if screen:
+            print('Loaded ', self.metadata.shape[0], ' samples!')
+
+    def load_features(self, path_to_file: str, method='Bazin', screen=False):
         """Load features according to the chosen feature extraction method.
 
         Populates properties: data, features, feature_list, header
@@ -198,7 +244,8 @@ class DataBase:
             Complete path to features file.
         method: str (optional)
             Feature extraction method. The current implementation only
-            accepts method=='Bazin'
+            accepts method=='Bazin' or 'photometry'.
+            Default is 'Bazin'.
         screen: bool (optional)
             If True, print on screen number of light curves processed.
             Default is False.
@@ -206,8 +253,10 @@ class DataBase:
 
         if method == 'Bazin':
             self.load_bazin_features(path_to_file, screen=screen)
+        elif method == 'photometry':
+            self.load_photometry_features(path_to_file, screen=screen)
         else:
-            raise ValueError('Only Bazin features are implemented! '
+            raise ValueError('Only Bazin and photometry features are implemented!'
                              '\n Feel free to add other options.')
 
     def build_samples(self, initial_training='original', nclass=2,
