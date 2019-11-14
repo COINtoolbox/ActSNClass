@@ -272,7 +272,7 @@ class LightCurve(object):
         self.photometry['SNR'] = photo['SNR'].values
         self.photometry = pd.DataFrame(self.photometry)
 
-     def load_plasticc_lc(self, photo_file, snid):
+    def load_plasticc_lc(self, photo_file, snid):
         """
         Return 1 light curve from PLAsTiCC simulations.
     
