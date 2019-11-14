@@ -296,13 +296,16 @@ class LightCurve(object):
             flag = all_photo['snid'] == snid
 
         photo = all_photo[flag]
+
+        filter_dict = {0:'u', 1:'g', 2:'r', 3:'i', 4:'z', 5:'Y'}
            
         self.dataset_name = 'PLAsTiCC'              # name of data set
         self.filters = ['u', 'g', 'r', 'i', 'z', 'Y']       # list of filters
         self.id = snid 
         self.photometry = {}
         self.photometry['mjd'] = photo['mjd'].values
-        self.photometry['band'] = photo['passband'].values
+        self.photometry['band'] = [filter_dict[photo['passband'].values[k]] 
+                                   for k in range(photo['passband'].shape[0])]
         self.photometry['flux'] = photo['flux'].values
         self.photometry['fluxerr'] = photo['flux_err'].values
         self.photometry['detected_bool'] = photo['detected_bool'].values
