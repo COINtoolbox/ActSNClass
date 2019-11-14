@@ -637,7 +637,7 @@ def fit_plasticc_bazin(path_photo_file: str, path_header_file:str,
 
         # get model name 
         lc.redshift = header['true_z'][header['object_id'] == snid].values[0]
-        lc.sntype = types[header['SIM_TYPE_NAME'][header['object_id'] == snid].values[0]]            
+        lc.sntype = types[header['true_target'][header['object_id'] == snid].values[0]]            
         lc.sncode = header['true_target'][header['object_id'] == snid].values[0]
         lc.sample = sample
 
