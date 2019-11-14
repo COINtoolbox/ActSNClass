@@ -63,6 +63,8 @@ class LightCurve(object):
         Evaluate the Bazin function given parameter values.
     load_snpcc_lc(path_to_data: str)
         Reads header and photometric information for 1 light curve
+    load_plasticc_lc(photo_file: str, snid: int)
+	Load photometric information for 1 PLAsTiCC light curve
     load_resspect_lc(photo_file: str, snid: int)
 	Load photometric information for 1 RESSPECT light curve
     fit_bazin(band: str) -> list
@@ -268,6 +270,42 @@ class LightCurve(object):
         self.photometry['flux'] = photo['FLUXCAL'].values
         self.photometry['fluxerr'] = photo['FLUXCALERR'].values
         self.photometry['SNR'] = photo['SNR'].values
+        self.photometry = pd.DataFrame(self.photometry)
+
+     def load_plasticc_lc(self, photo_file, snid):
+        """
+        Return 1 light curve from PLAsTiCC simulations.
+    
+        Parameters
+        ----------
+        photo_file: str
+            Complete path to full sample file.
+        snid: int
+            Identification number for the desired light curve.
+        """
+  
+        all_photo = pd.read_csv(photo_file, index_col=False)
+        if ' ' in all_photo.keys()[0]:
+            all_photo = pd.read_csv(photo_file, sep=' ', index_col=False)
+
+        if 'object_id' in all_photo.keys():
+            flag = all_photo['object_id'] == snid
+        elif 'SNID' in all_photo.keys():
+            flag = all_photo['SNID'] == snid
+        elif 'snid' in all_photo.keys():
+            flag = all_photo['snid'] == snid
+
+        photo = all_photo[flag]
+           
+        self.dataset_name = 'PLAsTiCC'              # name of data set
+        self.filters = ['u', 'g', 'r', 'i', 'z', 'Y']       # list of filters
+        self.id = snid 
+        self.photometry = {}
+        self.photometry['mjd'] = photo['mjd'].values
+        self.photometry['band'] = photo['passband'].values
+        self.photometry['flux'] = photo['flux'].values
+        self.photometry['fluxerr'] = photo['flux_err'].values
+        self.photometry['detected_bool'] = photo['detected_bool'].values
         self.photometry = pd.DataFrame(self.photometry)
 
     def check_queryable(self, mjd: float, r_lim: float):
@@ -594,7 +632,7 @@ def fit_plasticc_bazin(path_photo_file: str, path_header_file:str,
 
         # load individual light curves
         lc = LightCurve()                       
-        lc.load_resspect_lc(path_photo_file, snid) 
+        lc.load_plasticc_lc(path_photo_file, snid) 
         lc.fit_bazin_all()
 
         # get model name 
