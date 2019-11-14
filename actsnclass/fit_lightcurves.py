@@ -23,7 +23,7 @@ import numpy as np
 import os
 import pandas as pd
 
-__all__ = ['LightCurve', 'fit_snpcc_bazin', 'fit_resspect_bazin']
+__all__ = ['LightCurve', 'fit_snpcc_bazin', 'fit_resspect_bazin', 'fit_plasticc_bazin']
 
 
 class LightCurve(object):
@@ -553,6 +553,71 @@ def fit_resspect_bazin(path_photo_file: str, path_header_file:str,
                 param_file.write('\n')
 
     param_file.close()
+
+
+def fit_plasticc_bazin(path_photo_file: str, path_header_file:str,
+                       output_file: str, sample=None):
+    """Fit Bazin functions to all filters.
+
+    Parameters
+    ----------
+    path_photo_file: str
+        Complete path to light curve file.
+    path_header_file: str
+        Complete path to header file.
+    output_file: str
+        Output file where the features will be stored.
+    sample: str
+	'train' or 'test'. Default is None.
+    """
+    types = {90: 'Ia', 67: '91bg', 52:'Iax', 42:'II', 62:'Ibc', 
+             95: 'SLSN', 15:'TDE', 64:'KN', 88:'AGN', 92:'RRL', 65:'M-dwarf',
+             16:'EB',53:'Mira', 6:'MicroL', 991:'MicroLB', 992:'ILOT', 
+             993:'CART', 994:'PISN',995:'MLString'}
+
+    # count survivers
+    count_surv = 0
+
+    # read header information
+    header = pd.read_csv(path_header_file, index_col=False)
+    if ' ' in header.keys()[0]:
+        header = pd.read_csv(path_header_file, sep=' ', index_col=False)
+
+    # add headers to files
+    with open(output_file, 'w') as param_file:
+        param_file.write('id redshift type code sample uA uB ut0 utfall ' +
+                         'utrise gA gB gt0 gtfall gtrise rA rB rt0 rtfall ' +
+                         'rtrise iA iB it0 itfall itrise zA zB zt0 ztfall ' + 
+                         'ztrise YA YB Yt0 Ytfall Ytrise\n')
+
+    for snid in header['object_id'].values:      
+
+        # load individual light curves
+        lc = LightCurve()                       
+        lc.load_resspect_lc(path_photo_file, snid) 
+        lc.fit_bazin_all()
+
+        # get model name 
+        lc.redshift = header['true_z'][header['object_id'] == snid].values[0]
+        lc.sntype = types[header['SIM_TYPE_NAME'][header['object_id'] == snid].values[0]]            
+        lc.sncode = header['true_target'][header['object_id'] == snid].values[0]
+        lc.sample = sample
+
+        # append results to the correct matrix
+        if 'None' not in lc.bazin_features:
+            count_surv = count_surv + 1
+            print('Survived: ', count_surv)
+
+            # save features to file
+            with open(output_file, 'a') as param_file:
+                param_file.write(str(lc.id) + ' ' + str(lc.redshift) + ' ' + str(lc.sntype) + ' ')
+                param_file.write(str(lc.sncode) + ' ' + str(lc.sample) + ' ')
+                for item in lc.bazin_features:
+                    param_file.write(str(item) + ' ')
+                param_file.write('\n')
+
+    param_file.close()
+
 
 def main():
     return None
