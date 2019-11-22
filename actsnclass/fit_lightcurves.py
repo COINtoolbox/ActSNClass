@@ -285,6 +285,8 @@ class LightCurve(object):
         """
   
         all_photo = pd.read_csv(photo_file, index_col=False)
+
+        print(all_photo)
         if ' ' in all_photo.keys()[0]:
             all_photo = pd.read_csv(photo_file, sep=' ', index_col=False)
 
