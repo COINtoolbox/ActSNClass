@@ -113,7 +113,7 @@ class LightCurve(object):
     a file with all Bazin fits for this data set was produced.
 
     ##### for RESSPECT light curves 
-    >>> path_to_data_dir = '../data/light_curves/'           # path to data directory
+    >>> data_dir = '../data/light_curves/'           # path to data directory
     >>> header_file = 'RESSPECT_PERFECT_PHOTO_TRAIN.csv'
     >>> photo_file = 'RESSPECT_PERFECT_HEADER_TRAIN.csv'
 
