@@ -185,7 +185,9 @@ class DataBase:
                                    'rB', 'rt0', 'rtfall', 'rtrise', 'iA', 'iB',
                                    'it0', 'itfall', 'itrise', 'zA', 'zB', 'zt0',
                                    'ztfall', 'ztrise']
-        else:
+            self.metadata_names = ['id', 'redshift', 'type', 'code', 'sample']
+
+        elif survey == 'LSST':
             self.features_names = ['uA', 'uB', 'ut0', 'utfall', 'utrise',
                                    'gA', 'gB', 'gt0', 'gtfall', 'gtrise',
                                    'rA', 'rB', 'rt0', 'rtfall', 'rtrise',
@@ -193,7 +195,9 @@ class DataBase:
                                    'zA', 'zB', 'zt0', 'ztfall', 'ztrise',
                                    'YA', 'YB', 'Yt0', 'Ytfall', 'Ytrise']
 
-        self.metadata_names = ['id', 'redshift', 'type', 'code', 'sample']
+            self.metadata_names = ['objid', 'redshift', 'type', 'code', 'sample']
+        else:
+            raise ValueError('Only "DES" and "LSST" filters are implemented at this point!')
 
         self.features = self.data[self.features_names]
         self.metadata = self.data[self.metadata_names]
