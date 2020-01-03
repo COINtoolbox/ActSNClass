@@ -236,7 +236,8 @@ class DataBase:
         if screen:
             print('Loaded ', self.metadata.shape[0], ' samples!')
 
-    def load_features(self, path_to_file: str, method='Bazin', screen=False):
+    def load_features(self, path_to_file: str, method='Bazin', screen=False,
+                      survey='DES'):
         """Load features according to the chosen feature extraction method.
 
         Populates properties: data, features, feature_list, header
@@ -253,12 +254,16 @@ class DataBase:
         screen: bool (optional)
             If True, print on screen number of light curves processed.
             Default is False.
+        survey: str (optional)
+            Survey used to obtain the data. The current implementation
+            only accepts survey='DES' or 'LSST'.
+            Default is 'DES'.
         """
 
         if method == 'Bazin':
-            self.load_bazin_features(path_to_file, screen=screen)
+            self.load_bazin_features(path_to_file, screen=screen, survey=survey)
         elif method == 'photometry':
-            self.load_photometry_features(path_to_file, screen=screen)
+            self.load_photometry_features(path_to_file, screen=screen, survey=survey)
         else:
             raise ValueError('Only Bazin and photometry features are implemented!'
                              '\n Feel free to add other options.')
