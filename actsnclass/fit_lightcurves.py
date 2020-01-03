@@ -581,6 +581,8 @@ def fit_resspect_bazin(path_photo_file: str, path_header_file:str,
                          'rtrise iA iB it0 itfall itrise zA zB zt0 ztfall ' + 
                          'ztrise YA YB Yt0 Ytfall Ytrise\n')
 
+    print(header)
+
     # check id flag
     if 'SNID' in header.keys():
         id_name = 'SNID'
