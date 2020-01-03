@@ -302,12 +302,17 @@ class LightCurve(object):
         snid: int
             Identification number for the desired light curve.
         """
-  
-        all_photo = pd.read_csv(photo_file, index_col=False)
 
-        print(all_photo)
-        if ' ' in all_photo.keys()[0]:
-            all_photo = pd.read_csv(photo_file, sep=' ', index_col=False)
+        if '.tar.gz' in photo_file:
+            tar = tarfile.open(photo_file, 'r:gz')
+            fname = tar.getmembers()[0]
+            content = tar.extractfile(fname).read()
+            all_photo = pd.read_csv(io.BytesIO(contente))
+        else:
+            all_photo = pd.read_csv(photo_file, index_col=False)
+
+            if ' ' in all_photo.keys()[0]:
+                all_photo = pd.read_csv(photo_file, sep=' ', index_col=False)
 
         if 'object_id' in all_photo.keys():
             flag = all_photo['object_id'] == snid
@@ -599,8 +604,6 @@ def fit_resspect_bazin(path_photo_file: str, path_header_file:str,
                          'rtrise iA iB it0 itfall itrise zA zB zt0 ztfall ' + 
                          'ztrise YA YB Yt0 Ytfall Ytrise\n')
 
-    print(header)
-
     # check id flag
     if 'SNID' in header.keys():
         id_name = 'SNID'
@@ -680,9 +683,17 @@ def fit_plasticc_bazin(path_photo_file: str, path_header_file:str,
     count_surv = 0
 
     # read header information
-    header = pd.read_csv(path_header_file, index_col=False)
-    if ' ' in header.keys()[0]:
-        header = pd.read_csv(path_header_file, sep=' ', index_col=False)
+    if '.tar.gz' in path_header_file:
+        tar = tarfile.open(path_header_file, 'r:gz')
+        fname = tar.getmembers()[0]
+        content = tar.extracfile(fname).read()
+        header = pd.read_csv(io.BytesIO(content))
+        tar.close()
+    else:
+        header = pd.read_csv(path_header_file, index_col=False)
+
+        if ' ' in header.keys()[0]:
+            header = pd.read_csv(path_header_file, sep=' ', index_col=False)
 
     # add headers to files
     with open(output_file, 'w') as param_file:
