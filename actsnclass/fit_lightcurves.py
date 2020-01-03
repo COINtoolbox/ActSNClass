@@ -581,7 +581,15 @@ def fit_resspect_bazin(path_photo_file: str, path_header_file:str,
                          'rtrise iA iB it0 itfall itrise zA zB zt0 ztfall ' + 
                          'ztrise YA YB Yt0 Ytfall Ytrise\n')
 
-    for snid in header[self.id_name].values:      
+    # check id flag
+    if 'SNID' in header.keys():
+        id_name = 'SNID'
+    elif 'snid' in header.keys():
+        id_name = 'snid'
+    elif 'objid' in header.keys():
+        id_name = 'objid'
+
+    for snid in header[id_name].values:      
 
         # load individual light curves
         lc = LightCurve()                       
@@ -645,7 +653,15 @@ def fit_plasticc_bazin(path_photo_file: str, path_header_file:str,
                          'rtrise iA iB it0 itfall itrise zA zB zt0 ztfall ' + 
                          'ztrise YA YB Yt0 Ytfall Ytrise\n')
 
-    for snid in header[self.id_name].values:      
+    # check id flag
+    if 'SNID' in header.keys():
+        id_name = 'SNID'
+    elif 'snid' in header.keys():
+        id_name = 'snid'
+    elif 'objid' in header.keys():
+        id_name = 'objid'
+
+    for snid in header[id_name].values:      
 
         # load individual light curves
         lc = LightCurve()                       
