@@ -589,9 +589,9 @@ def fit_resspect_bazin(path_photo_file: str, path_header_file:str,
         lc.fit_bazin_all()
 
         # get model name 
-        lc.redshift = header['REDSHIFT_FINAL'][header[self.id_name] == snid].values[0]
-        lc.sntype = header['SIM_TYPE_NAME'][header[self.id_name] == snid].values[0]
-        lc.sncode = header['SIM_TYPE_INDEX'][header[self.id_name] == snid].values[0]
+        lc.redshift = header['REDSHIFT_FINAL'][header[lc.id_name] == snid].values[0]
+        lc.sntype = header['SIM_TYPE_NAME'][header[lc.id_name] == snid].values[0]
+        lc.sncode = header['SIM_TYPE_INDEX'][header[lc.id_name] == snid].values[0]
         lc.sample = sample
 
         # append results to the correct matrix
@@ -653,9 +653,9 @@ def fit_plasticc_bazin(path_photo_file: str, path_header_file:str,
         lc.fit_bazin_all()
 
         # get model name 
-        lc.redshift = header['true_z'][header[self.id_name] == snid].values[0]
-        lc.sntype = types[header['true_target'][header[self.id_name] == snid].values[0]]            
-        lc.sncode = header['true_target'][header[self.id_name] == snid].values[0]
+        lc.redshift = header['true_z'][header[lc.id_name] == snid].values[0]
+        lc.sntype = types[header['true_target'][header[lc.id_name] == snid].values[0]]            
+        lc.sncode = header['true_target'][header[lc.id_name] == snid].values[0]
         lc.sample = sample
 
         # append results to the correct matrix
