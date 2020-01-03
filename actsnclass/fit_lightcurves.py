@@ -42,6 +42,8 @@ class LightCurve(object):
         List of broad band filters.
     id: int
         SN identification number
+    id_name:
+        Column name of object identifier.
     photometry: pd.DataFrame
         Photometry information. Keys --> [mjd, band, flux, fluxerr, SNR, MAG, MAGERR].
     redshift: float
@@ -148,6 +150,7 @@ class LightCurve(object):
         self.dataset_name = ' '
         self.filters = []
         self.id = 0
+        self.id_name = None
         self.photometry = pd.DataFrame()
         self.redshift = 0
         self.sample = ' '
@@ -202,6 +205,7 @@ class LightCurve(object):
         for line in data:
             if line[0] == 'SNID:':
                 self.id = int(line[1])
+                self.id_name = 'SNID'
             elif line[0] == 'SNTYPE:':
                 if line[1] == '-9':
                     self.sample = 'test'
@@ -256,8 +260,13 @@ class LightCurve(object):
 
         if 'SNID' in all_photo.keys():
             flag = all_photo['SNID'] == snid
+            self.id_name = 'SNID'
         elif 'snid' in all_photo.keys():
             flag = all_photo['snid'] == snid
+            self.id_name = 'snid'
+        elif 'objid' in all_photo.keys():
+            flag = all_photo['objid'] == snid
+            self.id_name = 'objid'
 
         photo = all_photo[flag]
            
@@ -292,10 +301,13 @@ class LightCurve(object):
 
         if 'object_id' in all_photo.keys():
             flag = all_photo['object_id'] == snid
+            self.id_name = 'object_id'
         elif 'SNID' in all_photo.keys():
             flag = all_photo['SNID'] == snid
+            self.id_name = 'SNID'
         elif 'snid' in all_photo.keys():
             flag = all_photo['snid'] == snid
+            self.id_name = 'snid'
 
         photo = all_photo[flag]
 
@@ -303,7 +315,7 @@ class LightCurve(object):
            
         self.dataset_name = 'PLAsTiCC'              # name of data set
         self.filters = ['u', 'g', 'r', 'i', 'z', 'Y']       # list of filters
-        self.id = snid 
+        self.id = snid
         self.photometry = {}
         self.photometry['mjd'] = photo['mjd'].values
         self.photometry['band'] = [filter_dict[photo['passband'].values[k]] 
@@ -561,7 +573,7 @@ def fit_resspect_bazin(path_photo_file: str, path_header_file:str,
     header = pd.read_csv(path_header_file, index_col=False)
     if ' ' in header.keys()[0]:
         header = pd.read_csv(path_header_file, sep=' ', index_col=False)
-
+    
     # add headers to files
     with open(output_file, 'w') as param_file:
         param_file.write('id redshift type code sample uA uB ut0 utfall ' +
@@ -569,7 +581,7 @@ def fit_resspect_bazin(path_photo_file: str, path_header_file:str,
                          'rtrise iA iB it0 itfall itrise zA zB zt0 ztfall ' + 
                          'ztrise YA YB Yt0 Ytfall Ytrise\n')
 
-    for snid in header['SNID'].values:      
+    for snid in header[self.id_name].values:      
 
         # load individual light curves
         lc = LightCurve()                       
@@ -577,9 +589,9 @@ def fit_resspect_bazin(path_photo_file: str, path_header_file:str,
         lc.fit_bazin_all()
 
         # get model name 
-        lc.redshift = header['REDSHIFT_FINAL'][header['SNID'] == snid].values[0]
-        lc.sntype = header['SIM_TYPE_NAME'][header['SNID'] == snid].values[0]
-        lc.sncode = header['SIM_TYPE_INDEX'][header['SNID'] == snid].values[0]
+        lc.redshift = header['REDSHIFT_FINAL'][header[self.id_name] == snid].values[0]
+        lc.sntype = header['SIM_TYPE_NAME'][header[self.id_name] == snid].values[0]
+        lc.sncode = header['SIM_TYPE_INDEX'][header[self.id_name] == snid].values[0]
         lc.sample = sample
 
         # append results to the correct matrix
@@ -633,7 +645,7 @@ def fit_plasticc_bazin(path_photo_file: str, path_header_file:str,
                          'rtrise iA iB it0 itfall itrise zA zB zt0 ztfall ' + 
                          'ztrise YA YB Yt0 Ytfall Ytrise\n')
 
-    for snid in header['object_id'].values:      
+    for snid in header[self.id_name].values:      
 
         # load individual light curves
         lc = LightCurve()                       
@@ -641,9 +653,9 @@ def fit_plasticc_bazin(path_photo_file: str, path_header_file:str,
         lc.fit_bazin_all()
 
         # get model name 
-        lc.redshift = header['true_z'][header['object_id'] == snid].values[0]
-        lc.sntype = types[header['true_target'][header['object_id'] == snid].values[0]]            
-        lc.sncode = header['true_target'][header['object_id'] == snid].values[0]
+        lc.redshift = header['true_z'][header[self.id_name] == snid].values[0]
+        lc.sntype = types[header['true_target'][header[self.id_name] == snid].values[0]]            
+        lc.sncode = header['true_target'][header[self.id_name] == snid].values[0]
         lc.sample = sample
 
         # append results to the correct matrix

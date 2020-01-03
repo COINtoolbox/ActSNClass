@@ -21,7 +21,7 @@ import setuptools
 
 setuptools.setup(
     name='actsnclass',
-    version='1.0',
+    version='1.1',
     packages=setuptools.find_packages(),
     py_modules=['bazin',
                 'build_snpcc_canonical',
