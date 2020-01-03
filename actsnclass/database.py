@@ -16,9 +16,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import io
 import numpy as np
 import os
 import pandas as pd
+import tarfile
 
 from actsnclass.classifiers import random_forest
 from actsnclass.query_strategies import uncertainty_sampling, random_sampling
@@ -175,9 +177,17 @@ class DataBase:
         """
 
         # read matrix with Bazin features
-        self.data = pd.read_csv(path_to_bazin_file, index_col=False)
-        if ' ' in self.data.keys()[0]:
-            self.data = pd.read_csv(path_to_bazin_file, sep=' ', index_col=False)
+        if '.tar.gz' in path_to_bazin_file:
+            tar = tarfile.open(path_to_bazin_file, 'r:gz')
+            fname = tar.getmembers()[0]
+            content = tar.extractfile(fname).read()
+            self.data = pd.read_csv(io.BytesIO(content))
+            tar.close()
+            
+        else:
+            self.data = pd.read_csv(path_to_bazin_file, index_col=False)
+            if ' ' in self.data.keys()[0]:
+                self.data = pd.read_csv(path_to_bazin_file, sep=' ', index_col=False)
 
         # list of features to use
         if survey == 'DES':
@@ -221,10 +231,19 @@ class DataBase:
         """
 
         # read matrix with Bazin features
-        self.data = pd.read_csv(path_to_photometry_file, index_col=False)
-        if ' ' in self.data.keys()[0]:
-            self.data = pd.read_csv(path_to_photometry_file, sep=' ', index_col=False)
+        if '.tar.gz' in path_to_photometry_file:
+            tar = tarfile.open(path_to_photometry_file, 'r:gz')
+            fname = tar.getmembers()[0]
+            content = tar.extractfile(fname).read()
+            self.data = pd.read_csv(io.BytesIO(content))
+            tar.close()
+        else:
+            self.data = pd.read_csv(path_to_photometry_file, index_col=False)
+            if ' ' in self.data.keys()[0]:
+                self.data = pd.read_csv(path_to_photometry_file, sep=' ', index_col=False)
 
+        print(self.data.keys())
+        
         # list of features to use
         self.features_names = self.data.keys()[5:]
 
