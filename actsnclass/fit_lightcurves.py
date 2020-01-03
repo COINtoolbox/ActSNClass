@@ -18,10 +18,12 @@
 
 from actsnclass.bazin import bazin, fit_scipy
 
+import io
 import matplotlib.pylab as plt
 import numpy as np
 import os
 import pandas as pd
+import tarfile
 
 __all__ = ['LightCurve', 'fit_snpcc_bazin', 'fit_resspect_bazin', 'fit_plasticc_bazin']
 
@@ -253,10 +255,18 @@ class LightCurve(object):
         snid: int
             Identification number for the desired light curve.
         """
-  
-        all_photo = pd.read_csv(photo_file, index_col=False)
-        if ' ' in all_photo.keys()[0]:
-            all_photo = pd.read_csv(photo_file, sep=' ', index_col=False)
+
+        if '.tar.gz' in photo_file:
+            tar = tarfile.open(photo_file, 'r:gz')
+            fname = tar.getmembers()[0]
+            content = tar.extractfile(fname).read()
+            all_photo = pd.read_csv(io.BytesIO(content))
+            tar.close()
+        else:    
+            all_photo = pd.read_csv(photo_file, index_col=False)
+
+            if ' ' in all_photo.keys()[0]:
+                all_photo = pd.read_csv(photo_file, sep=' ', index_col=False)
 
         if 'SNID' in all_photo.keys():
             flag = all_photo['SNID'] == snid
@@ -570,9 +580,17 @@ def fit_resspect_bazin(path_photo_file: str, path_header_file:str,
     count_surv = 0
 
     # read header information
-    header = pd.read_csv(path_header_file, index_col=False)
-    if ' ' in header.keys()[0]:
-        header = pd.read_csv(path_header_file, sep=' ', index_col=False)
+    if '.tar.gz' in path_header_file:
+        tar = tarfile.open(path_header_file, 'r:gz')
+        fname = tar.getmembers()[0]
+        content = tar.extractfile(fname).read()
+        header = pd.read_csv(io.BytesIO(content))
+        tar.close()
+        
+    else:    
+        header = pd.read_csv(path_header_file, index_col=False)
+        if ' ' in header.keys()[0]:
+            header = pd.read_csv(path_header_file, sep=' ', index_col=False)
     
     # add headers to files
     with open(output_file, 'w') as param_file:
@@ -591,6 +609,24 @@ def fit_resspect_bazin(path_photo_file: str, path_header_file:str,
     elif 'objid' in header.keys():
         id_name = 'objid'
 
+    # check redshift flag
+    if 'redshift' in header.keys():
+        z_name = 'redshift'
+    elif 'REDSHIFT_FINAL' in header.keys():
+        z_name = 'REDSHIFT_FINAL'
+
+    # check type flag
+    if 'type' in header.keys():
+        type_name = 'type'
+    elif 'SIM_TYPE_NAME' in header.keys():
+        type_name = 'SIM_TYPE_NAME'
+
+    # check subtype flag
+    if 'code' in header.keys():
+        subtype_name = 'code'
+    elif 'SIM_TYPE_INDEX' in header.keys():
+        subtype_name = 'SIM_TYPE_NAME'
+
     for snid in header[id_name].values:      
 
         # load individual light curves
@@ -599,9 +635,9 @@ def fit_resspect_bazin(path_photo_file: str, path_header_file:str,
         lc.fit_bazin_all()
 
         # get model name 
-        lc.redshift = header['REDSHIFT_FINAL'][header[lc.id_name] == snid].values[0]
-        lc.sntype = header['SIM_TYPE_NAME'][header[lc.id_name] == snid].values[0]
-        lc.sncode = header['SIM_TYPE_INDEX'][header[lc.id_name] == snid].values[0]
+        lc.redshift = header[z_name][header[lc.id_name] == snid].values[0]
+        lc.sntype = header[type_name][header[lc.id_name] == snid].values[0]
+        lc.sncode = header[subtype_name][header[lc.id_name] == snid].values[0]
         lc.sample = sample
 
         # append results to the correct matrix
