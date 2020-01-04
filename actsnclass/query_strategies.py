@@ -49,7 +49,7 @@ def uncertainty_sampling(class_prob: np.array, test_ids: np.array,
             to be queried in decreasing order of importance.
     """
     if class_prob.shape[0] != test_ids.shape[0]:
-        raise ValueError('Number of probabiblities is different ' + '
+        raise ValueError('Number of probabiblities is different ' + 
                          'from number of objects in the test sample!')
 
     # calculate distance to the decision boundary - only binary classification

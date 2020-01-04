@@ -525,6 +525,10 @@ class DataBase:
                 random_forest(self.train_features, self.train_labels,
                               self.test_features)
 
+            print('######')
+            print('prob=', self.classprob.shape[0])
+            print('test=', self.test_features.shape[0])
+
         else:
             raise ValueError('Only RandomForest classifier is implemented!'
                              '\n Feel free to add other options.')
