@@ -34,8 +34,11 @@ def learn_loop(nloops: int, strategy: str, path_to_features: str,
         Number of active learning loops to run.
     strategy: str
         Query strategy. Options are 'UncSampling' and 'RandomSampling'.
-    path_to_features: str
+    path_to_features: str or dict
         Complete path to input features file.
+        if dict, keywords should be 'train' and 'test', 
+        and values must contain the path for separate train 
+        and test sample files.
     output_diag_file: str
         Full path to output file to store diagnostics of each loop.
     output_queried_file: str
@@ -67,12 +70,20 @@ def learn_loop(nloops: int, strategy: str, path_to_features: str,
     data = DataBase()
 
     # load features
-    data.load_features(path_to_features, method=features_method,
-                       screen=screen, survey=survey)
+    if isinstance(path_to_features, str):
+        data.load_features(path_to_features, method=features_method,
+                           screen=screen, survey=survey)
 
-    # separate training and test samples
-    data.build_samples(initial_training=training, nclass=nclass)
+        # separate training and test samples
+        data.build_samples(initial_training=training, nclass=nclass)
 
+    else:
+        data.load_features(path_to_features['train'], method=features_method,
+                           screen=screen, survey=survey, sample='train')
+        data.load_features(path_to_features['test'], method=features_method,
+                           screen=screen, survey=survey, sample='test')
+
+    
     for loop in range(nloops):
 
         if screen:
