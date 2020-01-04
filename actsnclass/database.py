@@ -161,8 +161,8 @@ class DataBase:
                             survey='DES', sample=None):
         """Load Bazin features from file.
 
-        Populate properties: data, features, feature_list, header
-        and header_list.
+        Populate properties: features, feature_names, metadata
+        and metadata_names.
 
         Parameters
         ----------
@@ -227,14 +227,14 @@ class DataBase:
             self.train_metadata = data[self.metadata_names]
 
             if screen:
-                print('Loaded ', self.metadata.shape[0], ' ' +  sample + ' samples!')
+                print('Loaded ', self.train_metadata.shape[0], ' ' +  sample + ' samples!')
 
         elif sample == 'test':
             self.test_features = data[self.features_names]
             self.test_metadata = data[self.metadata_names]
 
             if screen:
-                print('Loaded ', self.metadata.shape[0], ' ' + sample +  ' samples!')
+                print('Loaded ', self.test_metadata.shape[0], ' ' + sample +  ' samples!')
 
     def load_photometry_features(self, path_to_photometry_file: str,
                                  screen=False, sample=None):
@@ -332,7 +332,8 @@ class DataBase:
                              '\n Feel free to add other options.')
 
     def build_samples(self, initial_training='original', nclass=2,
-                      screen=False, Ia_frac=0.1, save_samples=False):
+                      screen=False, Ia_frac=0.1, save_samples=False,
+                      sep_files=False):
         """Separate train and test samples.
 
         Populate properties: train_features, train_header, test_features,
@@ -357,6 +358,9 @@ class DataBase:
         Ia_frac: float in [0,1] (optional)
             Fraction of Ia required in initial training sample.
             Default is 0.1.
+        sep_files: bool (optional)
+            If True, consider train and test samples separately read 
+            from independent files.
         """
 
         if 'id' in self.metadata.keys():
@@ -365,7 +369,7 @@ class DataBase:
             id_name = 'objid'
             
         # separate original training and test samples
-        if initial_training == 'original':
+        if initial_training == 'original' and not sep_files:
             train_flag = self.metadata['sample'] == 'train'
             train_data = self.features[train_flag]
             self.train_features = train_data.values
@@ -392,6 +396,21 @@ class DataBase:
             else:
                 raise ValueError("Only 'Ia x non-Ia' are implemented! "
                                  "\n Feel free to add other options.")
+
+        elif initial_training == 'original' and sep_files:
+
+            train_labels = self.train_metadata['type'].values == 'Ia'
+            self.train_labels = train_labels.astype(int) 
+
+            test_labels = self.test_metadata['type'].values == 'Ia'
+            self.test_labels = test_labels.astype(int)
+
+            if 'queryable' in self.test_metadata['sample'].values:
+                queryable_flag = self.test_metadata['sample'] == 'queryable'
+                self.queryable_ids = data_copy[queryable_flag][id_name].values
+
+            else:
+                self.queryable_ids = self.test_metadata[id_name].values
 
         elif isinstance(initial_training, int):
 
