@@ -263,7 +263,12 @@ class DataBase:
         # list of features to use
         self.features_names = data.keys()[5:]
 
-        self.metadata_names = ['id', 'redshift', 'type', 'code', 'sample']
+        if 'objid' in data.keys():
+            id_name = 'objid'
+        elif 'id' in data.keys():
+            id_name = 'id'
+            
+        self.metadata_names = [id_name, 'redshift', 'type', 'code', 'sample']
 
         if sample == None:
             self.features = data[self.features_names]
@@ -319,7 +324,11 @@ class DataBase:
                              '\n Feel free to add other options.')
 
     def build_samples(self, initial_training='original', nclass=2,
+<<<<<<< HEAD
                       screen=False, save_samples=False):
+=======
+                      screen=False, Ia_frac=0.1):
+>>>>>>> 099001f79238f13a11491a7fd2fee0e5b423f2fa
         """Separate train and test samples.
 
         Populate properties: train_features, train_header, test_features,
@@ -341,8 +350,16 @@ class DataBase:
         save_samples: bool (optional)
             If True, save training and test samples to file.
             it is only used if initial_training = int.
+        Ia_frac: float in [0,1] (optional)
+            Fraction of Ia required in initial training sample.
+            Default is 0.1.
         """
 
+        if 'id' in self.metadata.keys():
+            id_name = 'id'
+        elif 'objid' in self.metadata.keys():
+            id_name = 'objid'
+            
         # separate original training and test samples
         if initial_training == 'original':
             train_flag = self.metadata['sample'] == 'train'
@@ -358,9 +375,9 @@ class DataBase:
 
             if 'queryable' in self.metadata['sample'].values:
                 queryable_flag = self.metadata['sample'].values == 'queryable'
-                self.queryable_ids = self.metadata[queryable_flag]['id'].values
+                self.queryable_ids = self.metadata[queryable_flag][id_name].values
             else:
-                self.queryable_ids = self.test_metadata['id'].values
+                self.queryable_ids = self.test_metadata[id_name].values
 
             if nclass == 2:
                 train_ia_flag = self.train_metadata['type'] == 'Ia'
@@ -375,7 +392,7 @@ class DataBase:
         elif isinstance(initial_training, int):
 
             # get Ia flag
-            data_copy = self.train_metadata.copy()
+            data_copy = self.metadata.copy()            
             ia_flag = data_copy['type'] == 'Ia'
             
 	    # separate data per class 
@@ -383,32 +400,30 @@ class DataBase:
             nonIa_data = data_copy[~ia_flag]
 
             # get subsamples for training
-            temp_train_ia = Ia.data.sample(n=initial_training // 2 + 1,
-                                           random_state=42)
-            temp_train_nonia = nonIa_data.sample(n=initial_training//2,
-                                                 random_state=42)
+            temp_train_ia = Ia_data.sample(n=int(Ia_frac * initial_training))
+            temp_train_nonia = nonIa_data.sample(n=int((1-Ia_frac)*initial_training))
 
             # join classes
             frames_train = [temp_train_ia, temp_train_nonia]
             temp_train = pd.concat(frames_train, ignore_index=True)
-            train_flag = np.array([data_copy['id'].values[i] in temp_train['id'].values
+            train_flag = np.array([data_copy[id_name].values[i] in temp_train[id_name].values
                                    for i in range(data_copy.shape[0])])
 
             self.train_metadata = data_copy[train_flag]
             self.train_labels = data_copy['type'][train_flag].values == 'Ia'
-            self.train_features = self.features[train_flag]
+            self.train_features = self.features[train_flag].values
 
             # get test sample
             self.test_metadata = data_copy[~train_flag]
             self.test_labels = data_copy['type'][~train_flag].values == 'Ia'
-            self.train_features = self.features[~train_flag]
-
+            self.test_features = self.features[~train_flag].values
+            
             if 'queryable' in self.metadata['sample'].values:
                 queryable_flag = data_copy['sample'] == 'queryable'
                 combined_flag = np.logical_and(~train_flag, queryable_flag)
-                self.queryable_ids = data_copy[combined_flag]['id'].values
+                self.queryable_ids = data_copy[combined_flag][id_name].values
             else:
-                self.queryable_ids = self.test_metadata['id'].values               
+                self.queryable_ids = self.test_metadata[id_name].values
 
         else:
             raise ValueError('"Initial training" should be '
@@ -485,20 +500,25 @@ class DataBase:
             If strategy=='RandomSampling' the order is irrelevant.
         """
 
+        if 'objid' in self.test_metadata.keys():
+            id_name = 'objid'
+        elif 'id' in self.test_metadata.keys():
+            id_name = 'id'
+            
         if strategy == 'UncSampling':
             query_indx = uncertainty_sampling(class_prob=self.classprob,
                                               queryable_ids=self.queryable_ids,
-                                              test_ids=self.test_metadata['id'].values,
+                                              test_ids=self.test_metadata[id_name].values,
                                               batch=batch, dump=dump)
             return query_indx
 
         elif strategy == 'RandomSampling':
             query_indx = random_sampling(queryable_ids=self.queryable_ids,
-                                         test_ids=self.test_metadata['id'].values,
+                                         test_ids=self.test_metadata[id_name].values,
                                          batch=batch)
 
             for n in query_indx:
-                if self.test_metadata['id'].values[n] not in self.queryable_ids:
+                if self.test_metadata[id_name].values[n] not in self.queryable_ids:
                     raise ValueError('Chosen object is not available for query!')
 
             return query_indx
@@ -524,6 +544,7 @@ class DataBase:
 
         all_queries = []
         for obj in query_indx:
+
             # add object to the query sample
             query_header = self.test_metadata.values[obj]
             query_features = self.test_features[obj]
