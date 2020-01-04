@@ -427,7 +427,8 @@ class DataBase:
 
             # build complete metadata object
             self.metadata = pd.concat([self.train_metadata, self.test_metadata])
-          
+            self.features = np.concatenate((self.train_features, self.test_features))
+            
             # identify Ia
             ia_flag = self.metadata['type'] == 'Ia'
             
@@ -447,12 +448,12 @@ class DataBase:
 
             self.train_metadata = self.metadata[train_flag]
             self.train_labels = self.metadata['type'][train_flag].values == 'Ia'
-            self.train_features = self.features[train_flag].values
+            self.train_features = self.features[train_flag]
 
             # get test sample
             self.test_metadata = self.metadata[~train_flag]
             self.test_labels = self.metadata['type'][~train_flag].values == 'Ia'
-            self.test_features = self.features[~train_flag].values
+            self.test_features = self.features[~train_flag]
             
             if 'queryable' in self.metadata['sample'].values:
                 queryable_flag = self.metadata['sample'] == 'queryable'
