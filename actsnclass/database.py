@@ -55,13 +55,13 @@ class DataBase:
         Complete information of queried objects.
     queryable_ids: np.array()
         Flag for objects available to be queried.
-    test_features: pd.DataFrame
+    test_features: np.array()
         Features matrix for the test sample.
     test_metadata: pd.DataFrame
         Metadata for the test sample
     test_labels: np.array()
         True classification for the test sample.
-    train_features: pd.DataFrame
+    train_features: np.array()
         Features matrix for the train sample.
     train_metadata: pd.DataFrame
         Metadata for the training sample.
@@ -193,8 +193,6 @@ class DataBase:
             if ' ' in data.keys()[0]:
                 data = pd.read_csv(path_to_bazin_file, sep=' ', index_col=False)
 
-        print(data)
-
         # list of features to use
         if survey == 'DES':
             self.features_names = ['gA', 'gB', 'gt0', 'gtfall', 'gtrise', 'rA',
@@ -223,14 +221,14 @@ class DataBase:
                 print('Loaded ', self.metadata.shape[0], ' samples!')
 
         elif sample == 'train':
-            self.train_features = data[self.features_names]
+            self.train_features = data[self.features_names].values
             self.train_metadata = data[self.metadata_names]
 
             if screen:
                 print('Loaded ', self.train_metadata.shape[0], ' ' +  sample + ' samples!')
 
         elif sample == 'test':
-            self.test_features = data[self.features_names]
+            self.test_features = data[self.features_names].values
             self.test_metadata = data[self.metadata_names]
 
             if screen:
@@ -286,14 +284,14 @@ class DataBase:
                 print('Loaded ', self.metadata.shape[0], ' samples!')
 
         elif sample == 'train':
-            self.train_features = data[self.features_names]
+            self.train_features = data[self.features_names].values
             self.train_metadata = data[self.metadata_names]
 
             if screen:
                 print('Loaded ', self.train_metadata.shape[0], ' samples!')
 
         elif sample == 'test':
-            self.test_features = data[self.features_names]
+            self.test_features = data[self.features_names].values
             self.test_metadata = data[self.metadata_names]
 
             if screen:
@@ -416,7 +414,7 @@ class DataBase:
             # identify queryable objects
             if 'queryable' in self.test_metadata['sample'].values:
                 queryable_flag = self.test_metadata['sample'] == 'queryable'
-                self.queryable_ids = data_copy[queryable_flag][id_name].values
+                self.queryable_ids = self.test_metadata[queryable_flag][id_name].values
 
             else:
                 self.queryable_ids = self.test_metadata[id_name].values

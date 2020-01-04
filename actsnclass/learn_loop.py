@@ -83,7 +83,9 @@ def learn_loop(nloops: int, strategy: str, path_to_features: str,
         data.load_features(path_to_features['test'], method=features_method,
                            screen=screen, survey=survey, sample='test')
 
-    
+        data.build_samples(initial_training=training, nclass=nclass,
+                           screen=screen, sep_files=True)
+        
     for loop in range(nloops):
 
         if screen:
