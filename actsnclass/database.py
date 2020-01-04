@@ -319,7 +319,7 @@ class DataBase:
                              '\n Feel free to add other options.')
 
     def build_samples(self, initial_training='original', nclass=2,
-                      screen=False):
+                      screen=False, save_samples=False):
         """Separate train and test samples.
 
         Populate properties: train_features, train_header, test_features,
@@ -338,6 +338,9 @@ class DataBase:
             Currently only nclass == 2 is implemented.
         screen: bool (optional)
             If True display the dimensions of training and test samples.
+        save_samples: bool (optional)
+            If True, save training and test samples to file.
+            it is only used if initial_training = int.
         """
 
         # separate original training and test samples
@@ -399,44 +402,13 @@ class DataBase:
             self.test_metadata = data_copy[~train_flag]
             self.test_labels = data_copy['type'][~train_flag].values == 'Ia'
             self.train_features = self.features[~train_flag]
-            
-	    """
-            # initialize the temporary label holder
-            train_indexes = np.array([1])
-            temp_labels = np.array([self.metadata['type'].values[train_indexes]])
-
-            # make sure half are Ias and half are non-Ias
-            while sum(temp_labels == 'Ia') != initial_training // 2 + 1:
-                # this is an array of 5 indexes
-                train_indexes = np.random.randint(low=0,
-                                                  high=self.metadata.shape[0],
-                                                  size=initial_training)
-                temp_labels = self.metadata['type'].values[train_indexes]
- 	    
-
-            # set training
-            train_flag = self.metadata['type'].values[train_indexes] == 'Ia'
-            self.train_labels = np.array([int(item) for item in train_flag])
-            self.train_features = self.features.values[train_indexes]
-            self.train_metadata = pd.DataFrame(self.metadata.values[train_indexes],
-                                               columns=self.metadata_names)
-
-            # set test set as all objs apart from those in training
-            test_indexes = np.array([i for i in range(self.metadata.shape[0])
-                                     if i not in train_indexes])
-            test_ia_flag = self.metadata['type'].values[test_indexes] == 'Ia'
-            self.test_labels = np.array([int(item) for item in test_ia_flag])
-            self.test_features = self.features.values[test_indexes]
-            self.test_metadata = pd.DataFrame(self.metadata.values[test_indexes],
-                                              columns=self.metadata_names)
-            """
 
             if 'queryable' in self.metadata['sample'].values:
                 queryable_flag = data_copy['sample'] == 'queryable'
                 combined_flag = np.logical_and(~train_flag, queryable_flag)
                 self.queryable_ids = data_copy[combined_flag]['id'].values
             else:
-                self.queryable_ids = self.test_metadata['id'].values
+                self.queryable_ids = self.test_metadata['id'].values               
 
         else:
             raise ValueError('"Initial training" should be '
