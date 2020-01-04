@@ -324,11 +324,7 @@ class DataBase:
                              '\n Feel free to add other options.')
 
     def build_samples(self, initial_training='original', nclass=2,
-<<<<<<< HEAD
-                      screen=False, save_samples=False):
-=======
-                      screen=False, Ia_frac=0.1):
->>>>>>> 099001f79238f13a11491a7fd2fee0e5b423f2fa
+                      screen=False, Ia_frac=0.1, save_samples=False):
         """Separate train and test samples.
 
         Populate properties: train_features, train_header, test_features,
