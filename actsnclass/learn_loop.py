@@ -103,11 +103,6 @@ def learn_loop(nloops: int, strategy: str, path_to_features: str,
         # update training and test samples
         data.update_samples(indx, loop=loop)
 
-        print('**********')
-        print('test_size = ', data.test_features.shape[0])
-        print('train_size = ', data.train_features.shape[0])
-        print('**********')
-
         # save diagnostics for current state
         data.save_metrics(loop=loop, output_metrics_file=output_diag_file,
                           batch=batch, epoch=loop)
