@@ -462,6 +462,20 @@ class DataBase:
             else:
                 self.queryable_ids = self.test_metadata[id_name].values
 
+            # check if there are repeated ids
+            train_test_flag = np.array([True if item in self.test_metadata[id_name].values
+                                        else False for item in
+                                        self.train_metadata[id_name].values])
+
+            if sum(train_test_flag) > 0:
+                raise ValueError('There are repeated ids!!')
+
+            test_train_flag = np.array([True if item in self.train_metadata[id_name].values
+                                        else False for item in
+                                        self.test_metadata[id_name].values])
+
+            if sum(test_train_flag) > 0:
+                raise ValueError('There are repeated ids!!')
             
 
         elif isinstance(initial_training, int):
@@ -524,10 +538,6 @@ class DataBase:
             self.predicted_class,  self.classprob = \
                 random_forest(self.train_features, self.train_labels,
                               self.test_features)
-
-            print('######')
-            print('prob=', self.classprob.shape[0])
-            print('test=', self.test_features.shape[0])
 
         else:
             raise ValueError('Only RandomForest classifier is implemented!'
@@ -621,6 +631,11 @@ class DataBase:
             Store number of loop when this query was made.
         """
 
+        if 'id' in self.train_metadata.keys():
+            id_name = 'id'
+        elif 'objid' in self.train_metadata.keys():
+            id_name = 'objid'
+            
         all_queries = []
         for obj in query_indx:
 
@@ -645,10 +660,11 @@ class DataBase:
                                           axis=0)
 
             # remove queried object from test sample
-            self.test_metadata = self.test_metadata.drop(self.test_metadata.index[obj])
+            query_flag = self.test_metadata[id_name].values == self.test_metadata[id_name].iloc[obj]
+            test_metadata_temp = self.test_metadata.copy()
+            self.test_metadata = test_metadata_temp[~query_flag]
             self.test_labels = np.delete(self.test_labels, obj, axis=0)
             self.test_features = np.delete(self.test_features, obj, axis=0)
-
             all_queries.append(line)
 
         # update queried samples
