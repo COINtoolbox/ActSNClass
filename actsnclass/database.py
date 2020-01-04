@@ -158,7 +158,7 @@ class DataBase:
         self.train_labels = np.array([])
 
     def load_bazin_features(self, path_to_bazin_file: str, screen=False,
-                            survey='DES'):
+                            survey='DES', sample=None):
         """Load Bazin features from file.
 
         Populate properties: data, features, feature_list, header
@@ -174,6 +174,10 @@ class DataBase:
         survey: str (optional)
             Name of survey. Used to infer the filter set.
 	    Options are DES or LSST. Default is DES.
+        sample: str (optional)
+            If None, sample is given by a column within the given file.
+            else, read independent files for 'train' and 'test'.
+            Default is None.
         """
 
         # read matrix with Bazin features
@@ -181,13 +185,13 @@ class DataBase:
             tar = tarfile.open(path_to_bazin_file, 'r:gz')
             fname = tar.getmembers()[0]
             content = tar.extractfile(fname).read()
-            self.data = pd.read_csv(io.BytesIO(content))
+            data = pd.read_csv(io.BytesIO(content))
             tar.close()
             
         else:
-            self.data = pd.read_csv(path_to_bazin_file, index_col=False)
-            if ' ' in self.data.keys()[0]:
-                self.data = pd.read_csv(path_to_bazin_file, sep=' ', index_col=False)
+            data = pd.read_csv(path_to_bazin_file, index_col=False)
+            if ' ' in data.keys()[0]:
+                data = pd.read_csv(path_to_bazin_file, sep=' ', index_col=False)
 
         # list of features to use
         if survey == 'DES':
@@ -209,13 +213,23 @@ class DataBase:
         else:
             raise ValueError('Only "DES" and "LSST" filters are implemented at this point!')
 
-        self.features = self.data[self.features_names]
-        self.metadata = self.data[self.metadata_names]
+        if sample == None:
+            self.features = data[self.features_names]
+            self.metadata = data[self.metadata_names]
+
+        elif sample == 'train':
+            self.train_features = data[self.features_names]
+            self.train_metadata = data[self.metadata_names]
+
+        elif sample == 'test':
+            self.test_features = data[self.features_names]
+            self.test_metadata = data[self.metadata_names]
 
         if screen:
             print('Loaded ', self.metadata.shape[0], ' samples!')
 
-    def load_photometry_features(self, path_to_photometry_file: str, screen=False):
+    def load_photometry_features(self, path_to_photometry_file: str,
+                                 screen=False, sample=None):
         """Load photometry features from file.
 
         Populate properties: data, features, feature_list, header
@@ -228,6 +242,10 @@ class DataBase:
         screen: bool (optional)
             If True, print on screen number of light curves processed.
             Default is False.
+        sample: str (optional)
+            If None, sample is given by a column within the given file.
+            else, read independent files for 'train' and 'test'.
+            Default is None.
         """
 
         # read matrix with Bazin features
@@ -235,28 +253,35 @@ class DataBase:
             tar = tarfile.open(path_to_photometry_file, 'r:gz')
             fname = tar.getmembers()[0]
             content = tar.extractfile(fname).read()
-            self.data = pd.read_csv(io.BytesIO(content))
+            data = pd.read_csv(io.BytesIO(content))
             tar.close()
         else:
-            self.data = pd.read_csv(path_to_photometry_file, index_col=False)
-            if ' ' in self.data.keys()[0]:
-                self.data = pd.read_csv(path_to_photometry_file, sep=' ', index_col=False)
-
-        print(self.data.keys())
+            data = pd.read_csv(path_to_photometry_file, index_col=False)
+            if ' ' in data.keys()[0]:
+                data = pd.read_csv(path_to_photometry_file, sep=' ', index_col=False)
         
         # list of features to use
-        self.features_names = self.data.keys()[5:]
+        self.features_names = data.keys()[5:]
 
         self.metadata_names = ['id', 'redshift', 'type', 'code', 'sample']
 
-        self.features = self.data[self.features_names]
-        self.metadata = self.data[self.metadata_names]
+        if sample == None:
+            self.features = data[self.features_names]
+            self.metadata = data[self.metadata_names]
+
+        elif sample == 'train':
+            self.train_features = data[self.features_names]
+            self.train_metadata = data[self.metadata_names]
+
+        elif sample == 'test':
+            self.test_features = data[self.features_names]
+            self.test_metadata = data[self.metadata_names]
 
         if screen:
             print('Loaded ', self.metadata.shape[0], ' samples!')
 
     def load_features(self, path_to_file: str, method='Bazin', screen=False,
-                      survey='DES'):
+                      survey='DES', sample=None):
         """Load features according to the chosen feature extraction method.
 
         Populates properties: data, features, feature_list, header
@@ -277,12 +302,18 @@ class DataBase:
             Survey used to obtain the data. The current implementation
             only accepts survey='DES' or 'LSST'.
             Default is 'DES'.
+        sample: str (optional)
+            If None, sample is given by a column within the given file.
+            else, read independent files for 'train' and 'test'.
+            Default is None.
         """
 
         if method == 'Bazin':
-            self.load_bazin_features(path_to_file, screen=screen, survey=survey)
+            self.load_bazin_features(path_to_file, screen=screen,
+                                     survey=survey, sample=sample)
         elif method == 'photometry':
-            self.load_photometry_features(path_to_file, screen=screen, survey=survey)
+            self.load_photometry_features(path_to_file, screen=screen,
+                                          survey=survey, sample=sample)
         else:
             raise ValueError('Only Bazin and photometry features are implemented!'
                              '\n Feel free to add other options.')
@@ -340,6 +371,36 @@ class DataBase:
 
         elif isinstance(initial_training, int):
 
+            # get Ia flag
+            data_copy = self.train_metadata.copy()
+            ia_flag = data_copy['type'] == 'Ia'
+            
+	    # separate data per class 
+            Ia_data = data_copy[ia_flag]
+            nonIa_data = data_copy[~ia_flag]
+
+            # get subsamples for training
+            temp_train_ia = Ia.data.sample(n=initial_training // 2 + 1,
+                                           random_state=42)
+            temp_train_nonia = nonIa_data.sample(n=initial_training//2,
+                                                 random_state=42)
+
+            # join classes
+            frames_train = [temp_train_ia, temp_train_nonia]
+            temp_train = pd.concat(frames_train, ignore_index=True)
+            train_flag = np.array([data_copy['id'].values[i] in temp_train['id'].values
+                                   for i in range(data_copy.shape[0])])
+
+            self.train_metadata = data_copy[train_flag]
+            self.train_labels = data_copy['type'][train_flag].values == 'Ia'
+            self.train_features = self.features[train_flag]
+
+            # get test sample
+            self.test_metadata = data_copy[~train_flag]
+            self.test_labels = data_copy['type'][~train_flag].values == 'Ia'
+            self.train_features = self.features[~train_flag]
+            
+	    """
             # initialize the temporary label holder
             train_indexes = np.array([1])
             temp_labels = np.array([self.metadata['type'].values[train_indexes]])
@@ -351,6 +412,7 @@ class DataBase:
                                                   high=self.metadata.shape[0],
                                                   size=initial_training)
                 temp_labels = self.metadata['type'].values[train_indexes]
+ 	    
 
             # set training
             train_flag = self.metadata['type'].values[train_indexes] == 'Ia'
@@ -367,13 +429,12 @@ class DataBase:
             self.test_features = self.features.values[test_indexes]
             self.test_metadata = pd.DataFrame(self.metadata.values[test_indexes],
                                               columns=self.metadata_names)
+            """
 
             if 'queryable' in self.metadata['sample'].values:
-                test_flag = np.array([True if i in test_indexes else False
-                                      for i in range(self.metadata.shape[0])])
-                queryable_flag = self.metadata['sample'] == 'queryable'
-                combined_flag = np.logical_and(test_flag, queryable_flag)
-                self.queryable_ids = self.metadata[combined_flag]['id'].values
+                queryable_flag = data_copy['sample'] == 'queryable'
+                combined_flag = np.logical_and(~train_flag, queryable_flag)
+                self.queryable_ids = data_copy[combined_flag]['id'].values
             else:
                 self.queryable_ids = self.test_metadata['id'].values
 
