@@ -422,6 +422,47 @@ class DataBase:
             # build complete metadata object
             self.metadata = pd.concat([self.train_metadata, self.test_metadata])
 
+
+        elif isinstance(initial_training, int) and sep_files:
+
+            # build complete metadata object
+            self.metadata = pd.concat([self.train_metadata, self.test_metadata])
+          
+            # identify Ia
+            ia_flag = self.metadata['type'] == 'Ia'
+            
+            # separate per class
+            Ia_data = self.metadata[ia_flag]
+            nonIa_data = self.metadata[~ia_flag]
+
+            # get subsamples for training
+            temp_train_ia = Ia_data.sample(n=int(Ia_frac * initial_training))
+            temp_train_nonia = nonIa_data.sample(n=int((1-Ia_frac)*initial_training))
+
+            # join classes
+            frames_train = [temp_train_ia, temp_train_nonia]
+            temp_train = pd.concat(frames_train, ignore_index=True)
+            train_flag = np.array([self.metadata[id_name].values[i] in temp_train[id_name].values
+                                   for i in range(self.metadata.shape[0])])
+
+            self.train_metadata = self.metadata[train_flag]
+            self.train_labels = self.metadata['type'][train_flag].values == 'Ia'
+            self.train_features = self.features[train_flag].values
+
+            # get test sample
+            self.test_metadata = self.metadata[~train_flag]
+            self.test_labels = self.metadata['type'][~train_flag].values == 'Ia'
+            self.test_features = self.features[~train_flag].values
+            
+            if 'queryable' in self.metadata['sample'].values:
+                queryable_flag = self.metadata['sample'] == 'queryable'
+                combined_flag = np.logical_and(~train_flag, queryable_flag)
+                self.queryable_ids = self.metadata[combined_flag][id_name].values
+            else:
+                self.queryable_ids = self.test_metadata[id_name].values
+
+            
+
         elif isinstance(initial_training, int):
 
             # get Ia flag
