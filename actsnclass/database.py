@@ -282,16 +282,23 @@ class DataBase:
             self.features = data[self.features_names]
             self.metadata = data[self.metadata_names]
 
+            if screen:
+                print('Loaded ', self.metadata.shape[0], ' samples!')
+
         elif sample == 'train':
             self.train_features = data[self.features_names]
             self.train_metadata = data[self.metadata_names]
+
+            if screen:
+                print('Loaded ', self.train_metadata.shape[0], ' samples!')
 
         elif sample == 'test':
             self.test_features = data[self.features_names]
             self.test_metadata = data[self.metadata_names]
 
-        if screen:
-            print('Loaded ', self.metadata.shape[0], ' samples!')
+            if screen:
+                print('Loaded ', self.test_metadata.shape[0], ' samples!')
+        
 
     def load_features(self, path_to_file: str, method='Bazin', screen=False,
                       survey='DES', sample=None):
@@ -363,9 +370,9 @@ class DataBase:
             from independent files.
         """
 
-        if 'id' in self.metadata.keys():
+        if 'id' in self.train_metadata.keys():
             id_name = 'id'
-        elif 'objid' in self.metadata.keys():
+        elif 'objid' in self.train_metadata.keys():
             id_name = 'objid'
             
         # separate original training and test samples
@@ -399,18 +406,23 @@ class DataBase:
 
         elif initial_training == 'original' and sep_files:
 
+            # get samples labels in a separate object
             train_labels = self.train_metadata['type'].values == 'Ia'
             self.train_labels = train_labels.astype(int) 
 
             test_labels = self.test_metadata['type'].values == 'Ia'
             self.test_labels = test_labels.astype(int)
 
+            # identify queryable objects
             if 'queryable' in self.test_metadata['sample'].values:
                 queryable_flag = self.test_metadata['sample'] == 'queryable'
                 self.queryable_ids = data_copy[queryable_flag][id_name].values
 
             else:
                 self.queryable_ids = self.test_metadata[id_name].values
+
+            # build complete metadata object
+            self.metadata = pd.concat([self.train_metadata, self.test_metadata])
 
         elif isinstance(initial_training, int):
 
