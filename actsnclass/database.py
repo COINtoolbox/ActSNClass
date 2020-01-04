@@ -193,6 +193,8 @@ class DataBase:
             if ' ' in data.keys()[0]:
                 data = pd.read_csv(path_to_bazin_file, sep=' ', index_col=False)
 
+        print(data)
+
         # list of features to use
         if survey == 'DES':
             self.features_names = ['gA', 'gB', 'gt0', 'gtfall', 'gtrise', 'rA',
@@ -217,16 +219,22 @@ class DataBase:
             self.features = data[self.features_names]
             self.metadata = data[self.metadata_names]
 
+            if screen:
+                print('Loaded ', self.metadata.shape[0], ' samples!')
+
         elif sample == 'train':
             self.train_features = data[self.features_names]
             self.train_metadata = data[self.metadata_names]
+
+            if screen:
+                print('Loaded ', self.metadata.shape[0], ' ' +  sample + ' samples!')
 
         elif sample == 'test':
             self.test_features = data[self.features_names]
             self.test_metadata = data[self.metadata_names]
 
-        if screen:
-            print('Loaded ', self.metadata.shape[0], ' samples!')
+            if screen:
+                print('Loaded ', self.metadata.shape[0], ' ' + sample +  ' samples!')
 
     def load_photometry_features(self, path_to_photometry_file: str,
                                  screen=False, sample=None):
