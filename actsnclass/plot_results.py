@@ -157,7 +157,8 @@ class Canvas(object):
         self.ncolumns = self.nmetrics // self.nlines + self.nmetrics % self.nlines
         self.fig_size = (10 * self.ncolumns, 7 * self.nlines)
 
-    def plot_diagnostics(self,  output_plot_file: str, strategies_list: list):
+    def plot_diagnostics(self,  output_plot_file: str, strategies_list: list,
+                         lim_queries: int):
         """
         Generate plot for all metrics in files and strategies given as input.
 
@@ -169,6 +170,9 @@ class Canvas(object):
             List of all strategies to be included in the same plot.
             Current possibibilities are:
             ['canonical', 'rand_sampling', 'unc_sampling'].
+        lim_queries: int
+            If int, maximum number of queries to be plotted.
+            If None no limits are imposed.
         """
 
         # set of all matrices to be plotted
@@ -185,15 +189,24 @@ class Canvas(object):
             ax = plt.subplot(self.nlines, self.ncolumns, i + 1)
 
             for j in range(len(all_data)):
+
                 # get data
                 x = all_data[j].values[:, 0]
                 y = all_data[j].values[:, i + 1]
 
+                if isinstance(lim_queries, int):
+                    xflag = x <= lim_queries
+                    xnew = x[xflag]
+                    ynew = y[xflag]
+                else:
+                    xnew = x
+                    ynew = y
+                    
                 color = self.colors[strategies_list[j]]
                 marker = self.markers[strategies_list[j]]
 
                 # plot
-                ax.plot(x, y, color=color, ls=marker, lw=self.line_width,
+                ax.plot(xnew, ynew, color=color, ls=marker, lw=self.line_width,
                         label=self.labels[strategies_list[j]])
 
             ax.set_yticks(ax.get_yticks())
@@ -206,7 +219,6 @@ class Canvas(object):
 
             ax.set_xlabel('Number of queries', fontsize=self.axis_label_size)
             ax.set_ylabel(self.metrics_names[i], fontsize=self.axis_label_size)
-            ax.set_xlim(0, max(x))
 
             axis.append(ax)
 
