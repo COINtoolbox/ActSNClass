@@ -465,7 +465,7 @@ class LightCurve(object):
                 for i in range(5):
                     self.bazin_features.append('None')
 
-    def plot_bazin_fit(self, save=True, show=False, output_file=' '):
+    def plot_bazin_fit(self, save=True, show=False, output_file=' ', figscale=1):
         """
         Plot data and Bazin fitted function.
 
@@ -475,14 +475,20 @@ class LightCurve(object):
              Save figure to file. Default is True.
         show: bool (optinal)
              Display plot in windown. Default is False.
-        output_file: str
+        output_file: str (optional)
             Name of file to store the plot.
+        figscale: float (optional)
+            Allow to control the size of the figure.
         """
 
-        plt.figure()
+        # number of columns in the plot
+        ncols = len(self.filters) / 2 + len(self.filters) % 2
+        fsize = (figscale * 5 * ncols , figscale * 10)
+        
+        plt.figure(figsize=fsize)
 
         for i in range(len(self.filters)):
-            plt.subplot(2, len(self.filters) / 2 + len(self.filters) % 2, i + 1)
+            plt.subplot(2, ncols, i + 1)
             plt.title('Filter: ' + self.filters[i])
 
             # filter flag
