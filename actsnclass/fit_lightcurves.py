@@ -640,7 +640,15 @@ def fit_resspect_bazin(path_photo_file: str, path_header_file:str,
 
         # load individual light curves
         lc = LightCurve()                       
-        lc.load_resspect_lc(path_photo_file, snid) 
+        lc.load_resspect_lc(path_photo_file, snid)
+
+        # check filter name
+        if 'b' in lc.photometry['band'].iloc[0]:
+            for i in range(lc.photometry['band'].values.shape[0]):
+                for f in lc.filters:
+                    if "b'" + f + " '" == str(lc.photometry['band'].values[i]):
+                        lc.photometry['band'].iloc[i] = f
+                
         lc.fit_bazin_all()
 
         # get model name 

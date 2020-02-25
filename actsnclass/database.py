@@ -49,6 +49,8 @@ class DataBase:
         Header for metadata.
     metrics_list_names: list
         Values for metric elements.
+    plasticc_mjd_lim: list
+        [min, max] mjds for plasticc data    
     predicted_class: np.array
         Predicted classes - results from ML classifier.
     queried_sample: list
@@ -74,6 +76,8 @@ class DataBase:
         Load Bazin features from file
     load_photometry_features(path_to_photometry_file:str)
         Load photometric light curves from file
+    load_plasticc_mjd(path_to_data_dir: str)
+        Get min and max mjds for PLAsTiCC data
     load_features(path_to_file: str, method: str)
         Load features according to the chosen feature extraction method.
     build_samples(initial_training: str or int, nclass: int)
@@ -335,6 +339,47 @@ class DataBase:
         else:
             raise ValueError('Only Bazin and photometry features are implemented!'
                              '\n Feel free to add other options.')
+
+    def load_plasticc_mjd(self, path_to_data_dir):
+        """Return all MJDs from 1 file from PLAsTiCC simulations.
+    
+        Parameters
+        ----------
+        path_to_data_dir: str
+            Complete path to PLAsTiCC data directory.
+        """
+
+        # list of PLAsTiCC photometric files
+        flist = ['plasticc_test_lightcurves_' + str(x).zfill(2) + '.csv.gz'
+                  for x in range(1, 12)]
+
+        # add training file
+        flist = flist + ['plasticc_train_lightcurves.csv.gz']
+
+        # store max and min mjds
+        min_mjd = []
+        max_mjd = []
+
+        for fname in flist:
+        # read photometric points
+            if '.tar.gz' in fname:
+                tar = tarfile.open(path_to_data_dir + fname, 'r:gz')
+                name = tar.getmembers()[0]
+                content = tar.extractfile(name).read()
+                all_photo = pd.read_csv(io.BytesIO(content))
+            else:
+                all_photo = pd.read_csv(path_to_data_dir + fname, index_col=False)
+
+                if ' ' in all_photo.keys()[0]:
+                    all_photo = pd.read_csv(path_to_data_dir + fname, sep=' ',
+                                            index_col=False)
+                                                                                                                                                         # get limit mjds
+            min_mjd.append(min(all_photo['mjd']))
+            max_mjd.append(max(all_photo['mjd']))
+
+
+        self.plasticc_mjd_lim = [min(min_mjd), max(max_mjd)]
+        
 
     def build_samples(self, initial_training='original', nclass=2,
                       screen=False, Ia_frac=0.1, save_samples=False,
