@@ -34,7 +34,7 @@ from .scripts.make_diagnostic_plots import main as make_diagnostic_plots
 from .scripts.run_loop import main as run_loop
 from .scripts.run_time_domain import main as run_time_domain
 from .time_domain import SNPCCPhotometry
-from .time_domain_PLAsTiCC import PLAsTiCC_photometry
+from .time_domain_PLAsTiCC import PLAsTiCCPhotometry
 
 
 __all__ = ['accuracy',
@@ -55,7 +55,7 @@ __all__ = ['accuracy',
            'learn_loop',
            'LightCurve',
            'make_diagnostic_plots',
-           'PLAsTiCC_photometry',
+           'PLAsTiCCPhotometry',
            'plot_snpcc_train_canonical',
            'purity',
            'random_forest',
