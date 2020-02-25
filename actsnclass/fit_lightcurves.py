@@ -290,8 +290,8 @@ class LightCurve(object):
         self.photometry['fluxerr'] = photo['FLUXCALERR'].values
         self.photometry['SNR'] = photo['SNR'].values
         self.photometry = pd.DataFrame(self.photometry)
-
-    def load_plasticc_lc(self, photo_file, snid):
+        
+    def load_plasticc_lc(self, photo_file: str, snid: int):
         """
         Return 1 light curve from PLAsTiCC simulations.
     
