@@ -29,7 +29,7 @@ Full documentation can be found at [readthedocs](https://actsnclass.readthedocs.
  - scipy>=1.3.0
  - scikit-learn>=0.20.3
  - seaborn>=0.9.0
- 
+ -
  
  ### For documentation:
  
