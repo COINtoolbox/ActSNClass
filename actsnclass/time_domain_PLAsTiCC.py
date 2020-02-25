@@ -69,7 +69,7 @@ class PLAsTiCCPhotometry(object):
 
         # read header information
         for i in range(2):
-            if '.tar.gz' in path_header_file:
+            if '.tar.gz' in flist[i]:
                 tar = tarfile.open(path_to_data_dir + flist[i], 'r:gz')
                 name = tar.getmembers()[0]
                 content = tar.extracfile(name).read()
