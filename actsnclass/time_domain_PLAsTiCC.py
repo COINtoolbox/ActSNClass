@@ -25,7 +25,7 @@ class PLAsTiCCPhotometry(object):
         self.features_file = None
 
     def create_daily_file(self, output_dir: str,
-                          day: int, header='Bazin'):
+                          day: int, vol: int, header='Bazin'):
         """Create one file for a given day of the survey.
 
         The file contains only header for the features file.
@@ -36,13 +36,15 @@ class PLAsTiCCPhotometry(object):
             Complete path to raw data directory.
         day: int
             Day passed since the beginning of the survey.
+        vol: int
+            Index to identify when there is more than 1 file per day.
         header: str (optional)
             List of elements to be added to the header.
             Separate by 1 space.
             Default option uses header for Bazin features file.
         """
 
-        self.features_file = output_dir + 'day_' + str(day) + '.dat'
+        self.features_file = output_dir + 'day_' + str(day) + '_v' + str(vol) +'.dat'
 
         if header == 'Bazin':
             # add headers to files
@@ -120,6 +122,16 @@ class PLAsTiCCPhotometry(object):
 
             # run through multiple photometric files
             for j in range(len(fdic[key])):
+
+                # create features file
+                if key == 'train':
+                    vol = j
+                else:
+                    vol = j + 1
+                    
+                self.create_daily_file(output_dir=time_domain_dir,
+                                       day=day_of_survey, vol=vol):
+                
                 for i in range(self.metadata[key].shape[0]):
 
                     print('Processed : ', i)
