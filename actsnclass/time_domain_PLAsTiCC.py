@@ -132,7 +132,7 @@ class PLAsTiCCPhotometry(object):
                     lc.sample = key
   
                     if dataset == 'PLAsTiCC':
-                        lc.load_plasticc_lc(fdic[key][j], snid)
+                        lc.load_plasticc_lc(raw_data_dir + fdic[key][j], snid)
                     else:
                         raise ValueError('Only PLAsTiCC data set is ' + 
                                          'implemented in this module!')
