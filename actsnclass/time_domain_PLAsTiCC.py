@@ -22,6 +22,7 @@ class PLAsTiCCPhotometry(object):
              16:'EB',53:'Mira', 6:'MicroL', 991:'MicroLB', 992:'ILOT', 
              993:'CART', 994:'PISN',995:'MLString'}
         self.metadata = {}
+        self.features_file = None
 
     def create_daily_file(self, output_dir: str,
                           day: int, header='Bazin'):
@@ -41,15 +42,15 @@ class PLAsTiCCPhotometry(object):
             Default option uses header for Bazin features file.
         """
 
-        features_file = output_dir + 'day_' + str(day) + '.dat'
+        self.features_file = output_dir + 'day_' + str(day) + '.dat'
 
         if header == 'Bazin':
             # add headers to files
-            with open(features_file, 'w') as param_file:
+            with open(self.features_file, 'w') as param_file:
                 param_file.write(self.bazin_header)
 
         else:
-            with open(features_file, 'w') as param_file:
+            with open(self.features_file, 'w') as param_file:
                 param_file.write(self.header)
 
 
@@ -164,8 +165,18 @@ class PLAsTiCCPhotometry(object):
                                 lc.check_queryable(mjd=self.min_epoch + day_of_survey,
                                                    r_lim=self.rmag_lim)              
 
+                            # set redshift
+                            lc.redshift = self.metadata[key]['true_z'].iloc[i]
+
+                            # set light curve type
+                            lc.sncode  = self.metadata[key]['true_target'].iloc[i]
+                            lc.sntype = self.class_code[lc.sncode]
+
+                            # set id
+                            lc.id = snid
+                            
                             # save features to file
-                            with open(features_file, 'a') as param_file:
+                            with open(self.features_file, 'a') as param_file:
                                 param_file.write(str(lc.id) + ' ' +
                                                  str(lc.redshift) + ' ' +
                                                  str(lc.sntype) + ' ')
