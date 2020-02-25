@@ -49,6 +49,8 @@ class DataBase:
         Header for metadata.
     metrics_list_names: list
         Values for metric elements.
+    plasticc_mjd_lim: list
+        [min, max] mjds for plasticc data
     predicted_class: np.array
         Predicted classes - results from ML classifier.
     queried_sample: list
@@ -238,6 +240,8 @@ class DataBase:
                                  screen=False, sample=None):
         """Load photometry features from file.
 
+        Gets as input file containing fitted flux in homogeneized cadences.
+        Each line of the file is 1 object with concatenated fitted flux values.
         Populate properties: data, features, feature_list, header
         and header_list.
 
@@ -299,7 +303,8 @@ class DataBase:
         
 
     def load_features(self, path_to_file: str, method='Bazin', screen=False,
-                      survey='DES', sample=None):
+                      survey='DES', sample=None, #from_file=True
+                      ):
         """Load features according to the chosen feature extraction method.
 
         Populates properties: data, features, feature_list, header
@@ -324,17 +329,69 @@ class DataBase:
             If None, sample is given by a column within the given file.
             else, read independent files for 'train' and 'test'.
             Default is None.
+        #from_file: bool (optional)
+        #    If True, reads data always from files.
+        #    Else separate data on the fly. 
+	#    Default is True. 
         """
 
-        if method == 'Bazin':
+        if method == 'Bazin' and from_file:
             self.load_bazin_features(path_to_file, screen=screen,
                                      survey=survey, sample=sample)
-        elif method == 'photometry':
+
+        #elif method == 'Bazin' and not from_file:
+        #    self.load_bazin_onthefly(path_to_file, )
+
+        elif method == 'photometry' and from_file:
             self.load_photometry_features(path_to_file, screen=screen,
                                           survey=survey, sample=sample)
         else:
             raise ValueError('Only Bazin and photometry features are implemented!'
                              '\n Feel free to add other options.')
+
+    def load_plasticc_mjd(self, path_to_data_dir):
+        """
+        Return all MJDs from 1 file from PLAsTiCC simulations.
+    
+        Parameters
+        ----------
+        path_to_data_dir: str
+            Complete path to PLAsTiCC data directory.
+        """
+ 
+        # list of PLAsTiCC photometric files
+        flist = ['plasticc_test_lightcurves_' + str(x).zfill(2) + '.csv.gz' 
+                 for x in range(1, 12)]
+
+        # add training file
+        flist = flist + ['plasticc_train_lightcurves.csv.gz']
+
+
+        # store max and min mjds
+        min_mjd = []
+        max_mjd = []
+
+        for fname in flist:
+            # read photometric points
+            if '.tar.gz' in fname:
+                tar = tarfile.open(fname, 'r:gz')
+                name = tar.getmembers()[0]
+                content = tar.extractfile(name).read()
+                all_photo = pd.read_csv(io.BytesIO(content))
+            else:
+                all_photo = pd.read_csv(fname, index_col=False)
+
+                if ' ' in all_photo.keys()[0]:
+                    all_photo = pd.read_csv(fname, sep=' ', 
+                                            index_col=False)
+
+             # get limit mjds
+             min_mjd.apend(min(all_photo['mjd']))
+             max_mjd.append(max(all_photo['mjd']))
+
+          
+        self.plasticc_mjd_lim = [min(min_mjd), max(max_mjd)]
+   
 
     def build_samples(self, initial_training='original', nclass=2,
                       screen=False, Ia_frac=0.1, save_samples=False,
