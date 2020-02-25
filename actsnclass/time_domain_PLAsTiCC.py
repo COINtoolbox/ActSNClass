@@ -9,7 +9,7 @@ class PLAsTiCCPhotometry(object):
     """ """
 
     def __init__(self):
-        self.bazin_header = 'id redshift type code sample uA uB ut0 ' + \
+        self.bazin_header = 'id redshift type code sample queryable uA uB ut0 ' + \
                             'utfall utrise gA gB gt0 ' + \
                             'gtfall gtrise rA rB rt0 rtfall rtrise iA ' + \
                             'iB it0 itfall itrise zA zB zt0 ztfall ztrise' + \
@@ -114,58 +114,65 @@ class PLAsTiCCPhotometry(object):
         # count survivers
         count_surv = 0
 
-        for i in range(self.metadata['train'].shape[0]):
-            print('Processed : ', i)
+        # run through training and test
+        for key in ['train', 'test']:
 
-            # choose 1 snid
-            snid =  self.metadata['train']['object_id'].iloc[i]
+            # run through multiple photometric files
+            for j in range(len(fdic[key])):
+                for i in range(self.metadata[key].shape[0]):
 
-            lc = LightCurve()  # create light curve instance
+                    print('Processed : ', i)
 
-            if dataset == 'PLAsTiCC':
-                lc.load_plasticc_lc(raw_data_dir + fdic['train'][0], snid)
-            else:
-                raise ValueError('Only PLAsTiCC data set is ' + 
-                                 'implemented in this module!')
+                    # choose 1 snid
+                    snid =  metadata[key]['object_id'].iloc[i]
+ 
+                    lc = LightCurve()  # create light curve instance
 
-            # see which epochs are observed until this day
-            today = day_of_survey + self.min_epoch
-            photo_flag = lc.photometry['mjd'].values <= today
+                    # define original sample
+                    lc.sample = key
+  
+                    if dataset == 'PLAsTiCC':
+                        lc.load_plasticc_lc(fdic[key][j], snid)
+                    else:
+                        raise ValueError('Only PLAsTiCC data set is ' + 
+                                         'implemented in this module!')
 
-            # check if any point survived, other checks are made
-            # inside lc object
-            if sum(photo_flag) > 4:
-                # only the allowed photometry
-                lc.photometry = lc.photometry[photo_flag]
+                    # see which epochs are observed until this day
+                    today = day_of_survey + self.min_epoch
+                    photo_flag = lc.photometry['mjd'].values <= today
 
-                # perform feature extraction
-                if feature_method == 'Bazin':
-                    lc.fit_bazin_all()
-                else:
-                    raise ValueError('Only Bazin features are implemented!')
+                    # check if any point survived, other checks are made
+                    # inside lc object
+                    if sum(photo_flag) > 4:
+                        # only the allowed photometry
+                        lc.photometry = lc.photometry[photo_flag]
 
-                # only save to file if all filters were fitted
-                if len(lc.bazin_features) > 0 and \
-                        'None' not in lc.bazin_features:
-                    count_surv = count_surv + 1
-                    print('... ... ... Survived: ', count_surv)
+                        # perform feature extraction
+                        if feature_method == 'Bazin':
+                            lc.fit_bazin_all()
+                        else:
+                            raise ValueError('Only Bazin features are implemented!')
+   
+                        # only save to file if all filters were fitted
+                        if len(lc.bazin_features) > 0 and \
+                                'None' not in lc.bazin_features:
+                            count_surv = count_surv + 1
+                            print('... ... ... Survived: ', count_surv)
 
-                    # see if query is possible
-                    queryable = \
-                        lc.check_queryable(mjd=self.min_epoch + day_of_survey,
-                                           r_lim=self.rmag_lim)
+                            # see if query is possible
+                            queryable = \
+                                lc.check_queryable(mjd=self.min_epoch + day_of_survey,
+                                                   r_lim=self.rmag_lim)              
 
-                    if queryable:
-                        lc.sample = 'queryable'
-
-                    # save features to file
-                    with open(features_file, 'a') as param_file:
-                        param_file.write(str(lc.id) + ' ' +
-                                         str(lc.redshift) + ' ' +
-                                         str(lc.sntype) + ' ')
-                        param_file.write(str(lc.sncode) + ' ' +
-                                         str(lc.sample) + ' ')
-                        for item in lc.bazin_features[:-1]:
-                            param_file.write(str(item) + ' ')
-                        param_file.write(str(lc.bazin_features[-1]) + '\n')   
+                            # save features to file
+                            with open(features_file, 'a') as param_file:
+                                param_file.write(str(lc.id) + ' ' +
+                                                 str(lc.redshift) + ' ' +
+                                                 str(lc.sntype) + ' ')
+                                param_file.write(str(lc.sncode) + ' ' +
+                                                 str(lc.sample) + ' ' + 
+                                                 str(queryable) + ' ')
+                                for item in lc.bazin_features[:-1]: 
+                                    param_file.write(str(item) + ' ')
+                                param_file.write(str(lc.bazin_features[-1]) + '\n')
     
