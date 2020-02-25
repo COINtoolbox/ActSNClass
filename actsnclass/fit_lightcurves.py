@@ -371,7 +371,10 @@ class LightCurve(object):
 
         else:
             surv_flux = self.photometry['flux'].values[surv_flag]
-            surv_mag = 2.5 * (11 - np.log10(surv_flux))
+            if surv_flux[-1] > 0:
+                surv_mag = [2.5 * (11 - np.log10(surv_flux[-1]))]
+            else:
+                surv_mag = 99
 
         if len(surv_mag) > 0 and 0 < surv_mag[-1] <= r_lim:
             return True
