@@ -3,7 +3,7 @@ import os
 from actsnclass import LightCurve
 
 
-class PLAsTiCC_photometry(object):
+class PLAsTiCCPhotometry(object):
     """ """
 
     def __init__(self):
