@@ -118,12 +118,12 @@ class PLAsTiCCPhotometry(object):
             print('Processed : ', i)
 
             # choose 1 snid
-            snid =  metadata['train']['object_id'].iloc[i]
+            snid =  self.metadata['train']['object_id'].iloc[i]
 
             lc = LightCurve()  # create light curve instance
 
             if dataset == 'PLAsTiCC':
-                lc.load_plasticc_lc(fdic['train'], snid)
+                lc.load_plasticc_lc(raw_data_dir + fdic['train'][0], snid)
             else:
                 raise ValueError('Only PLAsTiCC data set is ' + 
                                  'implemented in this module!')
