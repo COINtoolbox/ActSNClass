@@ -130,7 +130,7 @@ class PLAsTiCCPhotometry(object):
                     vol = j + 1
                     
                 self.create_daily_file(output_dir=time_domain_dir,
-                                       day=day_of_survey, vol=vol):
+                                       day=day_of_survey, vol=vol)
                 
                 for i in range(self.metadata[key].shape[0]):
 
