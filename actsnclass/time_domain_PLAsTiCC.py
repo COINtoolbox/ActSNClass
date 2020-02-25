@@ -118,7 +118,7 @@ class PLAsTiCCPhotometry(object):
             print('Processed : ', i)
 
             # choose 1 snid
-            snid =  metadata['object_id'].iloc[i]
+            snid =  metadata['train']['object_id'].iloc[i]
 
             lc = LightCurve()  # create light curve instance
 
