@@ -14,8 +14,8 @@ class PLAsTiCCPhotometry(object):
                             'gtfall gtrise rA rB rt0 rtfall rtrise iA ' + \
                             'iB it0 itfall itrise zA zB zt0 ztfall ztrise' + \
                             'YA YB Yt0 Ytfall Ytrise\n'
-        self.max_epoch = 60674.363
-        self.min_epoch = 59580.0338
+        self.max_epoch = 60675
+        self.min_epoch = 59580
         self.rmag_lim = 24
         self.class_code = {90: 'Ia', 67: '91bg', 52:'Iax', 42:'II', 62:'Ibc', 
              95: 'SLSN', 15:'TDE', 64:'KN', 88:'AGN', 92:'RRL', 65:'M-dwarf',
@@ -104,53 +104,31 @@ class PLAsTiCCPhotometry(object):
 
         
         # list of PLAsTiCC photometric files
-        flist = ['plasticc_test_lightcurves_' + str(x).zfill(2) + '.csv.gz' 
+        fdic = {}
+        fdic['test'] = ['plasticc_test_lightcurves_' + str(x).zfill(2) + '.csv.gz' 
                  for x in range(1, 12)]
 
         # add training file
-        flist = flist + ['plasticc_train_lightcurves.csv.gz']
-
-        
-
-        for fname in flist:
-            # read photometric points
-            if '.tar.gz' in fname:
-                tar = tarfile.open(fname, 'r:gz')
-                name = tar.getmembers()[0]
-                content = tar.extractfile(name).read()
-                all_photo = pd.read_csv(io.BytesIO(content))
-            else:
-                all_photo = pd.read_csv(fname, index_col=False)
-
-                if ' ' in all_photo.keys()[0]:
-                    all_photo = pd.read_csv(fname, sep=' ', 
-                                            index_col=False)
-
-
-
-
-################################################
-        # read file names
-        file_list_all = os.listdir(raw_data_dir)
-        lc_list = [elem for elem in file_list_all if 'DES_SN' in elem]
-
-        # get name of file to store results of today
-        features_file = time_domain_dir + 'day_' + str(day_of_survey) + '.dat'
+        fdic['train'] = ['plasticc_train_lightcurves.csv.gz']
 
         # count survivers
         count_surv = 0
 
-        for i in range(len(lc_list)):
+        for i in range(self.metadata['train'].shape[0]):
             print('Processed : ', i)
+
+            # choose 1 snid
+            snid =  metadata['object_id'].iloc[i]
 
             lc = LightCurve()  # create light curve instance
 
-            if dataset == 'SNPCC':
-                lc.load_snpcc_lc(raw_data_dir + lc_list[i])
+            if dataset == 'PLAsTiCC':
+                lc.load_plasticc_lc(fdic['train'], snid)
             else:
-                raise ValueError('Only SNPCC data set is implemented!')
+                raise ValueError('Only PLAsTiCC data set is ' + 
+                                 'implemented in this module!')
 
-            # see which epochs are observed for until this day
+            # see which epochs are observed until this day
             today = day_of_survey + self.min_epoch
             photo_flag = lc.photometry['mjd'].values <= today
 
