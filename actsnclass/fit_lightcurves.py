@@ -374,7 +374,7 @@ class LightCurve(object):
             if surv_flux[-1] > 0:
                 surv_mag = [2.5 * (11 - np.log10(surv_flux[-1]))]
             else:
-                surv_mag = 99
+                surv_mag = []
 
         if len(surv_mag) > 0 and 0 < surv_mag[-1] <= r_lim:
             return True
