@@ -365,8 +365,13 @@ class LightCurve(object):
         rband_flag = self.photometry['band'].values == 'r'
         surv_flag = np.logical_and(photo_flag, rband_flag)
 
-        # check surviving photometry
-        surv_mag = self.photometry['MAG'].values[surv_flag]
+        if 'MAG' in self.photometry.keys():
+            # check surviving photometry
+            surv_mag = self.photometry['MAG'].values[surv_flag]
+
+        else:
+            surv_flux = self.photometry['flux'].values[surv_flag]
+            surv_mag = 2.5 * (11 - np.log10(surv_flux))
 
         if len(surv_mag) > 0 and 0 < surv_mag[-1] <= r_lim:
             return True
