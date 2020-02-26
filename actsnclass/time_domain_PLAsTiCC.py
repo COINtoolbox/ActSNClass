@@ -207,21 +207,29 @@ class PLAsTiCCPhotometry(object):
             Output file to store Bazin features.
         queryable: bool
             Rather this object is available for querying.
+        
+        Returns
+        -------
+        line: str
+            A line concatenating metadata and Bazin fits for 1 obj.
         """
 
+        # build an entire line with bazin features
+        line = str(lc.id) + ' ' + str(lc.redshift) + ' ' + \
+               str(lc.sntype) + ' ' + str(lc.sncode) + ' ' + \
+               str(lc.sample) + ' ' + str(queryable) + ' '
+
+        for item in lc.bazin_features[:-1]:
+            line = line + str(item) + ' '
+
+        line = line + str(lc.bazin_features[-1]) + '\n'
+        
         # save features to file
         with open(features_file, 'a') as param_file:
-            param_file.write(str(lc.id) + ' ' +
-                             str(lc.redshift) + ' ' +
-                             str(lc.sntype) + ' ')
-            param_file.write(str(lc.sncode) + ' ' +
-                             str(lc.sample) + ' ' + 
-                             str(queryable) + ' ')
-    
-            for item in lc.bazin_features[:-1]: 
-                param_file.write(str(item) + ' ')
-            param_file.write(str(lc.bazin_features[-1]) + '\n')
+            param_file.write(line)
 
+        return line
+            
     def fit_one_lc(self, raw_data_dir: str, snid: int, sample: str,
                    output_dir: str):
         """Fit one light curve throughout the entire survey.
@@ -256,13 +264,12 @@ class PLAsTiCCPhotometry(object):
 
         else:
             # search within test light curve files
-            while lc.photometry.shape[0] == 0:
+            while orig_lc.photometry.shape[0] == 0:
                 vol = vol + 1
-                orig_lc.load_plasticc_lc(raw_data_dir + self.fdic[sample][vol], snid) 
-
-        # set flag
-        already_fitted = False
-
+                orig_lc.load_plasticc_lc(raw_data_dir + self.fdic[sample][vol], snid)
+        
+        line = False
+                
         # for every day of survey
         for day_of_survey in range(1, self.max_epoch - self.min_epoch):
 
@@ -299,7 +306,7 @@ class PLAsTiCCPhotometry(object):
                     mask = self.metadata[sample]['object_id'].values == snid
                     
                     # set redshift
-                    lc.redshift = self.metadata[sample]['true_z'].values[mask]
+                    lc.redshift = self.metadata[sample]['true_z'].values[mask][0]
 
                     # set light curve type
                     lc.sncode  = self.metadata[sample]['true_target'].values[mask][0]
@@ -308,25 +315,28 @@ class PLAsTiCCPhotometry(object):
                     # set id
                     lc.id = snid
 
+                    # set sample
+                    lc.sample = sample
+
                     # set filename
                     features_file = output_dir + 'day_' + \
                                          str(day_of_survey) + '_v' + str(vol) +'.dat'
 
+                    print(day_of_survey)
                     # write to file
-                    self.write_bazin_to_file(lc, features_file, queryable)
-
-                    # set flag
-                    already_fitted = True
-
+                    line = self.write_bazin_to_file(lc, features_file, queryable)
+                    
             # write previous result to file if there is no change
-            elif npoints[day_of_survey] == npoints[day_of_survey - 1] and already_fitted:
+            elif npoints[day_of_survey] == npoints[day_of_survey - 1] and isinstance(line, str):
 
                 # set filename
                 features_file = output_dir + 'day_' + \
                                 str(day_of_survey) + '_v' + str(vol) +'.dat'
-            
+
+                print(day_of_survey, '****')
                 # save results
-                self.write_bazin_to_file(lc, features_file, queryable)
+                with open(features_file, 'a') as param_file:
+                    param_file.write(line)
                 
     def build_one_epoch(self, raw_data_dir: str, day_of_survey: int,
                         time_domain_dir: str, feature_method='Bazin'):
