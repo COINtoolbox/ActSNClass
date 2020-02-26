@@ -420,5 +420,5 @@ class PLAsTiCCPhotometry(object):
                             lc.id = snid
                             
                             # save results
-                            self.write_bazin_to_file(lc, features_file)
+                            self.write_bazin_to_file(lc, features_file, queryable)
     
