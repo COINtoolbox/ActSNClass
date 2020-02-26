@@ -300,7 +300,7 @@ class PLAsTiCCPhotometry(object):
                     lc.redshift = self.metadata[sample]['true_z'].values[mask]
 
                     # set light curve type
-                    lc.sncode  = self.metadata[sample]['true_target'].values[mask]
+                    lc.sncode  = self.metadata[sample]['true_target'].values[mask][0]
                     lc.sntype = self.class_code[lc.sncode]
 
                     # set id
