@@ -49,19 +49,19 @@ class PLAsTiCCPhotometry(object):
     
     Methods
     -------
-    create_daily_file(output_dir: str, day: int, vol: int, header: str)
-        Create one file for a given day of the survey. Contains only header.
-    filter_classes(path_to_data_dir: str, classes: list)
-        Read metadata and filter only required classes.
-    create_all_daily_files(raw_data_dir: str)
-        Create 1 file per day for all days of the survey. 
-    write_bazin_to_file(lightcurve: LightCurve, features_file: str)
-        Write Bazin parameters and metadata to file.
-    fit_one_lc(raw_data_dir: str, snid: int, sample: str)
-        Fit one light curve throughout the entire survey.
     build_one_epoch(raw_data_dir: str, day_of_survey: int,
                     time_domain_dir: str, feature_method: str)
-        Construct 1 entire day of observation.     
+        Construct 1 entire day of observation.
+    create_all_daily_files(raw_data_dir: str)
+        Create 1 file per day for all days of the survey. 
+    create_daily_file(output_dir: str, day: int, vol: int, header: str)
+        Create one file for a given day of the survey. Contains only header.    
+    fit_one_lc(raw_data_dir: str, snid: int, sample: str)
+        Fit one light curve throughout the entire survey.
+    read_metadata(path_to_data_dir: str, classes: list)
+        Read metadata and filter only required classes.
+    write_bazin_to_file(lightcurve: LightCurve, features_file: str)
+        Write Bazin parameters and metadata to file.
     """
 
     def __init__(self):
@@ -116,7 +116,7 @@ class PLAsTiCCPhotometry(object):
                 param_file.write(self.header)
 
 
-    def filter_classes(self, path_to_data_dir: str, classes: list):
+    def read_metadata(self, path_to_data_dir: str, classes: list):
         """ Read metadata and filter only required classes.
 
         Populate the metadata attribute. 
