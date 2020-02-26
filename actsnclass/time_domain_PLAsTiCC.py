@@ -293,11 +293,14 @@ class PLAsTiCCPhotometry(object):
                         lc.check_queryable(mjd=self.min_epoch + day_of_survey,
                                            r_lim=self.rmag_lim)              
 
+                    # mask only metadata for this object
+                    mask = self.metadata[sample]['object_id'].values == snid
+                    
                     # set redshift
-                    lc.redshift = self.metadata[sample]['true_z'].iloc[i]
+                    lc.redshift = self.metadata[sample]['true_z'].values[mask]
 
                     # set light curve type
-                    lc.sncode  = self.metadata[sample]['true_target'].iloc[i]
+                    lc.sncode  = self.metadata[sample]['true_target'].values[mask]
                     lc.sntype = self.class_code[lc.sncode]
 
                     # set id
