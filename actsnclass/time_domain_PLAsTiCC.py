@@ -220,7 +220,8 @@ class PLAsTiCCPhotometry(object):
                 param_file.write(str(item) + ' ')
             param_file.write(str(lc.bazin_features[-1]) + '\n')
 
-    def fit_one_lc(self, raw_data_dir: str, snid: int, sample: str):
+    def fit_one_lc(self, raw_data_dir: str, snid: int, sample: str,
+                   output_dir: str):
         """Fit one light curve throughout the entire survey.
 
         Save results to appropriate file, considering 1 day survey 
@@ -235,6 +236,8 @@ class PLAsTiCCPhotometry(object):
         sample: str
             Original sample this object belonged to.
             Possibilities are 'train' or 'test'.
+        output_dir:
+            Directory to store output time domain files.
         """
 
         # store number of points per day
@@ -301,7 +304,7 @@ class PLAsTiCCPhotometry(object):
                     lc.id = snid
 
                     # set filename
-                    features_file = raw_data_dir + 'day_' + \
+                    features_file = output_dir + 'day_' + \
                                          str(day_of_survey) + '_v' + str(vol) +'.dat'
 
                     # write to file
@@ -314,7 +317,7 @@ class PLAsTiCCPhotometry(object):
             elif npoints[day_of_survey] == npoints[day_of_survey - 1] and already_fitted:
 
                 # set filename
-                features_file = raw_data_dir + 'day_' + \
+                features_file = output_dir + 'day_' + \
                                 str(day_of_survey) + '_v' + str(vol) +'.dat'
             
                 # save results
