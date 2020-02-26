@@ -162,7 +162,7 @@ class PLAsTiCCPhotometry(object):
             else:
                 self.metadata['test'] = header[class_flag]
 
-    def create_all_daily_files(self, raw_data_dir: str):
+    def create_all_daily_files(self, raw_data_dir: str, output_dir:str):
         """Create 1 file per day for all days of the survey. 
         
         Each file contains only the header. 
@@ -171,6 +171,8 @@ class PLAsTiCCPhotometry(object):
         ----------
         raw_data_dir: str
             Path to directory containing all PLAsTiCC zenodo data.
+        output_dir: str
+            Output directory.
         """
         
         ## create daily files
@@ -180,14 +182,16 @@ class PLAsTiCCPhotometry(object):
             # run through multiple photometric files
             for j in range(len(self.fdic[key])):
 
-                # create features file
+                # identify number of photometric test files
                 if key == 'train':
                     vol = j
                 else:
                     vol = j + 1
-                    
-                self.create_daily_file(output_dir=time_domain_dir,
-                                       day=day_of_survey, vol=vol)
+
+                # run through all days of the survey
+                for day_of_survey in range(1, self.max_epoch - self.min_epoch):
+                    self.create_daily_file(output_dir=output_dir,
+                                           day=day_of_survey, vol=vol)
 
     def write_bazin_to_file(self, lightcurve: LightCurve, 
                             features_file: str):
