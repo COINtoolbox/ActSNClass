@@ -193,18 +193,20 @@ class PLAsTiCCPhotometry(object):
                     self.create_daily_file(output_dir=output_dir,
                                            day=day_of_survey, vol=vol)
 
-    def write_bazin_to_file(self, lightcurve: LightCurve, 
-                            features_file: str):
+    def write_bazin_to_file(self, lc: LightCurve, 
+                            features_file: str, queryable: bool):
         """Write Bazin parameters and metadata to file.
 
         Use output filename defined in the features_file attribute.
 
         Parameters
         ----------
-        lightcurve: LightCurve
+        lc: LightCurve
             ActSNClass light curve object.
         features_file: str
             Output file to store Bazin features.
+        queryable: bool
+            Rather this object is available for querying.
         """
 
         # save features to file
@@ -311,7 +313,7 @@ class PLAsTiCCPhotometry(object):
                                          str(day_of_survey) + '_v' + str(vol) +'.dat'
 
                     # write to file
-                    self.write_bazin_to_file(lc, features_file)
+                    self.write_bazin_to_file(lc, features_file, queryable)
 
                     # set flag
                     already_fitted = True
@@ -324,7 +326,7 @@ class PLAsTiCCPhotometry(object):
                                 str(day_of_survey) + '_v' + str(vol) +'.dat'
             
                 # save results
-                self.write_bazin_to_file(lc, features_file)
+                self.write_bazin_to_file(lc, features_file, queryable)
                 
     def build_one_epoch(self, raw_data_dir: str, day_of_survey: int,
                         time_domain_dir: str, feature_method='Bazin'):
