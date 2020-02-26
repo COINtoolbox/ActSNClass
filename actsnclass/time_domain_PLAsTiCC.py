@@ -294,10 +294,10 @@ class PLAsTiCCPhotometry(object):
                                            r_lim=self.rmag_lim)              
 
                     # set redshift
-                    lc.redshift = self.metadata[key]['true_z'].iloc[i]
+                    lc.redshift = self.metadata[sample]['true_z'].iloc[i]
 
                     # set light curve type
-                    lc.sncode  = self.metadata[key]['true_target'].iloc[i]
+                    lc.sncode  = self.metadata[sample]['true_target'].iloc[i]
                     lc.sntype = self.class_code[lc.sncode]
 
                     # set id
