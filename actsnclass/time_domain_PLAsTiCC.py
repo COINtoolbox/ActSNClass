@@ -271,7 +271,7 @@ class PLAsTiCCPhotometry(object):
 
             # check if any point survived, other checks are made
             # inside lc object
-            if npoints[day_of_survey] > 4 and 
+            if npoints[day_of_survey] > 4 and \
                npoints[day_of_survey] - npoints[day_of_survey - 1] > 0:
 
                 # perform feature extraction
