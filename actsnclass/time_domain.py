@@ -29,7 +29,7 @@ class SNPCCPhotometry(object):
     Attributes
     ----------
     bazin_header: str
-        Reader to be added to features files for each day.
+        Header to be added to features files for each day.
     max_epoch: float
         Maximum MJD for the entire data set.
     min_epoch: float
@@ -44,7 +44,8 @@ class SNPCCPhotometry(object):
     create_daily_file(raw_data_dir: str, day: int, output_dir: str, header: str)
         Create one file for a given day of the survey.
         Only populates the file with header. It will erase existing files!
-    build_one_epoch(raw_data_dir: str, day_of_survey: int, time_domain_dir: str, feature_method: str, dataset: str)
+    build_one_epoch(raw_data_dir: str, day_of_survey: int, time_domain_dir: str,
+                    feature_method: str, dataset: str)
         Selects objects with observed points until given MJD, performs feature extraction
         and evaluate if query is possible. Save results to file.
     """
