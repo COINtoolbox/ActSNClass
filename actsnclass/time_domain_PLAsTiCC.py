@@ -246,17 +246,17 @@ class PLAsTiCCPhotometry(object):
 
         # create light curve instance
         orig_lc = LightCurve()          
-   
+
+        vol = 0
         if sample == 'train':
             # load light curve
-            orig_lc.load_plasticc_lc(raw_data_dir + self.fdic[sample][0], snid)
+            orig_lc.load_plasticc_lc(raw_data_dir + self.fdic[sample][vol], snid)
 
         else:
             # search within test light curve files
-            vol = 0
             while lc.photometry.shape[0] == 0:
                 vol = vol + 1
-                orig_lc.load_plasticc_lc(raw_data_dir + self.fdic[sample][j], snid) 
+                orig_lc.load_plasticc_lc(raw_data_dir + self.fdic[sample][vol], snid) 
 
         # set flag
         already_fitted = False
