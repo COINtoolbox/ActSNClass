@@ -1,78 +1,71 @@
-.. actsnclass documentation master file, created by
-   sphinx-quickstart on Thu Aug  8 16:11:41 2019.
-
 =======================
-Welcome to actsnclass !
+Welcome to RESSPECT
 =======================
---------------------------------------------------------
-Active Learning for Supernova Photometric Classification
---------------------------------------------------------
+-------------------------------------------------
+REcommendation System for SPECTroscopic follow-up
+-------------------------------------------------
 
+This tool allows the constructon of an optimized spectroscopic observation strategy which enables photometric supernova cosmology. It was developed as a collaboration between the LSST DESC and the Cosmostatistics Initiative.
 
-
-This tool allows you to reproduce the results presented in `Ishida et al., 2019 <https://cosmostatistics-initiative.org/portfolio-item/active-learning-for-sn-classification/>`_.
-It was based on the original prototype developed during the `COIN Residence Program #4 <http://iaacoin.wixsite.com/crp2017/>`_ , which took place in Clermont Ferrand, France, August 2017.
-
+... This grew from the work presented in `Ishida et al., 2019 <https://cosmostatistics-initiative.org/portfolio-item/active-learning-for-sn-classification/>`_ 
 
 The code has been updated to allow a friendly use and expansion.
 
 Getting started
 ===============
 
-In order to setup a suitable working environment, clone this repository and make sure you have the necessary packages installed.
+This code was developed for ``Python3`` and was not tested in Windows. 
 
-Dependencies
-------------
+We recommend that you work within a `virtual environment <https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/>`_.
 
-``actsnclass`` was developed under ``Python3``. The complete list of dependencies is given below:
-
- - Python>=3.7
- - matplotlib>=3.1.1
- - numpy>=1.17.0
- - pandas>=0.25.0
- - setuptools>=41.0.1
- - scipy>=1.3.0
- - sklearn>=0.20.3
- - seaborn>=0.9.0
-
-Installing
-----------
-
-Clone this repository,
+You will need to install the `Python` package ``virtualenv``. In MacOS or Linux, do
 
 .. code-block:: bash
 
-    >>> git clone https://github.com/COINtoolbox/ActSNClass
+   >>> python3 -m pip install --user virtualenv
 
-We recommend the use of Anaconda environments to ensure the proper version of all dependencies are
-installed and do not interfere in your other applications. You can find instructions on how to install
-it `here <https://docs.anaconda.com/anaconda/install/>`_.
+Navigate to a ``working_directory`` where you will store the new virtual environment and create it:
 
-If you wish to use this option, simple navigate to the directory of the repository and do:
+.. code-block:: bash
 
-.. code-block:: python
+    >>> python3 -m venv RESSPECT
 
-    >>> conda env create -f environment.yml
+.. hint:: Make sure you deactivate any ``conda`` environment you might have running before moving forward. 
 
 Once the environment is set up you can activate it:
 
-.. code-block:: python
+.. code-block::bash
 
-   >>> conda activate ActSNClass
+   >>> source <working_directory>/bin/activate
 
-If everything goes well you will see the name of the environment in the left most side of your command line.
+You should see a ``(RESSPECT)`` flag in the extreme left of terminal command line. 
 
-You can now install `actsnclass` with:
+Next, clone this repository in another chosen location:
 
 .. code-block:: bash
 
-    (ActSNClass)  >> python setup.py install
+    (RESSPECT) >>> git clone https://github.com/COINtoolbox/ActSNClass
+
+Navigate to the repository folder and do
+
+.. code-block:: bash
+
+    (RESSPECT) >>> pip install -r requirements.txt
+
+
+You can now install this package with:
+
+.. code-block:: bash
+
+    (RESSPECT) >>> python setup.py install
+
+.. hint:: You may choose to create your virtual environment within the folder of the repository. If you choose to do this, you must remember to exclude the virtual environment directory from version control using e.g., ``.gitignore``. 
 
 
 Setting up a working directory
 ------------------------------
 
-In another location of your choosing, create the following directory structure:
+In a your choosing, create the following directory structure:
 
 ::
 
@@ -80,9 +73,9 @@ In another location of your choosing, create the following directory structure:
     ├── plots
     ├── results
 
-The outputs of ``actsnclass`` will be stored in these directories.
+The outputs of ``RESSPECT`` will be stored in these directories.
 
-In order to set things properly, from the repository you just cloned, and move the data directory to your
+In order to set things properly, navigate to the repository you just cloned and move the data directory to your
 chosen working directory and unpack the data.
 
 .. code-block:: bash
@@ -93,6 +86,7 @@ chosen working directory and unpack the data.
 
 This data was provided by Rick Kessler, after the publication of results from the
 `SuperNova Photometric Classification Challenge <https://arxiv.org/abs/1008.1024>`_.
+It allows you to run tests and validate your installation.
 
 
 Analysis steps
@@ -104,7 +98,7 @@ Analysis steps
    :width: 225 px
    :alt: Active learning loop
 
-The ``actsnclass`` pipeline is composed of 4 important steps:
+The active learning pipeline is composed of 4 important steps:
 
 1. Feature extraction
 
@@ -167,6 +161,20 @@ This work would not be possible without intensive consultation to online platfor
 discussion forums. Although it is not possible to provide a complete list of the open source
 material consulted in the construction of this material, we recognize their importance and
 **deeply thank everyone who contributes to open learning platforms**.
+
+Dependencies
+------------
+
+``actsnclass`` was developed under ``Python3``. The complete list of dependencies is given below:
+
+ - Python>=3.7
+ - matplotlib>=3.1.1
+ - numpy>=1.17.0
+ - pandas>=0.25.0
+ - setuptools>=41.0.1
+ - scipy>=1.3.0
+ - sklearn>=0.20.3
+ - seaborn>=0.9.0
 
 
 Table of Contents
