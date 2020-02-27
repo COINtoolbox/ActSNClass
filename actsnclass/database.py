@@ -579,7 +579,7 @@ class DataBase:
             print('Training set size: ', self.train_metadata.shape[0])
             print('Test set size: ', self.test_metadata.shape[0])
 
-    def classify(self, method = str ):
+    def classify(self, method: str ):
         """Apply a machine learning classifier.
 
         Populate properties: predicted_class and class_prob
