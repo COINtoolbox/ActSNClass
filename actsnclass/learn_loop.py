@@ -23,7 +23,7 @@ from actsnclass import DataBase
 
 def learn_loop(nloops: int, strategy: str, path_to_features: str,
                output_diag_file: str, output_queried_file: str,
-               features_method='Bazin', classifier='RandomForest',
+               classifier: str,features_method='Bazin', 
                training='original', batch=1, screen=True, survey='DES',
                nclass=2):
     """Perform the active learning loop. All results are saved to file.
@@ -45,9 +45,10 @@ def learn_loop(nloops: int, strategy: str, path_to_features: str,
         Full path to output file to store the queried sample.
     features_method: str (optional)
         Feature extraction method. Currently only 'Bazin' is implemented.
-    classifier: str (optional)
+    classifier: str 
         Machine Learning algorithm.
-        Currently only 'RandomForest' is implemented.
+        Currently implemented options are 'RandomForest', 'GradientBoostedTrees',
+        'K-NNclassifier' and 'MLPclassifier'.
     training: str or int (optional)
         Choice of initial training sample.
         If 'original': begin from the train sample flagged in the file
