@@ -260,13 +260,15 @@ class PLAsTiCCPhotometry(object):
         vol = 0
         if sample == 'train':
             # load light curve
+            print('vol = ', vol)
             orig_lc.load_plasticc_lc(raw_data_dir + self.fdic[sample][vol], snid)
 
         else:
             # search within test light curve files
-            while orig_lc.photometry.shape[0] == 0:
+            while orig_lc.photometry.shape[0] == 0 and vol < 11:
                 vol = vol + 1
-                orig_lc.load_plasticc_lc(raw_data_dir + self.fdic[sample][vol], snid)
+                print('vol : ', vol)
+                orig_lc.load_plasticc_lc(raw_data_dir + self.fdic[sample][vol - 1], snid)
         
         line = False
                 
@@ -322,7 +324,6 @@ class PLAsTiCCPhotometry(object):
                     features_file = output_dir + 'day_' + \
                                          str(day_of_survey) + '_v' + str(vol) +'.dat'
 
-                    print(day_of_survey)
                     # write to file
                     line = self.write_bazin_to_file(lc, features_file, queryable)
                     
@@ -333,7 +334,6 @@ class PLAsTiCCPhotometry(object):
                 features_file = output_dir + 'day_' + \
                                 str(day_of_survey) + '_v' + str(vol) +'.dat'
 
-                print(day_of_survey, '****')
                 # save results
                 with open(features_file, 'a') as param_file:
                     param_file.write(line)
