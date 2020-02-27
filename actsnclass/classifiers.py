@@ -16,10 +16,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-__all__ = ['random_forest']
+__all__ = ['random_forest','gradient_boosted_trees','knn_classifier','mlp_classifier']
 
 import numpy as np
 from sklearn.ensemble import RandomForestClassifier
+from xgboost.sklearn import XGBClassifier
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.neural_network import MLPClassifier
 
 
 def random_forest(train_features:  np.array, train_labels: np.array,
@@ -49,13 +52,131 @@ def random_forest(train_features:  np.array, train_labels: np.array,
     """
 
     # create classifier instance
-    clf = RandomForestClassifier(n_estimators=nest, random_state=seed)
+    clf = RandomForestClassifier(n_estimators=nest, 
+                                 random_state=seed,max_depth=6,
+                                 n_jobs=2,bootstrap=True,
+                                 criterion="gini",
+                                 verbose=0, oob_score=True)
     clf.fit(train_features, train_labels)                     # train
     predictions = clf.predict(test_features)                # predict
     prob = clf.predict_proba(test_features)       # get probabilities
 
     return predictions, prob
 
+
+def gradient_boosted_trees(train_features: np.array, 
+                           train_labels: np.array,
+                           test_features: np.array, nest = 1000,
+                            seed = 42):
+
+
+    """Gradient Boosted Trees classifier.
+
+    Parameters
+    ----------
+    train_features : np.array
+        Training sample features.
+    train_labels: np.array
+        Training sample classes.
+    test_features: np.array
+        Test sample features.
+    nest: int (optional)
+        Number of estimators (trees) in the forest.
+        Default is 1000.
+    seed: float (optional)
+        Seed for random number generator. Default is 42.
+
+    Returns
+    -------
+    predictions: np.array
+        Predicted classes.
+    prob: np.array
+        Classification probability for all objects, [pIa, pnon-Ia].
+    """
+
+    #create classifier instance
+    clf = XGBClassifier(max_depth=6,learning_rate=0.05,
+                        n_estimators=nest,silent=True,
+                        objective="binary:logistic",
+                        nthread=4,random_state=seed,n_folds=5,
+                        min_child_weight=0.5)
+    clf.fit(train_features, train_labels)
+    predictions = clf.predict(test_features)
+    prob = clf.predict_proba(test_features)  
+
+    return predictions, prob
+
+
+def knn_classifier(train_features: np.array, train_labels: np.array,
+                   test_features: np.array, nnbrs : int, seed = 42):
+
+    """K-Nearest Neighbour classifier.
+
+    Parameters
+    ----------
+    train_features : np.array
+        Training sample features.
+    train_labels: np.array
+        Training sample classes.
+    test_features: np.array
+        Test sample features.
+    nnbrs : int
+        Number of neighbours.
+    seed: float (optional)
+        Seed for random number generator. Default is 42.
+
+    Returns
+    -------
+    predictions: np.array
+        Predicted classes.
+    prob: np.array
+        Classification probability for all objects, [pIa, pnon-Ia].
+    """
+
+    #create classifier instance
+    clf = KNeighborsClassifier(n_neighbors=nnbrs,n_jobs=-1,weights='distance',p=2)
+    clf.fit(train_features, train_labels)
+    predictions = clf.predict(test_features)
+    prob = clf.predict_proba(test_features)  
+
+    return predictions, prob
+
+def mlp_classifier(train_features: np.array, train_labels: np.array,
+                   test_features: np.array, n_neur : int, seed = 42):
+
+    """Multi Layer Perceptron classifier.
+
+    Parameters
+    ----------
+    train_features : np.array
+        Training sample features.
+    train_labels: np.array
+        Training sample classes.
+    test_features: np.array
+        Test sample features.
+    n_neur : int
+        Number of neurons in the hidden layer.
+    seed: float (optional)
+        Seed for random number generator. Default is 42.
+
+    Returns
+    -------
+    predictions: np.array
+        Predicted classes.
+    prob: np.array
+        Classification probability for all objects, [pIa, pnon-Ia].
+    """
+    
+    #create classifier instance
+    clf=MLPClassifier(hidden_layer_sizes=(n_neur), max_iter=150, 
+                      alpha=1e-4,solver='adam', verbose=0, tol=1e-4,
+                      random_state=seed,learning_rate_init=.1)
+    clf.fit(train_features, train_labels)
+    predictions = clf.predict(test_features)
+    prob = clf.predict_proba(test_features)
+
+    
+    return predictions, prob
 
 def main():
     return None

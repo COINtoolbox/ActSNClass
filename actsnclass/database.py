@@ -22,7 +22,8 @@ import os
 import pandas as pd
 import tarfile
 
-from actsnclass.classifiers import random_forest
+from actsnclass.classifiers import random_forest,gradient_boosted_trees,knn_classifier,mlp_classifier
+
 from actsnclass.query_strategies import uncertainty_sampling, random_sampling
 from actsnclass.metrics import get_snpcc_metric
 
@@ -578,7 +579,7 @@ class DataBase:
             print('Training set size: ', self.train_metadata.shape[0])
             print('Test set size: ', self.test_metadata.shape[0])
 
-    def classify(self, method='RandomForest'):
+    def classify(self, method = str ):
         """Apply a machine learning classifier.
 
         Populate properties: predicted_class and class_prob
@@ -587,16 +588,31 @@ class DataBase:
         ----------
         method: str (optional)
             Chosen classifier.
-            The current implementation on accepts `RandomForest`.
+            The current implementation accepts `RandomForest`, 'GradientBoostedTrees', 'K-NNclassifier and 'MLPclassifier'.
         """
 
         if method == 'RandomForest':
             self.predicted_class,  self.classprob = \
                 random_forest(self.train_features, self.train_labels,
                               self.test_features)
+        elif method == 'GradientBoostedTrees':
+            self.predicted_class,  self.classprob = \
+                gradient_boosted_trees(self.train_features, self.train_labels,
+                                       self.test_features)
+        elif method == 'K-NNclassifier':
+            self.predicted_class,  self.classprob = \
+                knn_classifier(self.train_features, self.train_labels,
+                               self.test_features)
+        elif method == 'MLPclassifier':
+            self.predicted_class,  self.classprob = \
+                mlp_classifier(self.train_features, self.train_labels,
+                               self.test_features)
 
         else:
-            raise ValueError('Only RandomForest classifier is implemented!'
+            raise ValueError('The only classifiers implemented are'
+                              'Random Forest, Gradient Boosted Trees',
+                              'K-Nearest neighbours and Multi-Layer' 
+                              'Perceptron.' 
                              '\n Feel free to add other options.')
 
     def evaluate_classification(self, metric_label='snpcc'):
