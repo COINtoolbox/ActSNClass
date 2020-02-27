@@ -44,7 +44,7 @@ Next, clone this repository in another chosen location:
 
 .. code-block:: bash
 
-    >>> git clone https://github.com/COINtoolbox/ActSNClass
+    (RESSPECT) >>> git clone https://github.com/COINtoolbox/ActSNClass
 
 Navigate to the repository folder and do
 
