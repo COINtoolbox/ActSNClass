@@ -1,3 +1,12 @@
 actsnclass.egg-info/
 build/
 dist/
+venv/
+actsnclass/__init__.pyc
+actsnclass/__pycache__/
+actsnclass/actConfig/
+actsnclass/analysis_functions/
+actsnclass/data_functions/
+data/SIMGEN_PUBLIC_DES/
+env.yml
+
