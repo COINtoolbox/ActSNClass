@@ -153,7 +153,7 @@ Make sure you check the full documentation of the module to understand which var
 on the case you wish to run.
 
 For example, to run with SNPCC data, the larges survey interval you can run is between 19 and 182 days,
-the corresponding option will be `-d 19 182`.
+the corresponding option will be `-d 20 182`.
 
 In the example above, if you choose to start from the original training sample, `-t original` you must also
 input the path to the file containing the full light curve analysis - so the full initial training can
