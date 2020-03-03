@@ -20,6 +20,8 @@
 import numpy as np
 from scipy.optimize import least_squares
 
+__all__ = ['bazin', 'errfunc', 'fit_scipy']
+
 
 def bazin(time, a, b, t0, tfall, trise):
     """

@@ -157,7 +157,7 @@ the corresponding option will be `-d 19 182`.
 
 In the example above, if you choose to start from the original training sample, `-t original` you must also
 input the path to the file containing the full light curve analysis - so the full initial training can
-be read. This option corresponds to `-t original -fm <path to full lc features>`.
+be read. This option corresponds to `-t original -fl <path to full lc features>`.
 
 More details can be found in the corresponding `docstring <https://github.com/COINtoolbox/ActSNClass/blob/master/actsnclass/scripts/run_time_domain.py>`_.
 
