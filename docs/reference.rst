@@ -33,7 +33,7 @@ Light curve analysis
 .. autosummary::
 
    bazin
-   err_func
+   errfunc
    fit_scipy
 
 Canonical sample
