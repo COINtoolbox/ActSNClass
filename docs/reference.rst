@@ -155,9 +155,9 @@ Plotting
    :toctree: api
 
     Canvas
-    Canvas.load_diagnostics
+    Canvas.load_metrics
     Canvas.set_plot_dimensions
-    Canvas.plot_diagnostics
+    Canvas.plot_metrics
 
 Scripts
 =======
