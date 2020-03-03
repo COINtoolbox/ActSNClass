@@ -16,7 +16,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from .bazin import bazin, fit_scipy
+from .bazin import bazin, fit_scipy, errfunc
 from .build_snpcc_canonical import build_snpcc_canonical
 from .build_snpcc_canonical import Canonical, plot_snpcc_train_canonical
 from .classifiers import random_forest
@@ -43,6 +43,7 @@ __all__ = ['accuracy',
            'Canvas',
            'DataBase',
            'efficiency',
+           'errfunc',
            'fit_dataset',
            'fit_scipy',
            'fit_snpcc_bazin',
