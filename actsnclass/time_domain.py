@@ -138,7 +138,7 @@ class SNPCCPhotometry(object):
 
         # count survivers
         count_surv = 0
-
+        
         for i in range(len(lc_list)):
             print('Processed : ', i)
 
@@ -178,9 +178,10 @@ class SNPCCPhotometry(object):
 
                     if queryable:
                         lc.sample = 'queryable'
-
+                    
                     # save features to file
                     with open(features_file, 'a') as param_file:
+                        #param_file.write(self.bazin_header)
                         param_file.write(str(lc.id) + ' ' +
                                          str(lc.redshift) + ' ' +
                                          str(lc.sntype) + ' ')
