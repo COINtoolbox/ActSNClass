@@ -16,23 +16,24 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from .bazin import bazin, fit_scipy, errfunc
-from .build_snpcc_canonical import build_snpcc_canonical
-from .build_snpcc_canonical import Canonical, plot_snpcc_train_canonical
-from .classifiers import random_forest
-from .database import DataBase
-from .fit_lightcurves import fit_snpcc_bazin, LightCurve
-from .learn_loop import learn_loop
-from .metrics import accuracy, efficiency, fom, purity, get_snpcc_metric
-from .query_strategies import random_sampling, uncertainty_sampling
-from .plot_results import Canvas
+from .bazin import *
+from .build_snpcc_canonical import *
+from .build_snpcc_canonical import *
+from .classifiers import *
+from .database import *
+from .fit_lightcurves import *
+from .learn_loop import *
+from .metrics import *
+from .query_strategies import *
+from .plot_results import *
 from .scripts.build_canonical import main as build_canonical
 from .scripts.build_time_domain import main as build_time_domain
 from .scripts.fit_dataset import main as fit_dataset
 from .scripts.make_metrics_plots import main as make_metrics_plots
 from .scripts.run_loop import main as run_loop
 from .scripts.run_time_domain import main as run_time_domain
-from .time_domain import SNPCCPhotometry
+from .time_domain import *
+from .time_domain_loop import *
 
 
 __all__ = ['accuracy',
@@ -48,6 +49,7 @@ __all__ = ['accuracy',
            'fit_scipy',
            'fit_snpcc_bazin',
            'fom',
+           'get_original_training',
            'get_snpcc_metric',
            'learn_loop',
            'LightCurve',
@@ -59,4 +61,5 @@ __all__ = ['accuracy',
            'run_loop',
            'run_time_domain',
            'SNPCCPhotometry',
+           'time_domain_loop',
            'uncertainty_sampling']

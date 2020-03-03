@@ -20,6 +20,8 @@ import os
 
 from actsnclass import LightCurve
 
+__all__ = ['SNPCCPhotometry']
+
 
 class SNPCCPhotometry(object):
     """Handles photometric information for entire SNPCC data.
@@ -210,3 +212,11 @@ class SNPCCPhotometry(object):
                         for item in lc.bazin_features[:-1]:
                             param_file.write(str(item) + ' ')
                         param_file.write(str(lc.bazin_features[-1]) + '\n')
+
+
+def main():
+    return None
+
+
+if __name__ == '__main__':
+    main()
