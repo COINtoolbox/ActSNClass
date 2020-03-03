@@ -128,6 +128,27 @@ class SNPCCPhotometry(object):
     def build_one_epoch(self, raw_data_dir: str, day_of_survey: int,
                         time_domain_dir: str, feature_method='Bazin',
                         dataset='SNPCC'):
+        """Fit bazin for all objects with enough points in a given day.
+
+        Generate 1 file containing best-fit Bazin parameters for a given
+        day of the survey.
+
+        Parameters
+        ----------
+        raw_data_dir: str
+            Complete path to raw data directory
+        day_of_survey: int
+            Day since the beginning of survey. 
+        time_domain_dir: str
+            Output directory to store time domain files. 
+        feature_method: str (optional)
+            Feature extraction method.
+            Only possibility is 'Bazin'.
+        dataset: str (optional)
+            Name of the data set. 
+            Only possibility is 'SNPCC'.
+        
+        """
 
         # read file names
         file_list_all = os.listdir(raw_data_dir)
