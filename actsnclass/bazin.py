@@ -101,4 +101,9 @@ def fit_scipy(time, flux):
 
     return result.x
 
+def main():
+    return None
 
+
+if __name__ == '__main__':
+    main()
