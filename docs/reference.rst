@@ -32,9 +32,9 @@ Light curve analysis
 
 .. autosummary::
 
-   snactclass.bazin.bazin
-   snactclass.bazin.err_func
-   snactclass.bazin.fit_scipy
+   bazin
+   err_func
+   fit_scipy
 
 Canonical sample
 ================
