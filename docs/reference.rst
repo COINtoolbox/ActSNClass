@@ -145,7 +145,7 @@ Active Learning loop
    :toctree: api
 
     get_original_training
-    time_domain_loop.time_domain_loop
+    time_domain_loop
 
 
 Plotting
