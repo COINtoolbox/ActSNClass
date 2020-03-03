@@ -24,12 +24,12 @@ __all__ = ['main']
 
 
 def main(user_input):
-    """Generate diagnostic plots.
+    """Generate metric plots.
 
     Parameters
     ----------
     -m: list
-        List of paths to the diagnostic files. One path for each
+        List of paths to the metrics files. One path for each
         learning strategy we wish to plot. This must follow the
         same order as give in `-s`.
     -o: str
@@ -42,10 +42,10 @@ def main(user_input):
     Examples
     --------
     Use it directly from the command line.
-    For example, if you wish to make a diagnostic plot for the random sampling and
+    For example, if you wish to make a metric plot for the random sampling and
     uncertainty sampling together, do:
 
-    >>> make_diagnostic_plots.py -m <path to rand sampling diag> <path to unc sampling diag>
+    >>> make_metrics_plots.py -m <path to rand sampling metrics> <path to unc sampling metrics>
     >>>     -o <path to output plot file> -s RandomSampling UncSampling
 
     """
@@ -54,14 +54,14 @@ def main(user_input):
     cv = Canvas()
 
     # load data
-    cv.load_diagnostics(path_to_files=list(user_input.metrics),
+    cv.load_metrics(path_to_files=list(user_input.metrics),
                         strategies_list=list(user_input.strategies))
 
     # set plot dimensions
     cv.set_plot_dimensions()
 
     # save plot to file
-    cv.plot_diagnostics(output_plot_file=user_input.output,
+    cv.plot_metrics(output_plot_file=user_input.output,
                         strategies_list=list(user_input.strategies))
 
 
@@ -72,7 +72,7 @@ if __name__ == '__main__':
                                                  'Learn loop module')
     parser.add_argument('-m', '--metrics-files-list', dest='metrics',
                         required=True, type=str,
-                        help='List of path to diagnostics files for '
+                        help='List of path to metrics files for '
                              'different learning strategies.', nargs='+')
     parser.add_argument('-o', '--output-plot', dest='output',
                         required=True, type=str,
@@ -81,7 +81,7 @@ if __name__ == '__main__':
                         required=True, type=str, nargs='+',
                         help='List of strategies names. This should be'
                              'in the same order as the given list of '
-                             'diagnostics files.')
+                             'metrics files.')
 
     from_user = parser.parse_args()
 
