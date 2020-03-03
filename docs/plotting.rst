@@ -11,7 +11,7 @@ evolution of the metrics:
  - Purity: fraction of correct Ia classifications;
  - Figure of merit: efficiency x purity with a penalty factor of 3 for false positives (contamination).
 
-The class :py:class:`actsnclass.Canvas` enables you do to it using:
+The class `Canvas <https://actsnclass.readthedocs.io/en/latest/api/actsnclass.Canvas.html#actsnclass.Canvas>_` enables you do to it using:
 
 .. code-block:: python
    :linenos:
