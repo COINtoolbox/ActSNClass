@@ -214,7 +214,7 @@ class DataBase:
                                    'zA', 'zB', 'zt0', 'ztfall', 'ztrise',
                                    'YA', 'YB', 'Yt0', 'Ytfall', 'Ytrise']
 
-            self.metadata_names = ['objid', 'redshift', 'type', 'code', 'sample']
+            self.metadata_names = ['id', 'redshift', 'type', 'code', 'sample']
         else:
             raise ValueError('Only "DES" and "LSST" filters are implemented at this point!')
 
@@ -224,7 +224,8 @@ class DataBase:
 
             if screen:
                 print('Loaded ', self.metadata.shape[0], ' samples!')
-
+                print(data[self.features_names])
+                print(data[self.metadata_names])
         elif sample == 'train':
             self.train_features = data[self.features_names].values
             self.train_metadata = data[self.metadata_names]
@@ -306,7 +307,7 @@ class DataBase:
         
 
     def load_features(self, path_to_file: str, method='Bazin', screen=False,
-                      survey='DES', sample=None, #from_file=True
+                      survey='DES', sample=None, from_file=True
                       ):
         """Load features according to the chosen feature extraction method.
 
@@ -424,10 +425,10 @@ class DataBase:
             If True, consider train and test samples separately read 
             from independent files.
         """
-
-        if 'id' in self.train_metadata.keys():
+        
+        if 'id' in self.metadata.keys():
             id_name = 'id'
-        elif 'objid' in self.train_metadata.keys():
+        elif 'objid' in self.metadata.keys():
             id_name = 'objid'
             
         # separate original training and test samples

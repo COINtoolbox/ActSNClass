@@ -42,7 +42,7 @@ def main(args):
        Size of batch to be queried in each loop. Default is 1.
     -c: str (optional)
         Machine Learning algorithm.
-        Currently only 'RandomForest' is implemented.
+        Currently 'RandomForest','GradientBoostedTrees','K-NNclassifier' and 'MLPclassifier' are implemented.
     -m: str (optional)
         Feature extraction method. Currently only 'Bazin' is implemented.
     -t: str or int (optional)
@@ -91,7 +91,7 @@ if __name__ == '__main__':
                         type=int)
     parser.add_argument('-c', '--classifier', dest='classifier',
                         help='Choice of machine learning classification.'
-                             'Only "RandomForest" is implemented.'
+                             ' "RandomForest", "GradientBoosetedTrees","K-NNclassifier" and "MLPclassifier" are implemented.'
                              'algorithm.', required=False, default='RandomForest',
                         type=str)
     parser.add_argument('-d', '--diagnostics', dest='diagnostics',

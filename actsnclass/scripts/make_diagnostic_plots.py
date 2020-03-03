@@ -56,13 +56,13 @@ def main(user_input):
     # load data
     cv.load_diagnostics(path_to_files=list(user_input.metrics),
                         strategies_list=list(user_input.strategies))
-
+    
     # set plot dimensions
     cv.set_plot_dimensions()
 
     # save plot to file
     cv.plot_diagnostics(output_plot_file=user_input.output,
-                        strategies_list=list(user_input.strategies))
+                        strategies_list=list(user_input.strategies),lim_queries = 179)
 
 
 if __name__ == '__main__':

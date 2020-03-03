@@ -108,7 +108,7 @@ def gradient_boosted_trees(train_features: np.array,
 
 
 def knn_classifier(train_features: np.array, train_labels: np.array,
-                   test_features: np.array, nnbrs : int, seed = 42):
+                   test_features: np.array, nnbrs = 50, seed = 42):
 
     """K-Nearest Neighbour classifier.
 
@@ -120,8 +120,8 @@ def knn_classifier(train_features: np.array, train_labels: np.array,
         Training sample classes.
     test_features: np.array
         Test sample features.
-    nnbrs : int
-        Number of neighbours.
+    nnbrs : int (optional)
+        Number of neighbours. Default is 50.
     seed: float (optional)
         Seed for random number generator. Default is 42.
 
@@ -142,7 +142,7 @@ def knn_classifier(train_features: np.array, train_labels: np.array,
     return predictions, prob
 
 def mlp_classifier(train_features: np.array, train_labels: np.array,
-                   test_features: np.array, n_neur : int, seed = 42):
+                   test_features: np.array, n_neur = 100, seed = 42):
 
     """Multi Layer Perceptron classifier.
 
@@ -154,8 +154,8 @@ def mlp_classifier(train_features: np.array, train_labels: np.array,
         Training sample classes.
     test_features: np.array
         Test sample features.
-    n_neur : int
-        Number of neurons in the hidden layer.
+    n_neur : int (optional)
+        Number of neurons in the hidden layer. Default is 100.
     seed: float (optional)
         Seed for random number generator. Default is 42.
 
@@ -168,9 +168,9 @@ def mlp_classifier(train_features: np.array, train_labels: np.array,
     """
     
     #create classifier instance
-    clf=MLPClassifier(hidden_layer_sizes=(n_neur), max_iter=150, 
-                      alpha=1e-4,solver='adam', verbose=0, tol=1e-4,
-                      random_state=seed,learning_rate_init=.1)
+    clf=MLPClassifier(hidden_layer_sizes=(n_neur), max_iter=250, 
+                      alpha=1e-4,solver='adam', verbose=False, tol=1e-4,
+                      random_state=seed,learning_rate_init=.001,early_stopping=True)
     clf.fit(train_features, train_labels)
     predictions = clf.predict(test_features)
     prob = clf.predict_proba(test_features)
