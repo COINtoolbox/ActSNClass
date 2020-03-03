@@ -167,6 +167,6 @@ Scripts
    build_canonical
    build_time_domain
    fit_dataset
-   make_diagnostic_plots
+   make_metrics_plots
    run_loop
    run_time_domain
