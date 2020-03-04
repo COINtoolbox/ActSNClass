@@ -16,14 +16,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-__all__ = ['random_forest','gradient_boosted_trees','knn_classifier','mlp_classifier']
+__all__ = ['random_forest','gradient_boosted_trees','knn_classifier','mlp_classifier','svm_classifier','nbg_classifier']
 
 import numpy as np
 from sklearn.ensemble import RandomForestClassifier
 from xgboost.sklearn import XGBClassifier
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.neural_network import MLPClassifier
-
+from sklearn.svm import SVC
+from sklearn.naive_bayes import GaussianNB
 
 def random_forest(train_features:  np.array, train_labels: np.array,
                   test_features: np.array, nest=1000, seed=42):
@@ -53,7 +54,7 @@ def random_forest(train_features:  np.array, train_labels: np.array,
 
     # create classifier instance
     clf = RandomForestClassifier(n_estimators=nest, 
-                                 random_state=seed,max_depth=6,
+                                 random_state=seed,max_depth=None,
                                  n_jobs=2,bootstrap=True,
                                  criterion="gini",
                                  verbose=0, oob_score=True)
@@ -174,9 +175,27 @@ def mlp_classifier(train_features: np.array, train_labels: np.array,
     clf.fit(train_features, train_labels)
     predictions = clf.predict(test_features)
     prob = clf.predict_proba(test_features)
+        
+    return predictions, prob
 
+def svm_classifier(train_features: np.array, train_labels: np.array,
+                   test_features: np.array, seed = 42):
+    clf = SVC(kernel='rbf', gamma = 'scale',probability = True,class_weight='balanced')
+    clf.fit(train_features, train_labels)
+    predictions = clf.predict(test_features)
+    prob = clf.predict_proba(test_features)
+
+    return predictions, prob
+
+def nbg_classifier(train_features: np.array, train_labels: np.array,
+                  test_features: np.array, seed = 42):
+    clf=GaussianNB()
+    clf.fit(train_features, train_labels)
+    predictions = clf.predict(test_features)
+    prob = clf.predict_proba(test_features)
     
     return predictions, prob
+
 
 def main():
     return None

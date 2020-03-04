@@ -19,7 +19,7 @@
 from .bazin import bazin, fit_scipy
 from .build_snpcc_canonical import build_snpcc_canonical
 from .build_snpcc_canonical import Canonical, plot_snpcc_train_canonical
-from .classifiers import random_forest,gradient_boosted_trees,knn_classifier,mlp_classifier
+from .classifiers import random_forest,gradient_boosted_trees,knn_classifier,mlp_classifier,svm_classifier,nbg_classifier
 from .database import DataBase
 from .fit_lightcurves import fit_snpcc_bazin, LightCurve, fit_resspect_bazin
 from .fit_lightcurves import fit_plasticc_bazin
@@ -62,6 +62,8 @@ __all__ = ['accuracy',
            'gradient_boosted_trees',
            'knn_classifier',
            'mlp_classifier',
+           'svm_classifier',
+           'nbg_classifier',
            'random_sampling',
            'run_loop',
            'run_time_domain',

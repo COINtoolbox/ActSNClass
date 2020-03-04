@@ -91,7 +91,8 @@ if __name__ == '__main__':
                         type=int)
     parser.add_argument('-c', '--classifier', dest='classifier',
                         help='Choice of machine learning classification.'
-                             ' "RandomForest", "GradientBoosetedTrees","K-NNclassifier" and "MLPclassifier" are implemented.'
+                             ' "RandomForest", "GradientBoosetedTrees","K-NNclassifier", "MLPclassifier"'
+                             ' "SVMclassifier" and "NBclassifier" are implemented.'
                              'algorithm.', required=False, default='RandomForest',
                         type=str)
     parser.add_argument('-d', '--diagnostics', dest='diagnostics',
