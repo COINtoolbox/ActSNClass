@@ -62,7 +62,7 @@ def main(user_input):
 
     # save plot to file
     cv.plot_diagnostics(output_plot_file=user_input.output,
-                        strategies_list=list(user_input.strategies),lim_queries = 179)
+                        strategies_list=list(user_input.strategies),lim_queries = 1000)
 
 
 if __name__ == '__main__':

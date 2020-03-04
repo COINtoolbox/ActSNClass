@@ -74,7 +74,9 @@ def time_domain_loop(days: list,  output_diag_file: str,
         If True, restrict the search to the canonical sample.
     classifier: str (optional)
         Machine Learning algorithm.
-        Currently only 'RandomForest' is implemented.
+        Currently 'RandomForest', 'GradientBoostedTrees',
+        'K-NNclassifier', 'MLPclassifier', 'SVMclassifier'
+         and 'NBclassifier' are implemented.
     features_method: str (optional)
         Feature extraction method. Currently only 'Bazin' is implemented.
     path_to_canonical: str (optional)

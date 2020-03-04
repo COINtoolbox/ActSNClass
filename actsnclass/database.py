@@ -22,7 +22,7 @@ import os
 import pandas as pd
 import tarfile
 
-from actsnclass.classifiers import random_forest,gradient_boosted_trees,knn_classifier,mlp_classifier
+from actsnclass.classifiers import random_forest,gradient_boosted_trees,knn_classifier,mlp_classifier,svm_classifier,nbg_classifier
 
 from actsnclass.query_strategies import uncertainty_sampling, random_sampling
 from actsnclass.metrics import get_snpcc_metric
@@ -608,12 +608,22 @@ class DataBase:
             self.predicted_class,  self.classprob = \
                 mlp_classifier(self.train_features, self.train_labels,
                                self.test_features)
+        elif method == 'SVMclassifier':
+            self.predicted_class, self.classprob = \
+                svm_classifier(self.train_features, self.train_labels,
+                               self.test_features)
+        elif method == 'NBclassifier':
+            self.predicted_class, self.classprob = \
+                nbg_classifier(self.train_features, self.train_labels,
+                          self.test_features)
+
 
         else:
             raise ValueError('The only classifiers implemented are'
                               'Random Forest, Gradient Boosted Trees',
-                              'K-Nearest neighbours and Multi-Layer' 
-                              'Perceptron.' 
+                              'K-Nearest neighbours, Multi-Layer' 
+                              'Perceptron, Support Vector Machines'
+                              'and Naive Bayesian.' 
                              '\n Feel free to add other options.')
 
     def evaluate_classification(self, metric_label='snpcc'):
