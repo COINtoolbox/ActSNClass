@@ -49,6 +49,7 @@ def get_original_training(path_to_features, method='Bazin', screen=False):
 def time_domain_loop(days: list,  output_diag_file: str,
                      output_queried_file: str,
                      path_to_features_dir: str, strategy: str,
+                     fname_pattern: list,
                      batch=1, canonical = False,  classifier='RandomForest',
                      features_method='Bazin', path_to_canonical="",
                      path_to_full_lc_features="",
@@ -68,6 +69,9 @@ def time_domain_loop(days: list,  output_diag_file: str,
         Complete path to directory holding features files for all days.
     strategy: str
         Query strategy. Options are 'UncSampling' and 'RandomSampling'.
+    fname_pattern: str
+        List of strings. Set the pattern for filename, except day of 
+        survey. If file name is 'day_1_vx.dat' -> ['day_', '_vx.dat']
     batch: int (optional)
         Size of batch to be queried in each loop. Default is 1.
     canonical: bool (optional)
@@ -97,7 +101,8 @@ def time_domain_loop(days: list,  output_diag_file: str,
     data = DataBase()
 
     # load features for the first day
-    path_to_features = path_to_features_dir + 'day_' + str(int(days[0])) + '.dat'
+    path_to_features = path_to_features_dir + fname_pattern[0]  + \
+                       str(int(days[0])) + fname_pattern[1]
     data.load_features(path_to_features, method=features_method,
                        screen=screen)
 
@@ -118,7 +123,6 @@ def time_domain_loop(days: list,  output_diag_file: str,
         canonical.load_features(path_to_file=path_to_canonical)
         data.queryable_ids = canonical.queryable_ids
 
-
     for night in range(int(days[0]), int(days[-1]) - 1):
 
         if screen:
@@ -138,6 +142,8 @@ def time_domain_loop(days: list,  output_diag_file: str,
 
         # update training and test samples
         data.update_samples(indx, loop=loop)
+        print('train  -- 2 -- ', data.train_metadata.shape)
+        print('test   -- 2 -- ', data.test_metadata.shape)
 
         # save diagnostics for current state
         data.save_metrics(loop=loop, output_metrics_file=output_diag_file,
@@ -148,7 +154,8 @@ def time_domain_loop(days: list,  output_diag_file: str,
                                  full_sample=False)
 
         # load features for next day
-        path_to_features2 = path_to_features_dir + 'day_' + str(night + 1) + '.dat'
+        path_to_features2 = path_to_features_dir + fname_pattern[0] + \
+                            str(night + 1) + fname_pattern[1]
 
         data_tomorrow = DataBase()
         data_tomorrow.load_features(path_to_features2, method=features_method,
