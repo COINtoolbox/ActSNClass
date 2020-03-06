@@ -305,8 +305,7 @@ class DataBase:
         
 
     def load_features(self, path_to_file: str, method='Bazin', screen=False,
-                      survey='DES', sample=None, #from_file=True
-                      ):
+                      survey='DES', sample=None ):
         """Load features according to the chosen feature extraction method.
 
         Populates properties: data, features, feature_list, header
@@ -331,20 +330,13 @@ class DataBase:
             If None, sample is given by a column within the given file.
             else, read independent files for 'train' and 'test'.
             Default is None.
-        #from_file: bool (optional)
-        #    If True, reads data always from files.
-        #    Else separate data on the fly. 
-	#    Default is True. 
         """
 
-        if method == 'Bazin' and from_file:
+        if method == 'Bazin':
             self.load_bazin_features(path_to_file, screen=screen,
                                      survey=survey, sample=sample)
 
-        #elif method == 'Bazin' and not from_file:
-        #    self.load_bazin_onthefly(path_to_file, )
-
-        elif method == 'photometry' and from_file:
+        elif method == 'photometry':
             self.load_photometry_features(path_to_file, screen=screen,
                                           survey=survey, sample=sample)
         else:
