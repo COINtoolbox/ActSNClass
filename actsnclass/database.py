@@ -416,9 +416,9 @@ class DataBase:
             from independent files.
         """
 
-        if 'id' in self.train_metadata.keys():
+        if 'id' in self.metadata_names:
             id_name = 'id'
-        elif 'objid' in self.train_metadata.keys():
+        elif 'objid' in self.metadata_names:
             id_name = 'objid'
             
         # separate original training and test samples
