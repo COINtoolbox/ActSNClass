@@ -80,7 +80,7 @@ chosen working directory and unpack the data.
 
 .. code-block:: bash
 
-    >>> mv -rf actsnclass/data/ work_dir/
+    >>> mv -f actsnclass/data/ work_dir/
     >>> cd work_dir/data
     >>> tar -xzvf SIMGEN_PUBLIC_DES.tar.gz
 
@@ -160,7 +160,7 @@ The `COsmostatistics INitiative (COIN) <https://cosmostatistics-initiative.org>`
 This work would not be possible without intensive consultation to online platforms and
 discussion forums. Although it is not possible to provide a complete list of the open source
 material consulted in the construction of this material, we recognize their importance and
-**deeply thank everyone who contributes to open learning platforms**.
+**deeply thank all those who contributes to open learning platforms**.
 
 Dependencies
 ------------

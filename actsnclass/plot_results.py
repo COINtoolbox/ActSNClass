@@ -64,11 +64,11 @@ class Canvas(object):
 
     Methods
     -------
-    load_diagnostics(path_to_files: list, strategy_list: list)
-        Load figure of merit diagnostics and identify set of metrics.
+    load_metrics(path_to_files: list, strategy_list: list)
+        Load metrics and identify set of metrics.
     set_plot_dimensions()
         Set directives for plot sizes based on number of metrics.
-    plot_diagnostics(output_plot_file: str, strategies_list: list)
+    plot_metrics(output_plot_file: str, strategies_list: list)
         Generate plot for all metrics in files and strategies given as input.
 
     Examples
@@ -79,17 +79,17 @@ class Canvas(object):
     >>>                  'results/metrics_random.dat',
     >>>                  'results/metrics_unc.dat']
     >>> strategies_list = ['Canonical', 'RandomSampling', 'UncSampling']
-    >>> output_plot = 'plots/diag1_unc.png'
+    >>> output_plot = 'plots/metrics1_unc.png'
 
     Initiate the Canvas object, read and plot the results for
-    each diagnostic and strategy.
+    each metric and strategy.
 
     >>> cv = Canvas()
-    >>> cv.load_diagnostics(path_to_files=path_to_files,
+    >>> cv.load_metrics(path_to_files=path_to_files,
     >>>                    strategies_list=strategies_list)
     >>> cv.set_plot_dimensions()
-    >>> cv.plot_diagnostics(output_plot_file=output_plot,
-    >>>                    strategies_list=strategies_list)
+    >>> cv.plot_metrics(output_plot_file=output_plot,
+    >>>                 strategies_list=strategies_list)
 
     """
 
@@ -118,8 +118,8 @@ class Canvas(object):
                            'RandomSampling': self.rand_sampling,
                            'UncSampling': self.unc_sampling}
 
-    def load_diagnostics(self, path_to_files: list, strategies_list: list):
-        """Load figure of merit diagnostics and identify set of metrics.
+    def load_metrics(self, path_to_files: list, strategies_list: list):
+        """Load and identify set of metrics.
 
         Populates attributes: canonical, unc_sampling or rand_sampling,
         depending on choice of 'sample'.
@@ -127,7 +127,7 @@ class Canvas(object):
         Parameters
         ----------
         path_to_files : str
-            List of paths to diagnostic files for different strategies.
+            List of paths to metrics files for different strategies.
         strategies_list: list
             List of all strategies to be included in the same plot.
             Current possibibilities are:

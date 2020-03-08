@@ -385,8 +385,8 @@ class DataBase:
         self.plasticc_mjd_lim = [min(min_mjd), max(max_mjd)]
 
     def build_samples(self, initial_training='original', nclass=2,
-                      screen=False, Ia_frac=0.1, save_samples=False,
-                      sep_files=False):
+                      screen=False, Ia_frac=0.1, queryable=False, 
+                      save_samples=False, sep_files=False):
         """Separate train and test samples.
 
         Populate properties: train_features, train_header, test_features,
@@ -403,6 +403,9 @@ class DataBase:
         nclass: int (optional)
             Number of classes to consider in the classification
             Currently only nclass == 2 is implemented.
+        queryable: bool (optional)
+            If True build also queryable sample for time domain analysis.
+            Default is False.
         screen: bool (optional)
             If True display the dimensions of training and test samples.
         save_samples: bool (optional)
@@ -421,22 +424,21 @@ class DataBase:
         elif 'objid' in self.metadata_names:
             id_name = 'objid'
             
-        # separate original training and test samples
-        if initial_training == 'original' and not sep_files:
-            train_flag = self.metadata['sample'] == 'train'
+        if initial_training == 'original':
+            train_flag = self.metadata['orig_sample'] == 'train'
             train_data = self.features[train_flag]
             self.train_features = train_data.values
             self.train_metadata = self.metadata[train_flag]
 
-            test_flag = np.logical_or(self.metadata['sample'] == 'test',
-                                      self.metadata['sample'] == 'queryable')
+            test_flag = self.metadata['orig_sample'] == 'test'
+
             test_data = self.features[test_flag]
             self.test_features = test_data.values
             self.test_metadata = self.metadata[test_flag]
 
-            if 'queryable' in self.metadata['sample'].values:
-                queryable_flag = self.metadata['sample'].values == 'queryable'
-                self.queryable_ids = self.metadata[queryable_flag][id_name].values
+            if queryable:
+                queryable_flag = self.metadata['queryable'].values
+                self.queryable_ids = self.metadata[queryable_flag][].values
             else:
                 self.queryable_ids = self.test_metadata[id_name].values
 
@@ -470,7 +472,6 @@ class DataBase:
             # build complete metadata object
             self.metadata = pd.concat([self.train_metadata, self.test_metadata])
 
-
         elif isinstance(initial_training, int) and sep_files:
 
             # build complete metadata object
@@ -503,8 +504,8 @@ class DataBase:
             self.test_labels = self.metadata['type'][~train_flag].values == 'Ia'
             self.test_features = self.features[~train_flag]
             
-            if 'queryable' in self.metadata['sample'].values:
-                queryable_flag = self.metadata['sample'] == 'queryable'
+            if queryable:
+                queryable_flag = self.metadata['queryable'].values
                 combined_flag = np.logical_and(~train_flag, queryable_flag)
                 self.queryable_ids = self.metadata[combined_flag][id_name].values
             else:
@@ -555,10 +556,12 @@ class DataBase:
             self.test_labels = data_copy['type'][~train_flag].values == 'Ia'
             self.test_features = self.features[~train_flag].values
             
-            if 'queryable' in self.metadata['sample'].values:
-                queryable_flag = data_copy['sample'] == 'queryable'
-                combined_flag = np.logical_and(~train_flag, queryable_flag)
-                self.queryable_ids = data_copy[combined_flag][id_name].values
+            if queryable:
+                test_flag = np.array([item in test_indexes 
+                                      for item in range(self.metadata.shape[0])])
+                queryable_flag = self.metadata['queryable'].values
+                combined_flag = np.logical_and(test_flag, queryable_flag)
+                self.queryable_ids = self.metadata[combined_flag][id_name].values
             else:
                 self.queryable_ids = self.test_metadata[id_name].values
 
