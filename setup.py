@@ -36,7 +36,7 @@ setuptools.setup(
     scripts=['actsnclass/scripts/build_canonical.py',
              'actsnclass/scripts/build_time_domain.py',
              'actsnclass/scripts/fit_dataset.py',
-             'actsnclass/scripts/make_diagnostic_plots.py',
+             'actsnclass/scripts/make_metrics_plots.py',
              'actsnclass/scripts/run_loop.py',
              'actsnclass/scripts/run_time_domain.py'],
     url='https://github.com/COINtoolbox/ActSNClass',
