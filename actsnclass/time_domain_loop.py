@@ -55,7 +55,7 @@ def time_domain_loop(days: list,  output_metrics_file: str,
                      batch=1, canonical = False,  classifier='RandomForest',
                      features_method='Bazin', path_to_canonical="",
                      path_to_full_lc_features="", queryable=True,
-                     screen=True, training='original'):
+                     screen=True, survey='PLAsTiCC', training='original'):
     """Perform the active learning loop. All results are saved to file.
 
     Parameters
@@ -94,6 +94,9 @@ def time_domain_loop(days: list,  output_metrics_file: str,
         Default is True.
     screen: bool (optional)
         If True, print on screen number of light curves processed.
+    survey: str (optional)
+        Name of survey to be analyzed. Accepts 'DES' or 'LSST'.
+        Default is DES.
     training: str or int (optional)
         Choice of initial training sample.
         If 'original': begin from the train sample flagged in the file
@@ -109,7 +112,7 @@ def time_domain_loop(days: list,  output_metrics_file: str,
     path_to_features = path_to_features_dir + fname_pattern[0]  + \
                        str(int(days[0])) + fname_pattern[1]
     data.load_features(path_to_features, method=features_method,
-                       screen=screen)
+                       screen=screen, survey=survey)
 
     # change training
     if training == 'original':
@@ -162,7 +165,7 @@ def time_domain_loop(days: list,  output_metrics_file: str,
 
         data_tomorrow = DataBase()
         data_tomorrow.load_features(path_to_features2, method=features_method,
-                                    screen=False)
+                                    screen=screen, survey=survey)
 
         # identify objects in the new day which must be in training
         train_flag = np.array([item in data.train_metadata['id'].values 

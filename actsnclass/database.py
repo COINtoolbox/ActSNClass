@@ -203,7 +203,7 @@ class DataBase:
                                    'rB', 'rt0', 'rtfall', 'rtrise', 'iA', 'iB',
                                    'it0', 'itfall', 'itrise', 'zA', 'zB', 'zt0',
                                    'ztfall', 'ztrise']
-            self.metadata_names = ['id', 'redshift', 'type', 'code', 'sample']
+            self.metadata_names = ['id', 'redshift', 'type', 'code', 'sample', 'queryable']
 
         elif survey == 'LSST':
             self.features_names = ['uA', 'uB', 'ut0', 'utfall', 'utrise',
@@ -213,7 +213,7 @@ class DataBase:
                                    'zA', 'zB', 'zt0', 'ztfall', 'ztrise',
                                    'YA', 'YB', 'Yt0', 'Ytfall', 'Ytrise']
 
-            self.metadata_names = ['objid', 'redshift', 'type', 'code', 'sample']
+            self.metadata_names = ['id', 'redshift', 'type', 'code', 'sample', 'queryable']
         else:
             raise ValueError('Only "DES" and "LSST" filters are implemented at this point!')
 
@@ -223,6 +223,15 @@ class DataBase:
 
             if screen:
                 print('Loaded ', self.metadata.shape[0], ' samples!')
+
+                ntrain = sum(self.metadata['sample'] == 'train')
+                ntest = sum(self.metadata['sample'] == 'test')
+                nquery = sum(self.metadata['queryable'])
+
+                print('   ... of which')
+                print('       train: ', ntrain)
+                print('       test: ', ntest)
+                print('       query: ', nquery)
 
         elif sample == 'train':
             self.train_features = data[self.features_names].values
@@ -237,6 +246,7 @@ class DataBase:
 
             if screen:
                 print('Loaded ', self.test_metadata.shape[0], ' ' + sample +  ' samples!')
+            
 
     def load_photometry_features(self, path_to_photometry_file: str,
                                  screen=False, sample=None):
@@ -260,7 +270,7 @@ class DataBase:
             Default is None.
         """
 
-        # read matrix with Bazin features
+        # read matrix with full photometry
         if '.tar.gz' in path_to_photometry_file:
             tar = tarfile.open(path_to_photometry_file, 'r:gz')
             fname = tar.getmembers()[0]
@@ -572,6 +582,7 @@ class DataBase:
         if screen:
             print('Training set size: ', self.train_metadata.shape[0])
             print('Test set size: ', self.test_metadata.shape[0])
+            print('Queryable set size: ', sum(self.metadata['queryable']))
 
     def classify(self, method='RandomForest'):
         """Apply a machine learning classifier.
@@ -750,13 +761,14 @@ class DataBase:
                 metrics.write('\n')
 
         # write to file
-        with open(output_metrics_file, 'a') as metrics:
-            metrics.write(str(epoch) + ' ')
-            for value in self.metrics_list_values:
-                metrics.write(str(value) + ' ')
-            for j in range(batch):
-                metrics.write(str(self.queried_sample[loop][j][1]) + ' ')
-            metrics.write('\n')
+        if len(self.queried_sample[loop]) > 0:
+            with open(output_metrics_file, 'a') as metrics:
+                metrics.write(str(epoch) + ' ')
+                for value in self.metrics_list_values:
+                    metrics.write(str(value) + ' ')
+                for j in range(batch):
+                    metrics.write(str(self.queried_sample[loop][j][1]) + ' ')
+                metrics.write('\n')
 
     def save_queried_sample(self, queried_sample_file: str, loop: int,
                             full_sample=False, batch=1):
@@ -774,12 +786,12 @@ class DataBase:
             'queried_sample_file'. Default is False.
         """
 
-        if full_sample:
+        if full_sample and len(self.queried_sample) > 0:
             full_header = self.metadata_names + self.features_names
             query_sample = pd.DataFrame(self.queried_sample, columns=full_header)
             query_sample.to_csv(queried_sample_file, sep=' ', index=False)
 
-        elif isinstance(loop, int):
+        elif isinstance(loop, int) and len(self.queried_sample) > 0:
             if not os.path.exists(queried_sample_file) or loop == 0:
                 # add header to query sample file
                 full_header = self.metadata_names + self.features_names
