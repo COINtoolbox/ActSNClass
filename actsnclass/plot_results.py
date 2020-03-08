@@ -158,7 +158,7 @@ class Canvas(object):
         self.fig_size = (10 * self.ncolumns, 7 * self.nlines)
 
     def plot_metrics(self,  output_plot_file: str, strategies_list: list,
-                         lim_queries: int):
+                         lim_queries=None):
         """
         Generate plot for all metrics in files and strategies given as input.
 
@@ -170,9 +170,9 @@ class Canvas(object):
             List of all strategies to be included in the same plot.
             Current possibibilities are:
             ['canonical', 'rand_sampling', 'unc_sampling'].
-        lim_queries: int
+        lim_queries: int or None (optional)
             If int, maximum number of queries to be plotted.
-            If None no limits are imposed.
+            If None no limits are imposed. Default is None.
         """
 
         # set of all matrices to be plotted
