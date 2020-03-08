@@ -55,7 +55,7 @@ def time_domain_loop(days: list,  output_metrics_file: str,
                      batch=1, canonical = False,  classifier='RandomForest',
                      features_method='Bazin', path_to_canonical="",
                      path_to_full_lc_features="", queryable=True,
-                     screen=True, survey='PLAsTiCC', training='original'):
+                     query_thre=1.0, screen=True, survey='PLAsTiCC', training='original'):
     """Perform the active learning loop. All results are saved to file.
 
     Parameters
@@ -92,6 +92,8 @@ def time_domain_loop(days: list,  output_metrics_file: str,
     queryable: bool (optional)
         If True, allow queries only on objects flagged as queryable.
         Default is True.
+    query_thre: float (optional)
+        Percentile threshold for query. Default is 1. 
     screen: bool (optional)
         If True, print on screen number of light curves processed.
     survey: str (optional)
@@ -146,7 +148,8 @@ def time_domain_loop(days: list,  output_metrics_file: str,
         data.evaluate_classification()
 
         # choose object to query
-        indx = data.make_query(strategy=strategy, batch=batch)
+        indx = data.make_query(strategy=strategy, batch=batch, queryable=queryable,
+                               query_thre=query_thre)
 
         # update training and test samples
         data.update_samples(indx, loop=loop)
