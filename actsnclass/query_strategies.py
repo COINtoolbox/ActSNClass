@@ -23,7 +23,7 @@ import numpy as np
 
 def uncertainty_sampling(class_prob: np.array, test_ids: np.array,
                          queryable_ids: np.array, batch=1,
-                         screen=False, query_thre=0.5) -> list:
+                         screen=False, query_thre=1.0) -> list:
     """Search for the sample with highest uncertainty in predicted class.
 
     Parameters
@@ -44,7 +44,7 @@ def uncertainty_sampling(class_prob: np.array, test_ids: np.array,
     query_thre: float (optional)
         Maximum percentile where a spectra is considered worth it.
         If not queryable object is available before this threshold, 
-        return empty query. Default is 0.5.
+        return empty query. Default is 1.0.
 
     Returns
     -------
@@ -91,7 +91,7 @@ def uncertainty_sampling(class_prob: np.array, test_ids: np.array,
 
 
 def random_sampling(test_ids: np.array, queryable_ids: np.array,
-                    batch=1, queryable=False, seed=42) -> list:
+                    batch=1, queryable=False, query_thre=1.0, seed=42) -> list:
     """Randomly choose an object from the test sample.
 
     Parameters
@@ -106,6 +106,9 @@ def random_sampling(test_ids: np.array, queryable_ids: np.array,
     queryable: bool (optional)
         If True, check if randomly chosen object is queryable.
         Default is False.
+    query_thre: float (optinal)
+        Threshold where a query is considered worth it. 
+        Default is 1.0 (no limit).
     seed: int (optional)
         Seed for random number generator. Default is 42.
 

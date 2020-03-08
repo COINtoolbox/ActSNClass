@@ -625,7 +625,7 @@ class DataBase:
                              '\n Feel free to add other options.')
 
     def make_query(self, strategy='UncSampling', batch=1,
-                   screen=False, queryable=False) -> list:
+                   screen=False, queryable=False, query_thre=1.0) -> list:
         """Identify new object to be added to the training sample.
 
         Parameters
@@ -641,6 +641,9 @@ class DataBase:
         queryable: bool (optional)
             If True, consider only queryable objects.
             Default is False.
+        query_thre: float (optional)
+            Percentile threshold where a query is considered worth it.
+            Default is 1 (no limit).
         screen: bool (optional)
             If true, display on screen information about the
             displacement in order and classificaion probability due to
@@ -663,13 +666,14 @@ class DataBase:
             query_indx = uncertainty_sampling(class_prob=self.classprob,
                                               queryable_ids=self.queryable_ids,
                                               test_ids=self.test_metadata[id_name].values,
-                                              batch=batch, dump=dump, queryable=queryable)
+                                              batch=batch, screen=screen,
+                                              query_thre=query_thre)
             return query_indx
 
         elif strategy == 'RandomSampling':
             query_indx = random_sampling(queryable_ids=self.queryable_ids,
                                          test_ids=self.test_metadata[id_name].values,
-                                         batch=batch, queryable=queryable)
+                                         batch=batch, query_thre=query_thre)
 
             for n in query_indx:
                 if self.test_metadata[id_name].values[n] not in self.queryable_ids:
