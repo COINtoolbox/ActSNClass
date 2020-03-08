@@ -9,4 +9,5 @@ actsnclass/analysis_functions/
 actsnclass/data_functions/
 data/SIMGEN_PUBLIC_DES/
 env.yml
-
+work/
+examples/
