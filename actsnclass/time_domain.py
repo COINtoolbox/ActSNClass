@@ -51,7 +51,7 @@ class SNPCCPhotometry(object):
         and evaluate if query is possible. Save results to file.
     """
     def __init__(self):
-        self.bazin_header = 'id redshift type code sample gA gB gt0 ' + \
+        self.bazin_header = 'id redshift type code orig_sample queryable gA gB gt0 ' + \
                             'gtfall gtrise rA rB rt0 rtfall rtrise iA ' + \
                             'iB it0 itfall itrise zA zB zt0 ztfall ztrise\n'
         self.max_epoch = 56352
@@ -199,16 +199,14 @@ class SNPCCPhotometry(object):
                         lc.check_queryable(mjd=self.min_epoch + day_of_survey,
                                            r_lim=self.rmag_lim)
 
-                    if queryable:
-                        lc.sample = 'queryable'
-
                     # save features to file
                     with open(features_file, 'a') as param_file:
                         param_file.write(str(lc.id) + ' ' +
                                          str(lc.redshift) + ' ' +
                                          str(lc.sntype) + ' ')
                         param_file.write(str(lc.sncode) + ' ' +
-                                         str(lc.sample) + ' ')
+                                         str(lc.sample) + ' ' +
+                                         str(queryable) + ' ')
                         for item in lc.bazin_features[:-1]:
                             param_file.write(str(item) + ' ')
                         param_file.write(str(lc.bazin_features[-1]) + '\n')
