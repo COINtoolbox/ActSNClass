@@ -196,6 +196,7 @@ def time_domain_loop(days: list,  output_metrics_file: str,
         if screen:
             print('Training set size: ', data.train_metadata.shape[0])
             print('Test set size: ', data.test_metadata.shape[0])
+            print('Queryable set size: ', len(data.queryable_ids))
 
 
 def main():
