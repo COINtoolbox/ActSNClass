@@ -1,5 +1,6 @@
 actsnclass.egg-info/
 build/
+build/lib/
 dist/
 work/
 venv/
