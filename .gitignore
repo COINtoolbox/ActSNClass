@@ -1,5 +1,6 @@
 actsnclass.egg-info/
 build/
+build/lib/
 dist/
 venv/
 actsnclass/__init__.pyc
@@ -11,3 +12,4 @@ data/SIMGEN_PUBLIC_DES/
 env.yml
 work/
 examples/
+venv2/
