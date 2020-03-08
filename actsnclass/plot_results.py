@@ -157,7 +157,7 @@ class Canvas(object):
         self.ncolumns = self.nmetrics // self.nlines + self.nmetrics % self.nlines
         self.fig_size = (10 * self.ncolumns, 7 * self.nlines)
 
-    def plot_diagnostics(self,  output_plot_file: str, strategies_list: list,
+    def plot_metrics(self,  output_plot_file: str, strategies_list: list,
                          lim_queries: int):
         """
         Generate plot for all metrics in files and strategies given as input.
