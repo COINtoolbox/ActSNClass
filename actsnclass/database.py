@@ -395,8 +395,8 @@ class DataBase:
         self.plasticc_mjd_lim = [min(min_mjd), max(max_mjd)]
 
     def build_samples(self, initial_training='original', nclass=2,
-                      screen=False, Ia_frac=0.1, queryable=False, 
-                      save_samples=False, sep_files=False):
+                      screen=False, Ia_frac=0.1,
+                      queryable=False, save_samples=False, sep_files=False):
         """Separate train and test samples.
 
         Populate properties: train_features, train_header, test_features,
