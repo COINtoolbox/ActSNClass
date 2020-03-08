@@ -210,7 +210,7 @@ class DataBase:
             raise ValueError('Only Bazin features are implemented! '
                              '\n Feel free to add other options.')
 
-    def build_samples(self, initial_training='original', nclass=2,
+    def build_samples(self, initial_training: "str or int", nclass=2,
                       screen=False):
         """Separate train and test samples.
 
