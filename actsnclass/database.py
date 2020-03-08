@@ -438,7 +438,7 @@ class DataBase:
 
             if queryable:
                 queryable_flag = self.metadata['queryable'].values
-                self.queryable_ids = self.metadata[queryable_flag][].values
+                self.queryable_ids = self.metadata[queryable_flag][id_name].values
             else:
                 self.queryable_ids = self.test_metadata[id_name].values
 
