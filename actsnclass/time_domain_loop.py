@@ -142,8 +142,6 @@ def time_domain_loop(days: list,  output_diag_file: str,
 
         # update training and test samples
         data.update_samples(indx, loop=loop)
-        print('train  -- 2 -- ', data.train_metadata.shape)
-        print('test   -- 2 -- ', data.test_metadata.shape)
 
         # save diagnostics for current state
         data.save_metrics(loop=loop, output_metrics_file=output_diag_file,
