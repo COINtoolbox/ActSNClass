@@ -23,7 +23,7 @@ import numpy as np
 
 def uncertainty_sampling(class_prob: np.array, test_ids: np.array,
                          queryable_ids: np.array, batch=1,
-                         dump=False) -> list:
+                         screen=False, query_thre=0.5) -> list:
     """Search for the sample with highest uncertainty in predicted class.
 
     Parameters
@@ -37,10 +37,14 @@ def uncertainty_sampling(class_prob: np.array, test_ids: np.array,
     batch: int (optional)
         Number of objects to be chosen in each batch query.
         Default is 1.
-    dump: bool (optional)
+    screen: bool (optional)
         If True display on screen the shift in index and
         the difference in estimated probabilities of being Ia
         caused by constraints on the sample available for querying.
+    query_thre: float (optional)
+        Maximum percentile where a spectra is considered worth it.
+        If not queryable object is available before this threshold, 
+        return empty query. Default is 0.5.
 
     Returns
     -------
@@ -66,21 +70,28 @@ def uncertainty_sampling(class_prob: np.array, test_ids: np.array,
         else:
             flag.append(False)
 
-    # arrange queryable elements in increasing order
-    flag = np.array(flag)
-    final_order = order[flag]
+    # check if there are queryable objects within threshold
+    indx = int(len(flag) * query_thre)
+    if sum(flag[:indx]) > 0:
 
-    if dump:
-        print('*** Displacement caused by constraints on query****')
-        print(' 0 -> ', list(order).index(final_order[0]))
-        print(class_prob[order[0]], '-- > ', class_prob[final_order[0]])
+        # arrange queryable elements in increasing order
+        flag = np.array(flag)
+        final_order = order[flag]
 
-    # return the index of the highest uncertain objects which are queryable
-    return list(final_order)[:batch]
+        if screen:
+            print('*** Displacement caused by constraints on query****')
+            print(' 0 -> ', list(order).index(final_order[0]))
+            print(class_prob[order[0]], '-- > ', class_prob[final_order[0]])
+
+        # return the index of the highest uncertain objects which are queryable
+        return list(final_order)[:batch]
+
+    else:
+        return list([])
 
 
 def random_sampling(test_ids: np.array, queryable_ids: np.array,
-                    batch=1, seed=42) -> list:
+                    batch=1, queryable=False, seed=42) -> list:
     """Randomly choose an object from the test sample.
 
     Parameters
@@ -92,6 +103,9 @@ def random_sampling(test_ids: np.array, queryable_ids: np.array,
     batch: int (optional)
         Number of objects to be chosen in each batch query.
         Default is 1.
+    queryable: bool (optional)
+        If True, check if randomly chosen object is queryable.
+        Default is False.
     seed: int (optional)
         Seed for random number generator. Default is 42.
 
@@ -106,19 +120,28 @@ def random_sampling(test_ids: np.array, queryable_ids: np.array,
     np.random.seed(seed)
     indx = np.random.randint(low=0, high=len(test_ids), size=len(test_ids))
 
-    # flag only the queryable objects
-    flag = []
-    for item in indx:
-        if test_ids[item] in queryable_ids:
-            flag.append(True)
+    if queryable:
+        # flag only the queryable objects
+        flag = []
+        for item in indx:
+            if test_ids[item] in queryable_ids:
+                flag.append(True)
+            else:
+                flag.append(False)
+                
+        flag = np.array(flag)
 
+        # check if there are queryable objects within threshold
+        indx_query = int(len(flag) * query_thre)
+        if sum(flag[:indx_query]) > 0:
+            # return the corresponding batch size
+            return list(indx[flag])[:batch]
         else:
-            flag.append(False)
+            # return empty list 
+            return list([])
 
-    flag = np.array(flag)
-
-    # return the corresponding batch size
-    return list(indx[flag])[:batch]
+    else:
+        return list(indx)[:batch]
 
 
 def main():

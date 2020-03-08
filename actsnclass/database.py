@@ -625,7 +625,7 @@ class DataBase:
                              '\n Feel free to add other options.')
 
     def make_query(self, strategy='UncSampling', batch=1,
-                   dump=False) -> list:
+                   screen=False, queryable=False) -> list:
         """Identify new object to be added to the training sample.
 
         Parameters
@@ -638,7 +638,10 @@ class DataBase:
         batch: int (optional)
             Number of objects to be chosen in each batch query.
             Default is 1.
-        dump: bool (optional)
+        queryable: bool (optional)
+            If True, consider only queryable objects.
+            Default is False.
+        screen: bool (optional)
             If true, display on screen information about the
             displacement in order and classificaion probability due to
             constraints on queryable sample.
@@ -660,13 +663,13 @@ class DataBase:
             query_indx = uncertainty_sampling(class_prob=self.classprob,
                                               queryable_ids=self.queryable_ids,
                                               test_ids=self.test_metadata[id_name].values,
-                                              batch=batch, dump=dump)
+                                              batch=batch, dump=dump, queryable=queryable)
             return query_indx
 
         elif strategy == 'RandomSampling':
             query_indx = random_sampling(queryable_ids=self.queryable_ids,
                                          test_ids=self.test_metadata[id_name].values,
-                                         batch=batch)
+                                         batch=batch, queryable=queryable)
 
             for n in query_indx:
                 if self.test_metadata[id_name].values[n] not in self.queryable_ids:
