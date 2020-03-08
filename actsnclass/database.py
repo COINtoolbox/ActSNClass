@@ -72,6 +72,14 @@ class DataBase:
 
     Methods
     -------
+    build_samples(initial_training: str or int, nclass: int)
+        Separate train and test samples.
+    classify(method: str)
+        Apply a machine learning classifier.
+    evaluate_classification(metric_label: str)
+        Evaluate results from classification.
+    identify_keywords()
+        Break degenerescency between keywords with equal meaning.
     load_bazin_features(path_to_bazin_file: str)
         Load Bazin features from file
     load_photometry_features(path_to_photometry_file:str)
@@ -80,20 +88,14 @@ class DataBase:
         Get min and max mjds for PLAsTiCC data
     load_features(path_to_file: str, method: str)
         Load features according to the chosen feature extraction method.
-    build_samples(initial_training: str or int, nclass: int)
-        Separate train and test samples.
-    classify(method: str)
-        Apply a machine learning classifier.
-    evaluate_classification(metric_label: str)
-        Evaluate results from classification.
     make_query(strategy: str, batch: int) -> list
         Identify new object to be added to the training sample.
-    update_samples(query_indx: list)
-        Add the queried obj(s) to training and remove them from test.
     save_metrics(loop: int, output_metrics_file: str)
         Save current metrics to file.
     save_queried_sample(queried_sample_file: str, loop: int, full_sample: str)
         Save queried sample to file.
+    update_samples(query_indx: list)
+        Add the queried obj(s) to training and remove them from test.
 
     Examples
     --------
@@ -394,10 +396,26 @@ class DataBase:
 
         self.plasticc_mjd_lim = [min(min_mjd), max(max_mjd)]
 
-    def build_samples(self, initial_training='original', nclass=2,
-                      screen=False, Ia_frac=0.1,
-                      queryable=False, save_samples=False, sep_files=False):
-        """Separate train and test samples.
+    def identify_keywords(self):
+        """Break degenerescency between keywords with equal meaning.
+
+        Returns
+        -------
+
+        id_name: str
+            String of object identification.
+        """
+
+        if 'id' in self.metadata_names:
+            id_name = 'id'
+        elif 'objid' in self.metadata_names:
+            id_name = 'objid'
+
+        return id_name
+
+    def build_orig_samples(self, nclass=2, screen=False, queryable=False,
+                           sep_files=False):
+        """Construct train and test samples as given in the original data set.
 
         Populate properties: train_features, train_header, test_features,
         test_header, queryable_ids (if flag available), train_labels and
@@ -405,11 +423,6 @@ class DataBase:
 
         Parameters
         ----------
-        initial_training : str or int
-            Choice of initial training sample.
-            If 'original': begin from the train sample flagged in the file
-            If int: choose the required number of samples at random,
-            ensuring that at least half are SN Ia.
         nclass: int (optional)
             Number of classes to consider in the classification
             Currently only nclass == 2 is implemented.
@@ -418,52 +431,15 @@ class DataBase:
             Default is False.
         screen: bool (optional)
             If True display the dimensions of training and test samples.
-        save_samples: bool (optional)
-            If True, save training and test samples to file.
-            it is only used if initial_training = int.
-        Ia_frac: float in [0,1] (optional)
-            Fraction of Ia required in initial training sample.
-            Default is 0.1.
         sep_files: bool (optional)
             If True, consider train and test samples separately read 
             from independent files.
         """
 
-        if 'id' in self.metadata_names:
-            id_name = 'id'
-        elif 'objid' in self.metadata_names:
-            id_name = 'objid'
-            
-        if initial_training == 'original':
-            train_flag = self.metadata['orig_sample'] == 'train'
-            train_data = self.features[train_flag]
-            self.train_features = train_data.values
-            self.train_metadata = self.metadata[train_flag]
+        # object if keyword
+        id_name = self.identify_keywords()
 
-            test_flag = self.metadata['orig_sample'] == 'test'
-
-            test_data = self.features[test_flag]
-            self.test_features = test_data.values
-            self.test_metadata = self.metadata[test_flag]
-
-            if queryable:
-                queryable_flag = self.metadata['queryable'].values
-                self.queryable_ids = self.metadata[queryable_flag][id_name].values
-            else:
-                self.queryable_ids = self.test_metadata[id_name].values
-
-            if nclass == 2:
-                train_ia_flag = self.train_metadata['type'] == 'Ia'
-                self.train_labels = np.array([int(item) for item in train_ia_flag])
-
-                test_ia_flag = self.test_metadata['type'] == 'Ia'
-                self.test_labels = np.array([int(item) for item in test_ia_flag])
-            else:
-                raise ValueError("Only 'Ia x non-Ia' are implemented! "
-                                 "\n Feel free to add other options.")
-
-        elif initial_training == 'original' and sep_files:
-
+        if sep_files:
             # get samples labels in a separate object
             train_labels = self.train_metadata['type'].values == 'Ia'
             self.train_labels = train_labels.astype(int) 
@@ -482,107 +458,273 @@ class DataBase:
             # build complete metadata object
             self.metadata = pd.concat([self.train_metadata, self.test_metadata])
 
-        elif isinstance(initial_training, int) and sep_files:
+        else:
+            train_flag = self.metadata['orig_sample'] == 'train'
+            train_data = self.features[train_flag]
+            self.train_features = train_data.values
+            self.train_metadata = self.metadata[train_flag]
+  
+            test_flag = self.metadata['orig_sample'] == 'test'
 
+            test_data = self.features[test_flag]
+            self.test_features = test_data.values
+            self.test_metadata = self.metadata[test_flag]
+
+            if queryable:
+                queryable_flag = self.test_metadata['queryable'].values
+                self.queryable_ids = self.test_metadata[queryable_flag][id_name].values
+            else:
+                self.queryable_ids = self.test_metadata[id_name].values
+
+            if nclass == 2:
+                train_ia_flag = self.train_metadata['type'] == 'Ia'
+                self.train_labels = np.array([int(item) for item in train_ia_flag])
+
+                test_ia_flag = self.test_metadata['type'] == 'Ia'
+                self.test_labels = np.array([int(item) for item in test_ia_flag])
+            else:
+                raise ValueError("Only 'Ia x non-Ia' are implemented! "
+                                 "\n Feel free to add other options.")
+
+    def build_random_training(self, initial_training: int, nclass=2, screen=False,
+                              Ia_frac=0.5, queryable=True, sep_files=False):
+        """Construct initial random training and corresponding test sample.
+ 
+        Populate properties: train_features, train_header, test_features,
+        test_header, queryable_ids (if flag available), train_labels and
+        test_labels.
+
+        Parameters
+        ----------
+        initial_training : int
+            Required number of samples at random
+            Default is 10.
+        nclass: int (optional)
+            Number of classes to consider in the classification
+            Currently only nclass == 2 is implemented.
+        queryable: bool (optional)
+            If True build also queryable sample for time domain analysis.
+            Default is False.
+        screen: bool (optional)
+            If True display the dimensions of training and test samples.
+        Ia_frac: float in [0,1] (optional)
+            Fraction of Ia required in initial training sample.
+            Default is 0.5.
+        sep_files: bool (optional)
+            If True, consider train and test samples separately read 
+            from independent files.        
+        """
+
+        if sep_files:
             # build complete metadata object
             self.metadata = pd.concat([self.train_metadata, self.test_metadata])
             self.features = np.concatenate((self.train_features, self.test_features))
             
-            # identify Ia
-            ia_flag = self.metadata['type'] == 'Ia'
+        # identify Ia
+        data_copy = self.metadata.copy()
+        ia_flag = data_copy['type'] == 'Ia'
             
-            # separate per class
-            Ia_data = self.metadata[ia_flag]
-            nonIa_data = self.metadata[~ia_flag]
+        # separate per class
+        Ia_data = data_copy[ia_flag]
+        nonIa_data = data_copy[~ia_flag]
 
-            # get subsamples for training
-            temp_train_ia = Ia_data.sample(n=int(Ia_frac * initial_training))
-            temp_train_nonia = nonIa_data.sample(n=int((1-Ia_frac)*initial_training))
+        # get subsamples for training
+        temp_train_ia = Ia_data.sample(n=int(Ia_frac * initial_training))
+        temp_train_nonia = nonIa_data.sample(n=int((1-Ia_frac)*initial_training))
 
-            # join classes
-            frames_train = [temp_train_ia, temp_train_nonia]
-            temp_train = pd.concat(frames_train, ignore_index=True)
-            train_flag = np.array([self.metadata[id_name].values[i] in temp_train[id_name].values
-                                   for i in range(self.metadata.shape[0])])
+        # join classes
+        frames_train = [temp_train_ia, temp_train_nonia]
+        temp_train = pd.concat(frames_train, ignore_index=True)
+        train_flag = np.array([data_copy[id_name].values[i] in temp_train[id_name].values
+                               for i in range(data_copy.shape[0])])
 
-            self.train_metadata = self.metadata[train_flag]
-            self.train_labels = self.metadata['type'][train_flag].values == 'Ia'
-            self.train_features = self.features[train_flag]
+        self.train_metadata = data_copy[train_flag]
+        self.train_labels = data_copy['type'][train_flag].values == 'Ia'
+        self.train_features = self.features[train_flag]
 
-            # get test sample
-            self.test_metadata = self.metadata[~train_flag]
-            self.test_labels = self.metadata['type'][~train_flag].values == 'Ia'
-            self.test_features = self.features[~train_flag]
+        # get test sample
+        self.test_metadata = data_copy[~train_flag]
+        self.test_labels = data_copy['type'][~train_flag].values == 'Ia'
+        self.test_features = self.features[~train_flag]
             
-            if queryable:
-                queryable_flag = self.metadata['queryable'].values
-                combined_flag = np.logical_and(~train_flag, queryable_flag)
-                self.queryable_ids = self.metadata[combined_flag][id_name].values
+        if queryable:
+            queryable_flag = data_copy['queryable'].values
+            combined_flag = np.logical_and(~train_flag, queryable_flag)
+            self.queryable_ids = data_copy[combined_flag][id_name].values
+        else:
+            self.queryable_ids = self.test_metadata[id_name].values
+
+        # check if there are repeated ids
+        train_test_flag = np.array([True if item in self.test_metadata[id_name].values
+                                    else False for item in
+                                    self.train_metadata[id_name].values])
+
+        if sum(train_test_flag) > 0:
+            raise ValueError('There are repeated ids!!')
+
+        test_train_flag = np.array([True if item in self.train_metadata[id_name].values
+                                    else False for item in
+                                    self.test_metadata[id_name].values])
+
+        if sum(test_train_flag) > 0:
+            raise ValueError('There are repeated ids!!')
+
+    def build_previous_runs(self, path_to_train: str, path_to_queried: str,
+                            sep_files=False):
+        """Build train, test and queryable samples from previous runs.
+
+        Populate properties: train_features, train_header, test_features,
+        test_header, queryable_ids (if flag available), train_labels and
+        test_labels.
+
+        Parameters
+        ----------
+        path_to_train: str
+            Full path to initial training sample file from a previous run.
+        path_to_queried: str
+            Full path to queried sample file from a previous run.
+        sep_files: bool (optional)
+            If True, consider train and test samples separately read 
+            from independent files. Default is False.
+        """
+
+        # read initial training data from a previous run
+        train_previous = pd.read_csv(path_to_train, index_col=False)
+        
+        # read all queried objects in previous loops
+        queried_previous = pd.read_csv(path_to_queried, index_col=False)
+
+        # object if keyword
+        id_name = self.identify_keywords()
+
+        # join train and queried data
+        train_ids = list(train_previous[id_name].values) + \
+                    list(queried_previous[id_name].values)
+
+        if sep_files:
+            # build complete metadata object
+            self.metadata = pd.concat([self.train_metadata, self.test_metadata])
+            self.features = np.concatenate((self.train_features, self.test_features))
+
+        # make a copy of the metadata to avoid warnings
+        data_copy = self.metadata.copy()
+        
+        # identify training sample
+        train_flag = np.array([data_copy[id_name].values[i] in train_ids
+                               for i in range(data_copy.shape[0])])
+
+        # populate sample properties
+        self.train_metadata = data_copy[train_flag]
+        self.train_features = self.features[train_flag]
+        self.test_metadata = data_copy[~train_flag]
+        self.test_features = self.features[~train_flag]
+
+        if queryable:
+                queryable_flag = self.test_metadata['queryable'].values
+                self.queryable_ids = self.test_metadata[queryable_flag][id_name].values
             else:
                 self.queryable_ids = self.test_metadata[id_name].values
 
-            # check if there are repeated ids
-            train_test_flag = np.array([True if item in self.test_metadata[id_name].values
-                                        else False for item in
-                                        self.train_metadata[id_name].values])
+            if nclass == 2:
+                train_ia_flag = self.train_metadata['type'] == 'Ia'
+                self.train_labels = np.array([int(item) for item in train_ia_flag])
 
-            if sum(train_test_flag) > 0:
-                raise ValueError('There are repeated ids!!')
+                test_ia_flag = self.test_metadata['type'] == 'Ia'
+                self.test_labels = np.array([int(item) for item in test_ia_flag])
+            else:
+                raise ValueError("Only 'Ia x non-Ia' are implemented! "
+                                 "\n Feel free to add other options.")
 
-            test_train_flag = np.array([True if item in self.train_metadata[id_name].values
-                                        else False for item in
-                                        self.test_metadata[id_name].values])
 
-            if sum(test_train_flag) > 0:
-                raise ValueError('There are repeated ids!!')
+    def build_samples(self, initial_training='original', nclass=2,
+                      screen=False, Ia_frac=1.0,
+                      queryable=False, save_samples=False, sep_files=False,
+                      survey='DES', output_fname=' ', path_to_train=' ',
+                      path_to_queried=' ', method='Bazin'):
+        """Separate train and test samples.
+
+        Populate properties: train_features, train_header, test_features,
+        test_header, queryable_ids (if flag available), train_labels and
+        test_labels.
+
+        Parameters
+        ----------
+        initial_training : str or int
+            Choice of initial training sample.
+            If 'original': begin from the train sample flagged in original file
+            elif 'previous': continue from a previously run loop
+            elif int: choose the required number of samples at random,
+            ensuring that at least half are SN Ia.
+        Ia_frac: float in [0,1] (optional)
+            Fraction of Ia required in initial training sample.
+            Default is 1.
+        method: str (optional)
+            Feature extraction method. The current implementation only
+            accepts method=='Bazin' or 'photometry'.
+            Default is 'Bazin'. Only used if initial_training == 'previous'.
+        nclass: int (optional)
+            Number of classes to consider in the classification
+            Currently only nclass == 2 is implemented.
+        path_to_train: str (optional)
+            Path to initial training file from previous run.
+            Only used if initial_training == 'previous'.
+        path_to_queried: str(optional)
+            Path to queried sample from previous run.
+            Only used if initial_training == 'previous'.
+        queryable: bool (optional)
+            If True build also queryable sample for time domain analysis.
+            Default is False.
+        screen: bool (optional)
+            If True display the dimensions of training and test samples.
+        save_samples: bool (optional)
+            If True, save training and test samples to file.
+            Default is False.
+        survey: str (optional)
+            Survey used to obtain the data. The current implementation
+            only accepts survey='DES' or 'LSST'.
+            Default is 'DES'.
+        sep_files: bool (optional)
+            If True, consider train and test samples separately read 
+            from independent files. Default is False.
+        output_fname: str (optional)
+            Complete path to output file where initial training will be stored.
+            Only used if save_samples == True.
+        """        
             
+        if initial_training == 'original':
+            self.build_orig_samples(nclass=nclass, screen=screen, 
+                                    queryable=queryable, sep_files=sep_files)
+       
+        elif initial_training == 'previous':
+            build_previous_runs(path_to_train=path_to_train, 
+                                path_to_queried=path_to_queried,
+                                sep_files=sep_files)          
 
         elif isinstance(initial_training, int):
-
-            # get Ia flag
-            data_copy = self.metadata.copy()            
-            ia_flag = data_copy['type'] == 'Ia'
-            
-	    # separate data per class 
-            Ia_data = data_copy[ia_flag]
-            nonIa_data = data_copy[~ia_flag]
-
-            # get subsamples for training
-            temp_train_ia = Ia_data.sample(n=int(Ia_frac * initial_training))
-            temp_train_nonia = nonIa_data.sample(n=int((1-Ia_frac)*initial_training))
-
-            # join classes
-            frames_train = [temp_train_ia, temp_train_nonia]
-            temp_train = pd.concat(frames_train, ignore_index=True)
-            train_flag = np.array([data_copy[id_name].values[i] in temp_train[id_name].values
-                                   for i in range(data_copy.shape[0])])
-
-            self.train_metadata = data_copy[train_flag]
-            self.train_labels = data_copy['type'][train_flag].values == 'Ia'
-            self.train_features = self.features[train_flag].values
-
-            # get test sample
-            self.test_metadata = data_copy[~train_flag]
-            self.test_labels = data_copy['type'][~train_flag].values == 'Ia'
-            self.test_features = self.features[~train_flag].values
-            
-            if queryable:
-                test_flag = np.array([item in test_indexes 
-                                      for item in range(self.metadata.shape[0])])
-                queryable_flag = self.metadata['queryable'].values
-                combined_flag = np.logical_and(test_flag, queryable_flag)
-                self.queryable_ids = self.metadata[combined_flag][id_name].values
-            else:
-                self.queryable_ids = self.test_metadata[id_name].values
-
-        else:
-            raise ValueError('"Initial training" should be '
-                             '"original" or integer.')
+            self.build_random_training(initial_training=initial_training, 
+                                       nclass=nclass, screen=screen, 
+                                       Ia_frac=Ia_frac, queryable=queryable,
+                                       sep_files=sep_files)
 
         if screen:
             print('Training set size: ', self.train_metadata.shape[0])
             print('Test set size: ', self.test_metadata.shape[0])
             print('Queryable set size: ', sum(self.metadata['queryable']))
+
+        if save_samples:
+            full_header = self.metadata_names + self.features_names
+            wsample = open(output_fname, 'w')
+            for item in full_header:
+                wsample.write(item + ' ')
+            wsample.write('\n')
+
+            for j in range(self.train_metadata.shape[0]):
+                for name in self.metadata_names:
+                    wsample.write(str(self.train_metadata[name].iloc[j].value) + ' ')
+                for k in range(self.train_features.shape[1] - 1):
+                    wsample.write(self.train_features[j][k] + ' ')
+                wsample.write(self.train_features[j][-1] + '\n')
+            wsample.close()
 
     def classify(self, method='RandomForest'):
         """Apply a machine learning classifier.

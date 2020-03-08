@@ -22,40 +22,17 @@ import numpy as np
 
 from actsnclass import DataBase
 
-
-def get_original_training(path_to_features, method='Bazin', screen=False):
-    """Read original full light curve training sample
-
-    Parameters
-    ----------
-    path_to_features: str
-        Complete path to file holding full light curve features.
-    method: str (optional)
-        Feature extraction method. Only option implemented is "Bazin".
-    screen: bool (optional)
-        If true, show on screen comments on the dimensions of some key elements.
-
-    Returns
-    -------
-    snactclass.DataBase
-        Information about the original full light curve analys.
-    """
-
-    data = DataBase()
-    data.load_features(path_to_features, method=method, screen=screen)
-    data.build_samples(initial_training='original')
-
-    return data
-
-
 def time_domain_loop(days: list,  output_metrics_file: str,
                      output_queried_file: str,
                      path_to_features_dir: str, strategy: str,
                      fname_pattern: list,
                      batch=1, canonical = False,  classifier='RandomForest',
-                     continue=False, features_method='Bazin', path_to_canonical="",
-                     path_to_full_lc_features="", queryable=True,
-                     query_thre=1.0, screen=True, survey='PLAsTiCC', training='original'):
+                     cont=False, features_method='Bazin', output_fname="",
+                     path_to_canonical="",
+                     path_to_full_lc_features="", path_to_train="",
+                     path_to_queried="", queryable=True,
+                     query_thre=1.0, save_samples=False, screen=True, 
+                     survey='PLAsTiCC', training='original'):
     """Perform the active learning loop. All results are saved to file.
 
     Parameters
@@ -92,11 +69,20 @@ def time_domain_loop(days: list,  output_metrics_file: str,
     path_to_full_lc_features: str (optional)
         Path to full light curve features file.
         Only used if training is a number.
+    path_to_train: str (optional)
+        Path to initial training file from previous run.
+        Only used if initial_training == 'previous'.
+    path_to_queried: str(optional)
+        Path to queried sample from previous run.
+        Only used if initial_training == 'previous'.
     queryable: bool (optional)
         If True, allow queries only on objects flagged as queryable.
         Default is True.
     query_thre: float (optional)
         Percentile threshold for query. Default is 1. 
+    save_samples: bool (optional)
+        If True, save training and test samples to file.
+        Default is False.
     screen: bool (optional)
         If True, print on screen number of light curves processed.
     survey: str (optional)
@@ -105,9 +91,13 @@ def time_domain_loop(days: list,  output_metrics_file: str,
     training: str or int (optional)
         Choice of initial training sample.
         If 'original': begin from the train sample flagged in the file
+        eilf 'previous': read training and queried from previous run.
         If int: choose the required number of samples at random,
         ensuring that at least half are SN Ia
         Default is 'original'.
+    output_fname: str (optional)
+        Complete path to output file where initial training will be stored.
+        Only used if save_samples == True.
     """
 
     # initiate object
@@ -119,16 +109,13 @@ def time_domain_loop(days: list,  output_metrics_file: str,
     data.load_features(path_to_features, method=features_method,
                        screen=screen, survey=survey)
 
-    # change training
-    if training == 'original':
-        data.build_samples(initial_training='original', screen=screen)
-        full_lc_features = get_original_training(path_to_features=path_to_full_lc_features)
-        data.train_metadata = full_lc_features.train_metadata
-        data.train_labels = full_lc_features.train_labels
-        data.train_features = full_lc_features.train_features
-
-    else:
-        data.build_samples(initial_training=int(training), screen=screen, continue=continue)
+    # constructs training, test and queryable
+    data.build_samples(initial_training=training, nclass=nclass,
+                      screen=screen, Ia_frac=Ia_frac,
+                      queryable=queryable, save_samples=save_samples, 
+                      sep_files=sep_files, survey=survey, 
+                      output_fname=output_fname, path_to_train=path_to_train,
+                      path_to_queried=path_to_queried, method=method)
 
     # get list of canonical ids
     if canonical:
