@@ -53,7 +53,7 @@ def time_domain_loop(days: list,  output_metrics_file: str,
                      path_to_features_dir: str, strategy: str,
                      fname_pattern: list,
                      batch=1, canonical = False,  classifier='RandomForest',
-                     features_method='Bazin', path_to_canonical="",
+                     continue=False, features_method='Bazin', path_to_canonical="",
                      path_to_full_lc_features="", queryable=True,
                      query_thre=1.0, screen=True, survey='PLAsTiCC', training='original'):
     """Perform the active learning loop. All results are saved to file.
@@ -78,6 +78,9 @@ def time_domain_loop(days: list,  output_metrics_file: str,
         Size of batch to be queried in each loop. Default is 1.
     canonical: bool (optional)
         If True, restrict the search to the canonical sample.
+    continue: bool (optional)
+        If True, read the initial states of previous runs from file.
+        Default is False.
     classifier: str (optional)
         Machine Learning algorithm.
         Currently only 'RandomForest' is implemented.
@@ -125,7 +128,7 @@ def time_domain_loop(days: list,  output_metrics_file: str,
         data.train_features = full_lc_features.train_features
 
     else:
-        data.build_samples(initial_training=int(training), screen=screen)
+        data.build_samples(initial_training=int(training), screen=screen, continue=continue)
 
     # get list of canonical ids
     if canonical:
