@@ -786,12 +786,12 @@ class DataBase:
             'queried_sample_file'. Default is False.
         """
 
-        if full_sample and len(self.queried_sample) > 0:
+        if full_sample and len(self.queried_sample[loop]) > 0:
             full_header = self.metadata_names + self.features_names
             query_sample = pd.DataFrame(self.queried_sample, columns=full_header)
             query_sample.to_csv(queried_sample_file, sep=' ', index=False)
 
-        elif isinstance(loop, int) and len(self.queried_sample) > 0:
+        elif isinstance(loop, int) and len(self.queried_sample[loop]) > 0:
             if not os.path.exists(queried_sample_file) or loop == 0:
                 # add header to query sample file
                 full_header = self.metadata_names + self.features_names
