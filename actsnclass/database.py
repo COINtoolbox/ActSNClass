@@ -229,8 +229,8 @@ class DataBase:
                 nquery = sum(self.metadata['queryable'])
 
                 print('   ... of which')
-                print('       train: ', ntrain)
-                print('       test: ', ntest)
+                print('       original train: ', ntrain)
+                print('       original test: ', ntest)
                 print('       query: ', nquery)
 
         elif sample == 'train':
