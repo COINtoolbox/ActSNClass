@@ -18,6 +18,8 @@
 
 __all__ = ['time_domain_loop', 'get_original_training']
 
+import numpy as np
+
 from actsnclass import DataBase
 
 
@@ -51,7 +53,7 @@ def time_domain_loop(days: list,  output_metrics_file: str,
                      path_to_features_dir: str, strategy: str,
                      batch=1, canonical = False,  classifier='RandomForest',
                      features_method='Bazin', path_to_canonical="",
-                     path_to_full_lc_features="",
+                     path_to_full_lc_features="", queryable=True,
                      screen=True, training='original'):
     """Perform the active learning loop. All results are saved to file.
 
@@ -83,6 +85,9 @@ def time_domain_loop(days: list,  output_metrics_file: str,
     path_to_full_lc_features: str (optional)
         Path to full light curve features file.
         Only used if training is a number.
+    queryable: bool (optional)
+        If True, allow queries only on objects flagged as queryable.
+        Default is True.
     screen: bool (optional)
         If True, print on screen number of light curves processed.
     training: str or int (optional)
@@ -154,19 +159,35 @@ def time_domain_loop(days: list,  output_metrics_file: str,
         data_tomorrow.load_features(path_to_features2, method=features_method,
                                     screen=False)
 
-        # notice that original here corresponds to original in the file
-        # not original full light curve training
-        data_tomorrow.build_samples('original', screen=screen)
+        # identify objects in the new day which must be in training
+        train_flag = np.array([item in data.train_metadata['id'].values 
+                              for item in data_tomorrow.metadata['id'].values])
+   
+        # use new data        
+        data.train_metadata = data_tomorrow.metadata[train_flag]
+        data.train_features = data_tomorrow.features.values[train_flag]
+        data.test_metadata = data_tomorrow.metadata[~train_flag]
+        data.test_features = data_tomorrow.features.values[~train_flag]
 
-        # use new test data
-        data.test_metadata = data_tomorrow.test_metadata
-        data.test_labels = data_tomorrow.test_labels
-        data.test_features = data_tomorrow.test_features
+        # new labels
+        data.train_labels = np.array([int(item  == 'Ia') for item in 
+                                     data.train_metadata['type'].values])
+        data.test_labels = np.array([int(item == 'Ia') for item in 
+                                    data.test_metadata['type'].values])
 
         if strategy == 'canonical':
             data.queryable_ids = canonical.queryable_ids
+
+        if  queryable:
+            queryable_flag = data_tomorrow.metadata['queryable'].values
+            queryable_test_flag = np.logical_and(~train_flag, queryable_flag)
+            data.queryable_ids = data_tomorrow.metadata['id'].values[queryable_test_flag]
         else:
-            data.queryable_ids = data_tomorrow.queryable_ids
+            data.queryable_ids = data_tomorrow.metadata['id'].values[~train_flag]
+
+        if screen:
+            print('Training set size: ', data.train_metadata.shape[0])
+            print('Test set size: ', data.test_metadata.shape[0])
 
 
 def main():
