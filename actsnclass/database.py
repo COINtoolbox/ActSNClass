@@ -620,20 +620,20 @@ class DataBase:
         self.test_features = self.features[~train_flag]
 
         if queryable:
-                queryable_flag = self.test_metadata['queryable'].values
-                self.queryable_ids = self.test_metadata[queryable_flag][id_name].values
-            else:
-                self.queryable_ids = self.test_metadata[id_name].values
+            queryable_flag = self.test_metadata['queryable'].values
+            self.queryable_ids = self.test_metadata[queryable_flag][id_name].values
+        else:
+            self.queryable_ids = self.test_metadata[id_name].values
 
-            if nclass == 2:
-                train_ia_flag = self.train_metadata['type'] == 'Ia'
-                self.train_labels = np.array([int(item) for item in train_ia_flag])
+        if nclass == 2:
+            train_ia_flag = self.train_metadata['type'] == 'Ia'
+            self.train_labels = np.array([int(item) for item in train_ia_flag])
 
-                test_ia_flag = self.test_metadata['type'] == 'Ia'
-                self.test_labels = np.array([int(item) for item in test_ia_flag])
-            else:
-                raise ValueError("Only 'Ia x non-Ia' are implemented! "
-                                 "\n Feel free to add other options.")
+            test_ia_flag = self.test_metadata['type'] == 'Ia'
+            self.test_labels = np.array([int(item) for item in test_ia_flag])
+        else:
+            raise ValueError("Only 'Ia x non-Ia' are implemented! "
+                             "\n Feel free to add other options.")
 
 
     def build_samples(self, initial_training='original', nclass=2,
