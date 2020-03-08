@@ -110,7 +110,7 @@ def time_domain_loop(days: list,  output_metrics_file: str,
         data.train_features = full_lc_features.train_features
 
     else:
-        data.build_samples(initial_training=int(training))
+        data.build_samples(initial_training=int(training), screen=screen)
 
     # get list of canonical ids
     if canonical:
@@ -156,7 +156,7 @@ def time_domain_loop(days: list,  output_metrics_file: str,
 
         # notice that original here corresponds to original in the file
         # not original full light curve training
-        data_tomorrow.build_samples('original')
+        data_tomorrow.build_samples('original', screen=screen)
 
         # use new test data
         data.test_metadata = data_tomorrow.test_metadata
