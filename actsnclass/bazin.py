@@ -20,6 +20,8 @@
 import numpy as np
 from scipy.optimize import least_squares
 
+__all__ = ['bazin', 'errfunc', 'fit_scipy']
+
 
 def bazin(time, a, b, t0, tfall, trise):
     """
@@ -98,7 +100,6 @@ def fit_scipy(time, flux):
     result = least_squares(errfunc, guess, args=(time, flux), method='lm')
 
     return result.x
-
 
 def main():
     return None

@@ -18,6 +18,8 @@
 
 __all__ = ['time_domain_loop', 'get_original_training']
 
+import numpy as np
+
 from actsnclass import DataBase
 
 
@@ -46,7 +48,7 @@ def get_original_training(path_to_features, method='Bazin', screen=False):
     return data
 
 
-def time_domain_loop(days: list,  output_diag_file: str,
+def time_domain_loop(days: list,  output_metrics_file: str,
                      output_queried_file: str,
                      path_to_features_dir: str, strategy: str,
                      fname_pattern: list,
@@ -61,8 +63,8 @@ def time_domain_loop(days: list,  output_diag_file: str,
     days: list
         List of 2 elements. First and last day of observations since the
         beginning of the survey.
-    output_diag_file: str
-        Full path to output file to store diagnostics of each loop.
+    output_metrics_file: str
+        Full path to output file to store metrics for each loop.
     output_queried_file: str
         Full path to output file to store the queried sample.
     path_to_features_dir: str
@@ -111,14 +113,14 @@ def time_domain_loop(days: list,  output_diag_file: str,
 
     # change training
     if training == 'original':
-        data.build_samples(initial_training='original')
+        data.build_samples(initial_training='original', screen=screen)
         full_lc_features = get_original_training(path_to_features=path_to_full_lc_features)
         data.train_metadata = full_lc_features.train_metadata
         data.train_labels = full_lc_features.train_labels
         data.train_features = full_lc_features.train_features
 
     else:
-        data.build_samples(initial_training=int(training))
+        data.build_samples(initial_training=int(training), screen=screen)
 
     # get list of canonical ids
     if canonical:
@@ -146,8 +148,8 @@ def time_domain_loop(days: list,  output_diag_file: str,
         # update training and test samples
         data.update_samples(indx, loop=loop)
 
-        # save diagnostics for current state
-        data.save_metrics(loop=loop, output_metrics_file=output_diag_file,
+        # save metrics for current state
+        data.save_metrics(loop=loop, output_metrics_file=output_metrics_file,
                           batch=batch, epoch=night)
 
         # save query sample to file
@@ -162,7 +164,11 @@ def time_domain_loop(days: list,  output_diag_file: str,
         data_tomorrow.load_features(path_to_features2, method=features_method,
                                     screen=False)
 
-         # use new data        
+        # identify objects in the new day which must be in training
+        train_flag = np.array([item in data.train_metadata['id'].values 
+                              for item in data_tomorrow.metadata['id'].values])
+   
+        # use new data  
         data.train_metadata = data_tomorrow.metadata[train_flag]
         data.train_features = data_tomorrow.features.values[train_flag]
         data.test_metadata = data_tomorrow.metadata[~train_flag]

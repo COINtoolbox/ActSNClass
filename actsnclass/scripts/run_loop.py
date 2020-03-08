@@ -58,7 +58,7 @@ def main(args):
     Run directly from the command line:
 
     >>> run_loop.py -i <input features file> -b <batch size> -n <number of loops>
-    >>>             -d <output metrics file> -q <output queried sample file>
+    >>>             -d <output diagnostic file> -q <output queried sample file>
     >>>             -s <learning strategy> -t <choice of initial training>
 
     """
@@ -76,7 +76,7 @@ def main(args):
     learn_loop(nloops=args.nquery, features_method=args.method,
                classifier=args.classifier,
                strategy=args.strategy, path_to_features=args.input,
-               output_diag_file=args.diagnostics,
+               output_metrics_file=args.metrics,
                output_queried_file=args.queried,
                training=train, batch=args.batch)
 
@@ -94,12 +94,12 @@ if __name__ == '__main__':
                              'Only "RandomForest" is implemented.'
                              'algorithm.', required=False, default='RandomForest',
                         type=str)
-    parser.add_argument('-d', '--diagnostics', dest='diagnostics',
+    parser.add_argument('-m', '--metrics', dest='metrics',
                         help='Path to output metrics file.', required=True,
                         type=str)
     parser.add_argument('-i', '--input', dest='input',
                         help='Path to features file.', required=True, type=str)
-    parser.add_argument('-m', '--method', dest='method',
+    parser.add_argument('-mt', '--method', dest='method',
                         help='Feature extraction method. '
                              'Only "Bazin" is implemented.', required=False,
                         default='Bazin', type=str)

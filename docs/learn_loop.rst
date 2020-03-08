@@ -95,20 +95,20 @@ In interactive mode, you must define the required variables and use the :py:mod:
 .. code-block:: python
    :linenos:
 
-   >>> from actsnclass import  learn_loop
+   >>> from actsnclass.learn_loop import  learn_loop
 
    >>> nloops = 1000                                  # number of iterations
    >>> method = 'Bazin'                               # only option in v1.0
    >>> ml = 'RandomForest'                            # only option in v1.0
    >>> strategy = 'RandomSampling'                    # learning strategy
    >>> input_file = 'results/Bazin.dat'               # input features file
-   >>> diag = 'results/diagnostic.dat'                # output diagnostic file
+   >>> metric = 'results/metrics.dat'                 # output metrics file
    >>> queried = 'results/queried.dat'                # output query file
    >>> train = 'original'                             # initial training
    >>> batch = 1                                      # size of batch
 
    >>> learn_loop(nloops=nloops, features_method=method, classifier=ml,
-   >>>            strategy=strategy, path_to_features=input_file, output_diag_file=diag,
+   >>>            strategy=strategy, path_to_features=input_file, output_metrics_file=metrics, 
    >>>            output_queried_file=queried, training=train, batch=batch)
 
 Alternatively you can also run everything from the command line:
@@ -152,12 +152,12 @@ interface:
 Make sure you check the full documentation of the module to understand which variables are required depending
 on the case you wish to run.
 
-For example, to run with SNPCC data, the larges survey interval you can run is between 19 and 182 days,
-the corresponding option will be `-d 19 182`.
+For example, to run with SNPCC data, the larges survey interval you can run is between 20 and 182 days,
+the corresponding option will be `-d 20 182`.
 
 In the example above, if you choose to start from the original training sample, `-t original` you must also
 input the path to the file containing the full light curve analysis - so the full initial training can
-be read. This option corresponds to `-t original -fm <path to full lc features>`.
+be read. This option corresponds to `-t original -fl <path to full lc features>`.
 
 More details can be found in the corresponding `docstring <https://github.com/COINtoolbox/ActSNClass/blob/master/actsnclass/scripts/run_time_domain.py>`_.
 

@@ -32,9 +32,9 @@ Light curve analysis
 
 .. autosummary::
 
-   snactclass.bazin.bazin
-   snactclass.bazin.err_func
-   snactclass.bazin.fit_scipy
+   bazin
+   errfunc
+   fit_scipy
 
 Canonical sample
 ================
@@ -145,7 +145,7 @@ Active Learning loop
    :toctree: api
 
     get_original_training
-    time_domain_loop.time_domain_loop
+    time_domain_loop
 
 
 Plotting
@@ -155,9 +155,9 @@ Plotting
    :toctree: api
 
     Canvas
-    Canvas.load_diagnostics
+    Canvas.load_metrics
     Canvas.set_plot_dimensions
-    Canvas.plot_diagnostics
+    Canvas.plot_metrics
 
 Scripts
 =======
@@ -167,6 +167,6 @@ Scripts
    build_canonical
    build_time_domain
    fit_dataset
-   make_diagnostic_plots
+   make_metrics_plots
    run_loop
    run_time_domain
