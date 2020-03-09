@@ -205,7 +205,7 @@ class DataBase:
                                    'rB', 'rt0', 'rtfall', 'rtrise', 'iA', 'iB',
                                    'it0', 'itfall', 'itrise', 'zA', 'zB', 'zt0',
                                    'ztfall', 'ztrise']
-            self.metadata_names = ['id', 'redshift', 'type', 'code', 'sample', 'queryable']
+            self.metadata_names = ['id', 'redshift', 'type', 'code', 'orig_sample', 'queryable']
 
         elif survey == 'LSST':
             self.features_names = ['uA', 'uB', 'ut0', 'utfall', 'utrise',
@@ -215,7 +215,7 @@ class DataBase:
                                    'zA', 'zB', 'zt0', 'ztfall', 'ztrise',
                                    'YA', 'YB', 'Yt0', 'Ytfall', 'Ytrise']
 
-            self.metadata_names = ['id', 'redshift', 'type', 'code', 'sample', 'queryable']
+            self.metadata_names = ['id', 'redshift', 'type', 'code', 'orig_sample', 'queryable']
         else:
             raise ValueError('Only "DES" and "LSST" filters are implemented at this point!')
 
@@ -226,8 +226,8 @@ class DataBase:
             if screen:
                 print('Loaded ', self.metadata.shape[0], ' samples!')
 
-                ntrain = sum(self.metadata['sample'] == 'train')
-                ntest = sum(self.metadata['sample'] == 'test')
+                ntrain = sum(self.metadata['orig_sample'] == 'train')
+                ntest = sum(self.metadata['orig_sample'] == 'test')
                 nquery = sum(self.metadata['queryable'])
 
                 print('   ... of which')
@@ -292,7 +292,7 @@ class DataBase:
         elif 'id' in data.keys():
             id_name = 'id'
             
-        self.metadata_names = [id_name, 'redshift', 'type', 'code', 'sample']
+        self.metadata_names = [id_name, 'redshift', 'type', 'code', 'orig_sample']
 
         if sample == None:
             self.features = data[self.features_names]
@@ -448,8 +448,8 @@ class DataBase:
             self.test_labels = test_labels.astype(int)
 
             # identify queryable objects
-            if 'queryable' in self.test_metadata['sample'].values:
-                queryable_flag = self.test_metadata['sample'] == 'queryable'
+            if 'queryable' in self.test_metadata['orig_sample'].values:
+                queryable_flag = self.test_metadata['orig_sample'] == 'queryable'
                 self.queryable_ids = self.test_metadata[queryable_flag][id_name].values
 
             else:
