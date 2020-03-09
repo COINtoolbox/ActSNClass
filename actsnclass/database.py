@@ -515,6 +515,9 @@ class DataBase:
             from independent files.        
         """
 
+        # object if keyword
+        id_name = self.identify_keywords()
+
         if sep_files:
             # build complete metadata object
             self.metadata = pd.concat([self.train_metadata, self.test_metadata])
@@ -539,11 +542,11 @@ class DataBase:
                                for i in range(data_copy.shape[0])])
 
         self.train_metadata = data_copy[train_flag]
-        self.train_features = self.features[train_flag]
+        self.train_features = self.features[train_flag].values
 
         # get test sample
         self.test_metadata = data_copy[~train_flag]
-        self.test_features = self.features[~train_flag]
+        self.test_features = self.features[~train_flag].values
 
         if nclass == 2:
             self.train_labels = data_copy['type'][train_flag].values == 'Ia'
@@ -704,9 +707,9 @@ class DataBase:
                                     queryable=queryable, sep_files=sep_files)
        
         elif initial_training == 'previous':
-            build_previous_runs(path_to_train=path_to_train, 
-                                path_to_queried=path_to_queried,
-                                sep_files=sep_files, nclass=nclass)          
+            self.build_previous_runs(path_to_train=path_to_train, 
+                                    path_to_queried=path_to_queried,
+                                    sep_files=sep_files, nclass=nclass)          
 
         elif isinstance(initial_training, int):
             self.build_random_training(initial_training=initial_training, 
@@ -720,6 +723,7 @@ class DataBase:
             print('Queryable set size: ', sum(self.metadata['queryable']))
 
         if save_samples:
+
             full_header = self.metadata_names + self.features_names
             wsample = open(output_fname, 'w')
             for item in full_header:
@@ -728,10 +732,10 @@ class DataBase:
 
             for j in range(self.train_metadata.shape[0]):
                 for name in self.metadata_names:
-                    wsample.write(str(self.train_metadata[name].iloc[j].value) + ' ')
+                    wsample.write(str(self.train_metadata[name].iloc[j]) + ' ')
                 for k in range(self.train_features.shape[1] - 1):
-                    wsample.write(self.train_features[j][k] + ' ')
-                wsample.write(self.train_features[j][-1] + '\n')
+                    wsample.write(str(self.train_features[j][k]) + ' ')
+                wsample.write(str(self.train_features[j][-1]) + '\n')
             wsample.close()
 
     def classify(self, method='RandomForest'):
