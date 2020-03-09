@@ -27,8 +27,8 @@ def time_domain_loop(days: list,  output_metrics_file: str,
                      path_to_features_dir: str, strategy: str,
                      fname_pattern: list,
                      batch=1, canonical = False,  classifier='RandomForest',
-                     cont=False, features_method='Bazin', output_fname="",
-                     path_to_canonical="",
+                     cont=False, features_method='Bazin', nclass=2,
+                     Ia_frac=0.5, output_fname="", path_to_canonical="",
                      path_to_full_lc_features="", path_to_train="",
                      path_to_queried="", queryable=True,
                      query_thre=1.0, save_samples=False, screen=True, 
@@ -63,6 +63,12 @@ def time_domain_loop(days: list,  output_metrics_file: str,
         Currently only 'RandomForest' is implemented.
     features_method: str (optional)
         Feature extraction method. Currently only 'Bazin' is implemented.
+    Ia_frac: float in [0,1] (optional)
+        Fraction of Ia required in initial training sample.
+        Default is 0.5.
+    nclass: int (optional)
+        Number of classes to consider in the classification
+        Currently only nclass == 2 is implemented.
     path_to_canonical: str (optional)
         Path to canonical sample features files.
         It is only used if "strategy==canonical".
