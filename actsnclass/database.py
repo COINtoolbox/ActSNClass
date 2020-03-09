@@ -539,14 +539,19 @@ class DataBase:
                                for i in range(data_copy.shape[0])])
 
         self.train_metadata = data_copy[train_flag]
-        self.train_labels = data_copy['type'][train_flag].values == 'Ia'
         self.train_features = self.features[train_flag]
 
         # get test sample
         self.test_metadata = data_copy[~train_flag]
-        self.test_labels = data_copy['type'][~train_flag].values == 'Ia'
         self.test_features = self.features[~train_flag]
-            
+
+        if nclass == 2:
+            self.train_labels = data_copy['type'][train_flag].values == 'Ia'
+            self.test_labels = data_copy['type'][~train_flag].values == 'Ia'
+        else:
+            raise ValueError("Only 'Ia x non-Ia' are implemented! "
+                             "\n Feel free to add other options.")
+
         if queryable:
             queryable_flag = data_copy['queryable'].values
             combined_flag = np.logical_and(~train_flag, queryable_flag)
@@ -570,7 +575,7 @@ class DataBase:
             raise ValueError('There are repeated ids!!')
 
     def build_previous_runs(self, path_to_train: str, path_to_queried: str,
-                            sep_files=False):
+                            nclass=2, sep_files=False):
         """Build train, test and queryable samples from previous runs.
 
         Populate properties: train_features, train_header, test_features,
@@ -579,6 +584,9 @@ class DataBase:
 
         Parameters
         ----------
+        nclass: int (optional)
+            Number of classes to consider in the classification
+            Currently only nclass == 2 is implemented.
         path_to_train: str
             Full path to initial training sample file from a previous run.
         path_to_queried: str
@@ -698,7 +706,7 @@ class DataBase:
         elif initial_training == 'previous':
             build_previous_runs(path_to_train=path_to_train, 
                                 path_to_queried=path_to_queried,
-                                sep_files=sep_files)          
+                                sep_files=sep_files, nclass=nclass)          
 
         elif isinstance(initial_training, int):
             self.build_random_training(initial_training=initial_training, 
