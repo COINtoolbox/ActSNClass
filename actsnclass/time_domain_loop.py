@@ -31,8 +31,8 @@ def time_domain_loop(days: list,  output_metrics_file: str,
                      Ia_frac=0.5, output_fname="", path_to_canonical="",
                      path_to_full_lc_features="", path_to_train="",
                      path_to_queried="", queryable=True,
-                     query_thre=1.0, save_samples=False, screen=True, 
-                     survey='LSST', training='original'):
+                     query_thre=1.0, save_samples=False, sep_files=False,
+                     screen=True, survey='LSST', training='original'):
     """Perform the active learning loop. All results are saved to file.
 
     Parameters
@@ -91,6 +91,9 @@ def time_domain_loop(days: list,  output_metrics_file: str,
         Default is False.
     screen: bool (optional)
         If True, print on screen number of light curves processed.
+    sep_files: bool (optional)
+        If True, consider train and test samples separately read 
+        from independent files. Default is False.
     survey: str (optional)
         Name of survey to be analyzed. Accepts 'DES' or 'LSST'.
         Default is LSST.
@@ -121,7 +124,7 @@ def time_domain_loop(days: list,  output_metrics_file: str,
                       queryable=queryable, save_samples=save_samples, 
                       sep_files=sep_files, survey=survey, 
                       output_fname=output_fname, path_to_train=path_to_train,
-                      path_to_queried=path_to_queried, method=method)
+                      path_to_queried=path_to_queried, method=features_method)
 
     # get list of canonical ids
     if canonical:
