@@ -32,7 +32,7 @@ def time_domain_loop(days: list,  output_metrics_file: str,
                      path_to_full_lc_features="", path_to_train="",
                      path_to_queried="", queryable=True,
                      query_thre=1.0, save_samples=False, screen=True, 
-                     survey='PLAsTiCC', training='original'):
+                     survey='LSST', training='original'):
     """Perform the active learning loop. All results are saved to file.
 
     Parameters
@@ -87,7 +87,7 @@ def time_domain_loop(days: list,  output_metrics_file: str,
         If True, print on screen number of light curves processed.
     survey: str (optional)
         Name of survey to be analyzed. Accepts 'DES' or 'LSST'.
-        Default is DES.
+        Default is LSST.
     training: str or int (optional)
         Choice of initial training sample.
         If 'original': begin from the train sample flagged in the file
