@@ -645,7 +645,7 @@ class DataBase:
 
 
     def build_samples(self, initial_training='original', nclass=2,
-                      screen=False, Ia_frac=1.0,
+                      screen=False, Ia_frac=0.5,
                       queryable=False, save_samples=False, sep_files=False,
                       survey='DES', output_fname=' ', path_to_train=' ',
                       path_to_queried=' ', method='Bazin'):
@@ -665,7 +665,7 @@ class DataBase:
             ensuring that at least half are SN Ia.
         Ia_frac: float in [0,1] (optional)
             Fraction of Ia required in initial training sample.
-            Default is 1.
+            Default is 0.5.
         method: str (optional)
             Feature extraction method. The current implementation only
             accepts method=='Bazin' or 'photometry'.
