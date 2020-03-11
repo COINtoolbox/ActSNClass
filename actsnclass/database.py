@@ -835,7 +835,8 @@ class DataBase:
         elif strategy == 'RandomSampling':
             query_indx = random_sampling(queryable_ids=self.queryable_ids,
                                          test_ids=self.test_metadata[id_name].values,
-                                         batch=batch, query_thre=query_thre)
+                                         queryable=queryable, batch=batch,
+                                         query_thre=query_thre)
 
             for n in query_indx:
                 if self.test_metadata[id_name].values[n] not in self.queryable_ids:
