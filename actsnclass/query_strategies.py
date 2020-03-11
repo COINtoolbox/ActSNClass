@@ -136,6 +136,7 @@ def random_sampling(test_ids: np.array, queryable_ids: np.array,
 
         # check if there are queryable objects within threshold
         indx_query = int(len(flag) * query_thre)
+
         if sum(flag[:indx_query]) > 0:
             # return the corresponding batch size
             return list(indx[flag])[:batch]
