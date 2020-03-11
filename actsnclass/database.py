@@ -577,8 +577,9 @@ class DataBase:
         if sum(test_train_flag) > 0:
             raise ValueError('There are repeated ids!!')
 
-    def build_previous_runs(self, path_to_train: str, path_to_queried: str,
-                            nclass=2, sep_files=False):
+    def build_previous_runs(self, path_to_train: str, 
+                            path_to_queried: str, nclass=2, 
+                            sep_files=False, queryable=False):
         """Build train, test and queryable samples from previous runs.
 
         Populate properties: train_features, train_header, test_features,
@@ -587,23 +588,30 @@ class DataBase:
 
         Parameters
         ----------
-        nclass: int (optional)
-            Number of classes to consider in the classification
-            Currently only nclass == 2 is implemented.
         path_to_train: str
             Full path to initial training sample file from a previous run.
         path_to_queried: str
             Full path to queried sample file from a previous run.
+        nclass: int (optional)
+            Number of classes to consider in the classification
+            Currently only nclass == 2 is implemented.
+        queryable: bool (optional)
+            If True build also queryable sample for time domain analysis.
+            Default is False.
         sep_files: bool (optional)
             If True, consider train and test samples separately read 
             from independent files. Default is False.
         """
 
         # read initial training data from a previous run
-        train_previous = pd.read_csv(path_to_train, index_col=False)
+        train_previous = pd.read_csv(path_to_train, index_col=False, sep=' ')
         
         # read all queried objects in previous loops
-        queried_previous = pd.read_csv(path_to_queried, index_col=False)
+        queried_previous = pd.read_csv(path_to_queried, index_col=False,
+                                       sep=' ')
+        
+        for i in range(queried_previous.shape[0]):
+            self.queried_sample.append(queried_previous.iloc[i].values[:-1])
 
         # object if keyword
         id_name = self.identify_keywords()
@@ -626,9 +634,9 @@ class DataBase:
 
         # populate sample properties
         self.train_metadata = data_copy[train_flag]
-        self.train_features = self.features[train_flag]
+        self.train_features = self.features[train_flag].values
         self.test_metadata = data_copy[~train_flag]
-        self.test_features = self.features[~train_flag]
+        self.test_features = self.features[~train_flag].values
 
         if queryable:
             queryable_flag = self.test_metadata['queryable'].values

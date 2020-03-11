@@ -27,12 +27,12 @@ def time_domain_loop(days: list,  output_metrics_file: str,
                      path_to_features_dir: str, strategy: str,
                      fname_pattern: list,
                      batch=1, canonical = False,  classifier='RandomForest',
-                     cont=False, features_method='Bazin', nclass=2,
+                     cont=False, first_loop=20, features_method='Bazin', nclass=2,
                      Ia_frac=0.5, output_fname="", path_to_canonical="",
                      path_to_full_lc_features="", path_to_train="",
                      path_to_queried="", queryable=True,
                      query_thre=1.0, save_samples=False, sep_files=False,
-                     screen=True, survey='LSST', training='original'):
+                     screen=True, survey='LSST', initial_training='original'):
     """Perform the active learning loop. All results are saved to file.
 
     Parameters
@@ -61,6 +61,10 @@ def time_domain_loop(days: list,  output_metrics_file: str,
     classifier: str (optional)
         Machine Learning algorithm.
         Currently only 'RandomForest' is implemented.
+    first_loop: int (optional)
+        First day of the survey already calculated in previous runs.
+        Only used if initial_training == 'previous'.
+        Default is 20.
     features_method: str (optional)
         Feature extraction method. Currently only 'Bazin' is implemented.
     Ia_frac: float in [0,1] (optional)
@@ -97,7 +101,7 @@ def time_domain_loop(days: list,  output_metrics_file: str,
     survey: str (optional)
         Name of survey to be analyzed. Accepts 'DES' or 'LSST'.
         Default is LSST.
-    training: str or int (optional)
+    initial_training: str or int (optional)
         Choice of initial training sample.
         If 'original': begin from the train sample flagged in the file
         eilf 'previous': read training and queried from previous run.
@@ -119,7 +123,7 @@ def time_domain_loop(days: list,  output_metrics_file: str,
                        screen=screen, survey=survey)
 
     # constructs training, test and queryable
-    data.build_samples(initial_training=training, nclass=nclass,
+    data.build_samples(initial_training=initial_training, nclass=nclass,
                       screen=screen, Ia_frac=Ia_frac,
                       queryable=queryable, save_samples=save_samples, 
                       sep_files=sep_files, survey=survey, 
@@ -138,7 +142,10 @@ def time_domain_loop(days: list,  output_metrics_file: str,
             print('Processing night: ', night)
 
         # cont loop
-        loop = night - int(days[0])
+        if initial_training == 'previous':
+            loop = night - first_loop
+        else:
+            loop = night - int(days[0])
 
         # classify
         data.classify(method=classifier)
