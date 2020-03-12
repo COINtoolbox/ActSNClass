@@ -18,8 +18,7 @@
 
 import argparse
 
-from actsnclass.build_snpcc_canonical import build_snpcc_canonical
-from actsnclass.build_snpcc_canonical import plot_snpcc_train_canonical
+from actsnclass.build_snpcc_canonical import *
 
 __all__ = ['main']
 
