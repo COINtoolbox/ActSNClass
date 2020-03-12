@@ -16,7 +16,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-__all__ = ['time_domain_loop', 'get_original_training']
+__all__ = ['time_domain_loop']
 
 import numpy as np
 

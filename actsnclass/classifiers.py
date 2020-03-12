@@ -52,7 +52,7 @@ def random_forest(train_features:  np.array, train_labels: np.array,
     """
 
     # create classifier instance
-    clf = RandomForestClassifier(kwargs)
+    clf = RandomForestClassifier(**kwargs)
     clf.fit(train_features, train_labels)                     # train
     predictions = clf.predict(test_features)                # predict
     prob = clf.predict_proba(test_features)       # get probabilities
@@ -62,7 +62,7 @@ def random_forest(train_features:  np.array, train_labels: np.array,
 
 def gradient_boosted_trees(train_features: np.array, 
                            train_labels: np.array,
-                           test_features: np.array, **kwargs):
+                           test_features: np.array, *kwargs):
     """Gradient Boosted Trees classifier.
 
     Parameters
@@ -85,7 +85,7 @@ def gradient_boosted_trees(train_features: np.array,
     """
 
     #create classifier instance
-    clf = XGBClassifier(kwargs)
+    clf = XGBClassifier(**kwargs)
 
     clf.fit(train_features, train_labels)             # train
     predictions = clf.predict(test_features)          # predict
@@ -119,7 +119,7 @@ def knn(train_features: np.array, train_labels: np.array,
     """
 
     #create classifier instance
-    clf = KNeighborsClassifier(kwargs)
+    clf = KNeighborsClassifier(**kwargs)
 
     clf.fit(train_features, train_labels)              # train
     predictions = clf.predict(test_features)           # predict
@@ -152,7 +152,7 @@ def mlp(train_features: np.array, train_labels: np.array,
     """
     
     #create classifier instance
-    clf=MLPClassifier(kwargs)
+    clf=MLPClassifier(**kwargs)
 
     clf.fit(train_features, train_labels)              # train
     predictions = clf.predict(test_features)           # predict
@@ -219,7 +219,7 @@ def nbg(train_features: np.array, train_labels: np.array,
     """
 
     #create classifier instance
-    clf=GaussianNB(kwargs)
+    clf=GaussianNB(**kwargs)
 
     clf.fit(train_features, train_labels)         # fit
     predictions = clf.predict(test_features)      # predict

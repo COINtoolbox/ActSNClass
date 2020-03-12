@@ -765,27 +765,27 @@ class DataBase:
         if method == 'RandomForest':
             self.predicted_class,  self.classprob = \
                 random_forest(self.train_features, self.train_labels,
-                              self.test_features, kwargs)
+                              self.test_features, **kwargs)
         elif method == 'GradientBoostedTrees':
             self.predicted_class,  self.classprob = \
                 gradient_boosted_trees(self.train_features, self.train_labels,
-                                       self.test_features, kwargs)
+                                       self.test_features, **kwargs)
         elif method == 'KNN':
             self.predicted_class,  self.classprob = \
                 knn_classifier(self.train_features, self.train_labels,
-                               self.test_features, kwargs)
+                               self.test_features, **kwargs)
         elif method == 'MLP':
             self.predicted_class,  self.classprob = \
                 mlp_classifier(self.train_features, self.train_labels,
-                               self.test_features, kwargs)
+                               self.test_features, **kwargs)
         elif method == 'SVM':
             self.predicted_class, self.classprob = \
                 svm_classifier(self.train_features, self.train_labels,
-                               self.test_features, kwargs)
+                               self.test_features, **kwargs)
         elif method == 'NB':
             self.predicted_class, self.classprob = \
                 nbg_classifier(self.train_features, self.train_labels,
-                          self.test_features, kwargs)
+                          self.test_features, **kwargs)
 
 
         else:
