@@ -85,8 +85,7 @@ def gradient_boosted_trees(train_features: np.array,
     """
 
     #create classifier instance
-    clf = XGBClassifier(n_estimators=nest, random_state=seed,
-                        kwargs)
+    clf = XGBClassifier(kwargs)
 
     clf.fit(train_features, train_labels)             # train
     predictions = clf.predict(test_features)          # predict
