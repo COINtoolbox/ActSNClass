@@ -127,8 +127,8 @@ def knn(train_features: np.array, train_labels: np.array,
 
     return predictions, prob
 
-def mlp_classifier(train_features: np.array, train_labels: np.array,
-                   test_features: np.array, **kwargs):
+def mlp(train_features: np.array, train_labels: np.array,
+        test_features: np.array, **kwargs):
 
     """Multi Layer Perceptron classifier.
 
@@ -140,7 +140,7 @@ def mlp_classifier(train_features: np.array, train_labels: np.array,
         Training sample classes.
     test_features: np.array
         Test sample features.
-   kwargs: extra parameters
+    kwargs: extra parameters
         All parameters allowed by sklearn.neural_network.MLPClassifier
 
     Returns
@@ -152,8 +152,7 @@ def mlp_classifier(train_features: np.array, train_labels: np.array,
     """
     
     #create classifier instance
-    clf=MLPClassifier(hidden_layer_sizes=(n_neur),
-                      random_state=seed, kwargs)
+    clf=MLPClassifier(kwargs)
 
     clf.fit(train_features, train_labels)              # train
     predictions = clf.predict(test_features)           # predict
@@ -161,8 +160,8 @@ def mlp_classifier(train_features: np.array, train_labels: np.array,
         
     return predictions, prob
 
-def svm_classifier(train_features: np.array, train_labels: np.array,
-                   test_features: np.array, **kwargs):
+def svm(train_features: np.array, train_labels: np.array,
+        test_features: np.array, **kwargs):
     """Support Vector classifier.
 
     Parameters
@@ -194,7 +193,7 @@ def svm_classifier(train_features: np.array, train_labels: np.array,
 
     return predictions, prob
 
-def nbg_classifier(train_features: np.array, train_labels: np.array,
+def nbg(train_features: np.array, train_labels: np.array,
                   test_features: np.array, **kwargs):
 
     """Naive Bayes classifier.
