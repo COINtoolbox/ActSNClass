@@ -18,7 +18,6 @@
 
 from .bazin import *
 from .build_snpcc_canonical import *
-from .build_snpcc_canonical import *
 from .classifiers import *
 from .database import *
 from .fit_lightcurves import *
