@@ -162,7 +162,7 @@ class SNPCCPhotometry(object):
 
         # count survivers
         count_surv = 0
-
+        
         for i in range(len(lc_list)):
             print('Processed : ', i)
 
@@ -200,8 +200,15 @@ class SNPCCPhotometry(object):
                         lc.check_queryable(mjd=self.min_epoch + day_of_survey,
                                            r_lim=self.rmag_lim)
 
+<<<<<<< HEAD
+=======
+                    if queryable:
+                        lc.sample = 'queryable'
+                    
+>>>>>>> cc1796bafb890e849acd01a1a4dd01f828a22eff
                     # save features to file
                     with open(features_file, 'a') as param_file:
+                        #param_file.write(self.bazin_header)
                         param_file.write(str(lc.id) + ' ' +
                                          str(lc.redshift) + ' ' +
                                          str(lc.sntype) + ' ')
@@ -211,6 +218,7 @@ class SNPCCPhotometry(object):
                         for item in lc.bazin_features[:-1]:
                             param_file.write(str(item) + ' ')
                         param_file.write(str(lc.bazin_features[-1]) + '\n')
+<<<<<<< HEAD
 
 
 def main():
@@ -220,3 +228,5 @@ def main():
 if __name__ == '__main__':
     main()
 
+=======
+>>>>>>> cc1796bafb890e849acd01a1a4dd01f828a22eff
