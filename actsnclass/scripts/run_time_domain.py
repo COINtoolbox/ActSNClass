@@ -43,7 +43,8 @@ def main(user_choice):
         Size of batch to be queried in each loop. Default is 1.
     -c: str (optional)
         Machine Learning algorithm.
-        Currently only 'RandomForest' is implemented.
+        Currently 'RandomForest', 'GradientBoostedTrees'
+        'K-NNclassifier' and 'MLPclassifier' are implemented.
     -fm: str (optional)
         Feature extraction method. Currently only 'Bazin' is implemented.
     -sc: bool (optional)
@@ -54,6 +55,8 @@ def main(user_choice):
         If int: choose the required number of samples at random,
         ensuring that at least half are SN Ia
         Default is 'original'.
+    -fl: file containing full light curve features to train on
+         if -t original is chosen.
 
     Returns
     -------
@@ -134,7 +137,8 @@ if __name__ == '__main__':
     parser.add_argument('-c', '--classifier', dest='classifier',
                         required=False, default='RandomForest',
                         help='Classifier. Currently only accepts '
-                             '"RandomForest".')
+                             '"RandomForest", "GradientBoostedTrees",'
+                             ' "K-NNclassifier" and "MLPclassifier".')
     parser.add_argument('-fm', '--feature-method', dest='feat_method',
                         required=False, default='Bazin',
                         help='Feature extraction method. Currently only accepts '
