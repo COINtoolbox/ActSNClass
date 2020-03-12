@@ -223,6 +223,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-=======
->>>>>>> cc1796bafb890e849acd01a1a4dd01f828a22eff
