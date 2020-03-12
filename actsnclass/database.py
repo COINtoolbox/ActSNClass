@@ -22,10 +22,10 @@ import os
 import pandas as pd
 import tarfile
 
-from actsnclass.classifiers import random_forest,gradient_boosted_trees,knn_classifier,mlp_classifier,svm_classifier,nbg_classifier
+from actsnclass.classifiers import *
 
-from actsnclass.query_strategies import uncertainty_sampling, random_sampling
-from actsnclass.metrics import get_snpcc_metric
+from actsnclass.query_strategies import *
+from actsnclass.metrics import *
 
 
 __all__ = ['DataBase']
