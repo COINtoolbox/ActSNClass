@@ -22,7 +22,8 @@ import os
 import pandas as pd
 import tarfile
 
-from actsnclass.classifiers import random_forest
+from actsnclass.classifiers import random_forest,gradient_boosted_trees,knn_classifier,mlp_classifier,svm_classifier,nbg_classifier
+
 from actsnclass.query_strategies import uncertainty_sampling, random_sampling
 from actsnclass.metrics import get_snpcc_metric
 
@@ -746,26 +747,52 @@ class DataBase:
                 wsample.write(str(self.train_features[j][-1]) + '\n')
             wsample.close()
 
-    def classify(self, method='RandomForest'):
+    def classify(self, method: str, **kwargs):
         """Apply a machine learning classifier.
 
         Populate properties: predicted_class and class_prob
 
         Parameters
         ----------
-        method: str (optional)
+        method: str
             Chosen classifier.
-            The current implementation on accepts `RandomForest`.
+            The current implementation accepts `RandomForest`, 
+            'GradientBoostedTrees', 'KNN', 'MLP' and 'NB'.
+        kwargs: extra parameters
+            Parameters required by the chosen classifier.
         """
 
         if method == 'RandomForest':
             self.predicted_class,  self.classprob = \
                 random_forest(self.train_features, self.train_labels,
-                              self.test_features)
+                              self.test_features, kwargs)
+        elif method == 'GradientBoostedTrees':
+            self.predicted_class,  self.classprob = \
+                gradient_boosted_trees(self.train_features, self.train_labels,
+                                       self.test_features, kwargs)
+        elif method == 'KNN':
+            self.predicted_class,  self.classprob = \
+                knn_classifier(self.train_features, self.train_labels,
+                               self.test_features, kwargs)
+        elif method == 'MLP':
+            self.predicted_class,  self.classprob = \
+                mlp_classifier(self.train_features, self.train_labels,
+                               self.test_features, kwargs)
+        elif method == 'SVM':
+            self.predicted_class, self.classprob = \
+                svm_classifier(self.train_features, self.train_labels,
+                               self.test_features, kwargs)
+        elif method == 'NB':
+            self.predicted_class, self.classprob = \
+                nbg_classifier(self.train_features, self.train_labels,
+                          self.test_features, kwargs)
+
 
         else:
-            raise ValueError('Only RandomForest classifier is implemented!'
-                             '\n Feel free to add other options.')
+            raise ValueError("The only classifiers implemented are" +
+                              "'RandomForest', 'GradientBoostedTrees'," +
+                              "'KNN', 'MLP' and NB'." + 
+                             "\n Feel free to add other options.")
 
     def evaluate_classification(self, metric_label='snpcc'):
         """Evaluate results from classification.

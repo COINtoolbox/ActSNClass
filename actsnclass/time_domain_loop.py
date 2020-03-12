@@ -60,7 +60,9 @@ def time_domain_loop(days: list,  output_metrics_file: str,
         Default is False.
     classifier: str (optional)
         Machine Learning algorithm.
-        Currently only 'RandomForest' is implemented.
+        Currently 'RandomForest', 'GradientBoostedTrees',
+        'KNN', 'MLP', 'SVM' and 'NB' are implemented.
+        Default is 'RandomForest'.
     first_loop: int (optional)
         First day of the survey already calculated in previous runs.
         Only used if initial_training == 'previous'.
