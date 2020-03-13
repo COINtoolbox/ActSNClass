@@ -86,9 +86,6 @@ def uncertainty_sampling(class_prob: np.array, test_ids: np.array,
             print(' 0 -> ', list(order).index(final_order[0]))
             print(class_prob[order[0]], '-- > ', class_prob[final_order[0]])
 
-        print('indx : ', indx)
-        print('len(test_ids) : ', len(test_ids))
-
         # return the index of the highest uncertain objects which are queryable
         return list(final_order)[:batch]
 

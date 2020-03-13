@@ -896,8 +896,8 @@ class DataBase:
             id_name = 'objid'
 
         all_queries = []
- 
-        while len(query_indx) > 0:
+
+        while len(query_indx) > 0 and self.test_metadata.shape[0] > 0:
 
             # identify queried object index
             obj = query_indx[0]
