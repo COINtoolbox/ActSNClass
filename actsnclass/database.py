@@ -417,7 +417,8 @@ class DataBase:
         """
 
         all_queries = []
-        for obj in query_indx:
+
+        while len(query_indx) > 0:
             # add object to the query sample
             query_header = self.test_metadata.values[obj]
             query_features = self.test_features[obj]
@@ -444,6 +445,19 @@ class DataBase:
             self.test_features = np.delete(self.test_features, obj, axis=0)
 
             all_queries.append(line)
+
+            # update ids order
+            query_indx.remove(obj)
+
+            new_query_indx = []
+
+            for item in query_indx:
+                if item < obj:
+                    new_query_indx.append(item)
+                else:
+                    new_query_indx.append(item - 1)
+
+            query_indx = new_query_indx
 
         # update queried samples
         self.queried_sample.append(all_queries)
@@ -473,7 +487,7 @@ class DataBase:
                 for name in self.metrics_list_names:
                     metrics.write(name + ' ')
                 for j in range(batch):
-                    metrics.write('query_id' + str(j + 1))
+                    metrics.write('query_id' + str(j + 1) + ' ')
                 metrics.write('\n')
 
         # write to file
