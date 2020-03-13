@@ -850,7 +850,7 @@ class DataBase:
             id_name = 'objid'
         elif 'id' in self.test_metadata.keys():
             id_name = 'id'
-            
+        
         if strategy == 'UncSampling':
             query_indx = uncertainty_sampling(class_prob=self.classprob,
                                               queryable_ids=self.queryable_ids,
@@ -894,9 +894,20 @@ class DataBase:
             id_name = 'id'
         elif 'objid' in self.train_metadata.keys():
             id_name = 'objid'
-            
+
         all_queries = []
-        for obj in query_indx:
+ 
+        while len(query_indx) > 0:
+
+            # identify queried object index
+            obj = query_indx[0]
+            
+            print('query_indx: ', query_indx)
+            print('len(test_metadata): ', self.test_metadata.values.shape[0])
+            print('len(test_features): ', self.test_features.shape[0])
+                            
+            print('obj : ', obj)
+            print('self.test_metadata.values[obj]: ', self.test_metadata.values[obj])
 
             # add object to the query sample
             query_header = self.test_metadata.values[obj]
@@ -925,6 +936,19 @@ class DataBase:
             self.test_labels = np.delete(self.test_labels, obj, axis=0)
             self.test_features = np.delete(self.test_features, obj, axis=0)
             all_queries.append(line)
+
+            # update ids order
+            query_indx.remove(obj)
+
+            new_query_indx = []
+
+            for item in query_indx:
+                if item < obj:
+                    new_query_indx.append(item)
+                else:
+                    new_query_indx.append(item - 1)
+
+            query_indx = new_query_indx
 
         # update queried samples
         self.queried_sample.append(all_queries)
@@ -963,7 +987,7 @@ class DataBase:
                 metrics.write(str(epoch) + ' ')
                 for value in self.metrics_list_values:
                     metrics.write(str(value) + ' ')
-                for j in range(batch):
+                for j in range(len(self.queried_sample[loop])):
                     metrics.write(str(self.queried_sample[loop][j][1]) + ' ')
                 metrics.write('\n')
 
