@@ -971,7 +971,7 @@ class DataBase:
                 for name in self.metrics_list_names:
                     metrics.write(name + ' ')
                 for j in range(batch):
-                    metrics.write('query_id' + str(j + 1))
+                    metrics.write('query_id' + str(j + 1) + ' ')
                 metrics.write('\n')
 
         # write to file
