@@ -149,14 +149,15 @@ def time_domain_loop(days: list,  output_metrics_file: str,
         else:
             loop = night - int(days[0])
 
-        # classify
-        data.classify(method=classifier)
+        if data.test_metadata.shape[0] > 0:
+            # classify
+            data.classify(method=classifier)
 
-        # calculate metrics
-        data.evaluate_classification()
+            # calculate metrics
+            data.evaluate_classification()
         
-        indx = data.make_query(strategy=strategy, batch=batch, queryable=queryable,
-                               query_thre=query_thre)
+            indx = data.make_query(strategy=strategy, batch=batch, queryable=queryable,
+                                   query_thre=query_thre)
 
         # update training and test samples
         data.update_samples(indx, loop=loop)
@@ -167,7 +168,7 @@ def time_domain_loop(days: list,  output_metrics_file: str,
 
         # save query sample to file
         data.save_queried_sample(output_queried_file, loop=loop,
-                                 full_sample=False)
+                                     full_sample=False)
 
         # load features for next day
         path_to_features2 = path_to_features_dir + fname_pattern[0] + \
