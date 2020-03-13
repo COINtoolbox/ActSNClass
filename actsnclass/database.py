@@ -901,13 +901,6 @@ class DataBase:
 
             # identify queried object index
             obj = query_indx[0]
-            
-            print('query_indx: ', query_indx)
-            print('len(test_metadata): ', self.test_metadata.values.shape[0])
-            print('len(test_features): ', self.test_features.shape[0])
-                            
-            print('obj : ', obj)
-            print('self.test_metadata.values[obj]: ', self.test_metadata.values[obj])
 
             # add object to the query sample
             query_header = self.test_metadata.values[obj]
