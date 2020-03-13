@@ -419,6 +419,9 @@ class DataBase:
         all_queries = []
 
         while len(query_indx) > 0:
+
+            obj = query_indx[0]
+
             # add object to the query sample
             query_header = self.test_metadata.values[obj]
             query_features = self.test_features[obj]
