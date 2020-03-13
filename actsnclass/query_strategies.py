@@ -51,6 +51,9 @@ def uncertainty_sampling(class_prob: np.array, test_ids: np.array,
     query_indx: list
             List of indexes identifying the objects from the test sample
             to be queried in decreasing order of importance.
+            If there are less queryable objects than the required batch
+            it will return only the available objects -- so the list of 
+            objects to query can be smaller than 'batch'.
     """
     if class_prob.shape[0] != test_ids.shape[0]:
         raise ValueError('Number of probabiblities is different ' + 
@@ -82,6 +85,9 @@ def uncertainty_sampling(class_prob: np.array, test_ids: np.array,
             print('*** Displacement caused by constraints on query****')
             print(' 0 -> ', list(order).index(final_order[0]))
             print(class_prob[order[0]], '-- > ', class_prob[final_order[0]])
+
+        print('indx : ', indx)
+        print('len(test_ids) : ', len(test_ids))
 
         # return the index of the highest uncertain objects which are queryable
         return list(final_order)[:batch]
@@ -116,7 +122,9 @@ def random_sampling(test_ids: np.array, queryable_ids: np.array,
     -------
     query_indx: list
             List of indexes identifying the objects from the test sample
-            to be queried.
+            to be queried. If there are less queryable objects than the 
+            required batch it will return only the available objects 
+            -- so the list of objects to query can be smaller than 'batch'.
     """
 
     # randomly select indexes to be queried
