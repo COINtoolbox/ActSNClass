@@ -231,7 +231,7 @@ class PLAsTiCCPhotometry(object):
         return line
             
     def fit_one_lc(self, raw_data_dir: str, snid: int, sample: str,
-                   output_dir: str):
+                   output_dir: str, vol: int, day=None, screen=False):
         """Fit one light curve throughout the entire survey.
 
         Save results to appropriate file, considering 1 day survey 
@@ -248,6 +248,16 @@ class PLAsTiCCPhotometry(object):
             Possibilities are 'train' or 'test'.
         output_dir:
             Directory to store output time domain files.
+        vol: int or None
+            Index of the original PLAsTiCC zenodo light curve
+            files where the photometry for this object is stored.
+            If None, search for id in all light curve files.
+        day: int or None (optional)
+            Day since beginning of survey to be considered.
+            If None, fit all days. Default is None.
+        screen: bool (optional)
+            Print steps evolution on screen.
+            Default is False.
         """
 
         # store number of points per day
@@ -260,20 +270,35 @@ class PLAsTiCCPhotometry(object):
         vol = 0
         if sample == 'train':
             # load light curve
-            print('vol = ', vol)
+            if screen:
+                print('vol: ', vol)
+
             orig_lc.load_plasticc_lc(raw_data_dir + self.fdic[sample][vol], snid)
 
-        else:
+        elif vol ==  None:
             # search within test light curve files
             while orig_lc.photometry.shape[0] == 0 and vol < 11:
                 vol = vol + 1
-                print('vol : ', vol)
+                if screen:
+                    print('vol: ', vol)
+                    
                 orig_lc.load_plasticc_lc(raw_data_dir + self.fdic[sample][vol - 1], snid)
-        
+
+        elif isinstance(vol, int):
+            # load light curve
+            orig_lc.load_plasticc_lc(raw_data_dir + self.fdic[sample][vol - 1], snid)
+            
         line = False
-                
-        # for every day of survey
-        for day_of_survey in range(1, self.max_epoch - self.min_epoch):
+
+        if day == None:
+            # for every day of survey
+            fit_days = range(1, self.max_epoch - self.min_epoch)
+            
+        elif isinstance(day, int):
+            # for a specific day of the survey
+            fit_days = [day]
+            
+        for day_of_survey in fit_days:
 
             lc = deepcopy(orig_lc)
 
