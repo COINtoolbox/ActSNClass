@@ -200,14 +200,20 @@ class DataBase:
             if ' ' in data.keys()[0]:
                 data = pd.read_csv(path_to_bazin_file, sep=' ', index_col=False)
 
+        # check if queryable is there
+        if 'queryable' not in data.keys():
+            data['queryable'] = [True for i in range(data.shape[0])]
+            
         # list of features to use
         if survey == 'DES':
             self.features_names = ['gA', 'gB', 'gt0', 'gtfall', 'gtrise', 'rA',
                                    'rB', 'rt0', 'rtfall', 'rtrise', 'iA', 'iB',
                                    'it0', 'itfall', 'itrise', 'zA', 'zB', 'zt0',
                                    'ztfall', 'ztrise']
-            self.metadata_names = ['id', 'redshift', 'type', 'code', 'orig_sample', 'queryable']
-
+    
+            self.metadata_names = ['id', 'redshift', 'type', 'code',
+                                   'orig_sample', 'queryable']
+                
         elif survey == 'LSST':
             self.features_names = ['uA', 'uB', 'ut0', 'utfall', 'utrise',
                                    'gA', 'gB', 'gt0', 'gtfall', 'gtrise',
@@ -216,7 +222,9 @@ class DataBase:
                                    'zA', 'zB', 'zt0', 'ztfall', 'ztrise',
                                    'YA', 'YB', 'Yt0', 'Ytfall', 'Ytrise']
 
-            self.metadata_names = ['id', 'redshift', 'type', 'code', 'orig_sample', 'queryable']
+            self.metadata_names = ['objid', 'redshift', 'type', 'code',
+                                   'orig_sample', 'queryable']
+
         else:
             raise ValueError('Only "DES" and "LSST" filters are implemented at this point!')
 
@@ -230,7 +238,7 @@ class DataBase:
                 ntrain = sum(self.metadata['orig_sample'] == 'train')
                 ntest = sum(self.metadata['orig_sample'] == 'test')
                 nquery = sum(self.metadata['queryable'])
-
+                    
                 print('   ... of which')
                 print('       original train: ', ntrain)
                 print('       original test: ', ntest)
@@ -771,19 +779,19 @@ class DataBase:
                                        self.test_features, **kwargs)
         elif method == 'KNN':
             self.predicted_class,  self.classprob = \
-                knn_classifier(self.train_features, self.train_labels,
+                knn(self.train_features, self.train_labels,
                                self.test_features, **kwargs)
         elif method == 'MLP':
             self.predicted_class,  self.classprob = \
-                mlp_classifier(self.train_features, self.train_labels,
+                mlp(self.train_features, self.train_labels,
                                self.test_features, **kwargs)
         elif method == 'SVM':
             self.predicted_class, self.classprob = \
-                svm_classifier(self.train_features, self.train_labels,
+                svm(self.train_features, self.train_labels,
                                self.test_features, **kwargs)
         elif method == 'NB':
             self.predicted_class, self.classprob = \
-                nbg_classifier(self.train_features, self.train_labels,
+                nbg(self.train_features, self.train_labels,
                           self.test_features, **kwargs)
 
 

@@ -25,7 +25,7 @@ def learn_loop(nloops: int, strategy: str, path_to_features: str,
                output_metrics_file: str, output_queried_file: str,
                features_method='Bazin', classifier='RandomForest',
                training='original', batch=1, screen=True, survey='DES',
-               nclass=2):
+               nclass=2, **kwargs):
     """Perform the active learning loop. All results are saved to file.
 
     Parameters
@@ -64,7 +64,9 @@ def learn_loop(nloops: int, strategy: str, path_to_features: str,
         Name of the survey which characterizes filter set.
     nclass: int (optional)
         Number of classes to consider in the classification
-        Currently only nclass == 2 is implemented.    
+        Currently only nclass == 2 is implemented.
+    kwargs: extra parameters
+        All keywords required by the classifier function.    
     """
 
     # initiate object
@@ -93,7 +95,7 @@ def learn_loop(nloops: int, strategy: str, path_to_features: str,
             print('Processing... ', loop)
 
         # classify
-        data.classify(method=classifier)
+        data.classify(method=classifier, **kwargs)
 
         # calculate metrics
         data.evaluate_classification()

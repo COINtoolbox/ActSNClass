@@ -62,7 +62,7 @@ def random_forest(train_features:  np.array, train_labels: np.array,
 
 def gradient_boosted_trees(train_features: np.array, 
                            train_labels: np.array,
-                           test_features: np.array, *kwargs):
+                           test_features: np.array, **kwargs):
     """Gradient Boosted Trees classifier.
 
     Parameters
