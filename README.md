@@ -59,7 +59,7 @@ You should see a ``(ActSNClass)`` flag in the extreme left of terminal command l
 
 Next, clone this repository in another chosen location:  
 
-    (ActSNClass) >> git clone -b RESSPECT https://github.com/COINtoolbox/ActSNClass.git  
+    (ActSNClass) >> git clone -b RESSPECT https://github.com/COINtoolbox/ActSNClassgit s.git  
 
 Navigate to the repository folder and do  
 
