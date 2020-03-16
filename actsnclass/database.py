@@ -779,19 +779,19 @@ class DataBase:
                                        self.test_features, **kwargs)
         elif method == 'KNN':
             self.predicted_class,  self.classprob = \
-                knn_classifier(self.train_features, self.train_labels,
+                knn(self.train_features, self.train_labels,
                                self.test_features, **kwargs)
         elif method == 'MLP':
             self.predicted_class,  self.classprob = \
-                mlp_classifier(self.train_features, self.train_labels,
+                mlp(self.train_features, self.train_labels,
                                self.test_features, **kwargs)
         elif method == 'SVM':
             self.predicted_class, self.classprob = \
-                svm_classifier(self.train_features, self.train_labels,
+                svm(self.train_features, self.train_labels,
                                self.test_features, **kwargs)
         elif method == 'NB':
             self.predicted_class, self.classprob = \
-                nbg_classifier(self.train_features, self.train_labels,
+                nbg(self.train_features, self.train_labels,
                           self.test_features, **kwargs)
 
 
