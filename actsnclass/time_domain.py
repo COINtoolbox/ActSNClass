@@ -162,7 +162,7 @@ class SNPCCPhotometry(object):
 
         # count survivers
         count_surv = 0
-
+        
         for i in range(len(lc_list)):
             print('Processed : ', i)
 
@@ -200,6 +200,9 @@ class SNPCCPhotometry(object):
                         lc.check_queryable(mjd=self.min_epoch + day_of_survey,
                                            r_lim=self.rmag_lim)
 
+                    if queryable:
+                        lc.sample = 'queryable'
+                    
                     # save features to file
                     with open(features_file, 'a') as param_file:
                         param_file.write(str(lc.id) + ' ' +
@@ -213,10 +216,10 @@ class SNPCCPhotometry(object):
                         param_file.write(str(lc.bazin_features[-1]) + '\n')
 
 
+
 def main():
     return None
 
 
 if __name__ == '__main__':
     main()
-

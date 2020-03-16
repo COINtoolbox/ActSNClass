@@ -18,7 +18,6 @@
 
 from .bazin import *
 from .build_snpcc_canonical import *
-from .build_snpcc_canonical import *
 from .classifiers import *
 from .database import *
 from .fit_lightcurves import *
@@ -50,18 +49,22 @@ __all__ = ['accuracy',
            'fit_plasticc_bazin',
            'fit_resspect_bazin',
            'fom',
-           'get_original_training',
            'get_snpcc_metric',
+           'gradient_boosted_trees',
+           'knn',
            'learn_loop',
            'LightCurve',
+           'mlp',
+           'nbg',
            'PLAsTiCCPhotometry',
            'make_metrics_plots',
            'plot_snpcc_train_canonical',
            'purity',
-           'random_forest',
+           'random_forest',           
            'random_sampling',
            'run_loop',
            'run_time_domain',
            'SNPCCPhotometry',
+           'svm',
            'time_domain_loop',
            'uncertainty_sampling']
