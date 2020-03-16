@@ -56,13 +56,14 @@ def main(user_input):
     # load data
     cv.load_metrics(path_to_files=list(user_input.metrics),
                         strategies_list=list(user_input.strategies))
-
+    
     # set plot dimensions
     cv.set_plot_dimensions()
 
     # save plot to file
     cv.plot_metrics(output_plot_file=user_input.output,
-                        strategies_list=list(user_input.strategies))
+                        strategies_list=list(user_input.strategies),
+                        lim_queries=user_input.lim_queries)
 
 
 if __name__ == '__main__':
@@ -82,6 +83,9 @@ if __name__ == '__main__':
                         help='List of strategies names. This should be'
                              'in the same order as the given list of '
                              'metrics files.')
+    parser.add_argument('-q', '--max-queries', dest='lim_queries', 
+                        required=False, type=int, default=1000, 
+                        help='Max number of queries to be plotted.')
 
     from_user = parser.parse_args()
 

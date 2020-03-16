@@ -231,7 +231,7 @@ class PLAsTiCCPhotometry(object):
         return line
             
     def fit_one_lc(self, raw_data_dir: str, snid: int, sample: str,
-                   output_dir: str):
+                   output_dir: str, vol: int, day=None, screen=False):
         """Fit one light curve throughout the entire survey.
 
         Save results to appropriate file, considering 1 day survey 
@@ -248,6 +248,17 @@ class PLAsTiCCPhotometry(object):
             Possibilities are 'train' or 'test'.
         output_dir:
             Directory to store output time domain files.
+        vol: int or None
+            Index of the original PLAsTiCC zenodo light curve
+            files where the photometry for this object is stored.
+            If None, search for id in all light curve files.
+            If sample == 'train' it is automatically set to 0.
+        day: int or None (optional)
+            Day since beginning of survey to be considered.
+            If None, fit all days. Default is None.
+        screen: bool (optional)
+            Print steps evolution on screen.
+            Default is False.
         """
 
         # store number of points per day
@@ -257,23 +268,49 @@ class PLAsTiCCPhotometry(object):
         # create light curve instance
         orig_lc = LightCurve()          
 
-        vol = 0
         if sample == 'train':
+            vol = 0
             # load light curve
-            print('vol = ', vol)
+            if screen:
+                print('vol: ', vol)
+
             orig_lc.load_plasticc_lc(raw_data_dir + self.fdic[sample][vol], snid)
 
-        else:
+        elif vol ==  None:
             # search within test light curve files
             while orig_lc.photometry.shape[0] == 0 and vol < 11:
                 vol = vol + 1
-                print('vol : ', vol)
+                if screen:
+                    print('vol: ', vol)
+                    
                 orig_lc.load_plasticc_lc(raw_data_dir + self.fdic[sample][vol - 1], snid)
-        
+
+        elif isinstance(vol, int):
+            # load light curve
+            orig_lc.load_plasticc_lc(raw_data_dir + self.fdic[sample][vol - 1], snid)
+
+        # get number of points in all days of the survey for this light curve
+        for days in range(1, self.max_epoch - self.min_epoch):
+
+            # see which epochs are observed until this day
+            now = days + self.min_epoch
+            photo_flag_now = orig_lc.photometry['mjd'].values <= now
+
+            # number of points today
+            npoints[days] = sum(photo_flag_now)
+            
+        # create instance to store Bazin fit parameters    
         line = False
-                
-        # for every day of survey
-        for day_of_survey in range(1, self.max_epoch - self.min_epoch):
+
+        if day == None:
+            # for every day of survey
+            fit_days = range(42, self.max_epoch - self.min_epoch)
+            
+        elif isinstance(day, int):
+            # for a specific day of the survey
+            fit_days = [day]
+            
+        for day_of_survey in fit_days:
 
             lc = deepcopy(orig_lc)
 
@@ -285,7 +322,7 @@ class PLAsTiCCPhotometry(object):
             npoints[day_of_survey] = sum(photo_flag)
 
             # only the allowed photometry
-            lc.photometry = lc.photometry[photo_flag]
+            lc.photometry = lc.photometry[photo_flag]                                  
 
             # check if any point survived, other checks are made
             # inside lc object
@@ -326,9 +363,12 @@ class PLAsTiCCPhotometry(object):
 
                     # write to file
                     line = self.write_bazin_to_file(lc, features_file, queryable)
+
+                    if screen:
+                        print('   *** Wrote to file ***   ')
                     
-            # write previous result to file if there is no change
-            elif npoints[day_of_survey] == npoints[day_of_survey - 1] and isinstance(line, str):
+            # write previous result to file if there is no change or if it is the first day            
+            elif (npoints[day_of_survey] == npoints[day_of_survey - 1] and isinstance(line, str)):
 
                 # set filename
                 features_file = output_dir + 'day_' + \
@@ -337,6 +377,9 @@ class PLAsTiCCPhotometry(object):
                 # save results
                 with open(features_file, 'a') as param_file:
                     param_file.write(line)
+
+                if screen:
+                    print('   *** wrote to file ***   ')
                 
     def build_one_epoch(self, raw_data_dir: str, day_of_survey: int,
                         time_domain_dir: str, feature_method='Bazin'):

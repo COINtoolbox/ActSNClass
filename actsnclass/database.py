@@ -22,9 +22,10 @@ import os
 import pandas as pd
 import tarfile
 
-from actsnclass.classifiers import random_forest
-from actsnclass.query_strategies import uncertainty_sampling, random_sampling
-from actsnclass.metrics import get_snpcc_metric
+from actsnclass.classifiers import *
+
+from actsnclass.query_strategies import *
+from actsnclass.metrics import *
 
 
 __all__ = ['DataBase']
@@ -205,7 +206,7 @@ class DataBase:
                                    'rB', 'rt0', 'rtfall', 'rtrise', 'iA', 'iB',
                                    'it0', 'itfall', 'itrise', 'zA', 'zB', 'zt0',
                                    'ztfall', 'ztrise']
-            self.metadata_names = ['id', 'redshift', 'type', 'code', 'sample', 'queryable']
+            self.metadata_names = ['id', 'redshift', 'type', 'code', 'orig_sample', 'queryable']
 
         elif survey == 'LSST':
             self.features_names = ['uA', 'uB', 'ut0', 'utfall', 'utrise',
@@ -215,7 +216,7 @@ class DataBase:
                                    'zA', 'zB', 'zt0', 'ztfall', 'ztrise',
                                    'YA', 'YB', 'Yt0', 'Ytfall', 'Ytrise']
 
-            self.metadata_names = ['id', 'redshift', 'type', 'code', 'sample', 'queryable']
+            self.metadata_names = ['id', 'redshift', 'type', 'code', 'orig_sample', 'queryable']
         else:
             raise ValueError('Only "DES" and "LSST" filters are implemented at this point!')
 
@@ -226,8 +227,8 @@ class DataBase:
             if screen:
                 print('Loaded ', self.metadata.shape[0], ' samples!')
 
-                ntrain = sum(self.metadata['sample'] == 'train')
-                ntest = sum(self.metadata['sample'] == 'test')
+                ntrain = sum(self.metadata['orig_sample'] == 'train')
+                ntest = sum(self.metadata['orig_sample'] == 'test')
                 nquery = sum(self.metadata['queryable'])
 
                 print('   ... of which')
@@ -292,7 +293,7 @@ class DataBase:
         elif 'id' in data.keys():
             id_name = 'id'
             
-        self.metadata_names = [id_name, 'redshift', 'type', 'code', 'sample']
+        self.metadata_names = [id_name, 'redshift', 'type', 'code', 'orig_sample']
 
         if sample == None:
             self.features = data[self.features_names]
@@ -448,8 +449,8 @@ class DataBase:
             self.test_labels = test_labels.astype(int)
 
             # identify queryable objects
-            if 'queryable' in self.test_metadata['sample'].values:
-                queryable_flag = self.test_metadata['sample'] == 'queryable'
+            if 'queryable' in self.test_metadata['orig_sample'].values:
+                queryable_flag = self.test_metadata['orig_sample'] == 'queryable'
                 self.queryable_ids = self.test_metadata[queryable_flag][id_name].values
 
             else:
@@ -515,6 +516,9 @@ class DataBase:
             from independent files.        
         """
 
+        # object if keyword
+        id_name = self.identify_keywords()
+
         if sep_files:
             # build complete metadata object
             self.metadata = pd.concat([self.train_metadata, self.test_metadata])
@@ -539,14 +543,19 @@ class DataBase:
                                for i in range(data_copy.shape[0])])
 
         self.train_metadata = data_copy[train_flag]
-        self.train_labels = data_copy['type'][train_flag].values == 'Ia'
-        self.train_features = self.features[train_flag]
+        self.train_features = self.features[train_flag].values
 
         # get test sample
         self.test_metadata = data_copy[~train_flag]
-        self.test_labels = data_copy['type'][~train_flag].values == 'Ia'
-        self.test_features = self.features[~train_flag]
-            
+        self.test_features = self.features[~train_flag].values
+
+        if nclass == 2:
+            self.train_labels = data_copy['type'][train_flag].values == 'Ia'
+            self.test_labels = data_copy['type'][~train_flag].values == 'Ia'
+        else:
+            raise ValueError("Only 'Ia x non-Ia' are implemented! "
+                             "\n Feel free to add other options.")
+
         if queryable:
             queryable_flag = data_copy['queryable'].values
             combined_flag = np.logical_and(~train_flag, queryable_flag)
@@ -569,8 +578,9 @@ class DataBase:
         if sum(test_train_flag) > 0:
             raise ValueError('There are repeated ids!!')
 
-    def build_previous_runs(self, path_to_train: str, path_to_queried: str,
-                            sep_files=False):
+    def build_previous_runs(self, path_to_train: str, 
+                            path_to_queried: str, nclass=2, 
+                            sep_files=False, queryable=False):
         """Build train, test and queryable samples from previous runs.
 
         Populate properties: train_features, train_header, test_features,
@@ -583,16 +593,26 @@ class DataBase:
             Full path to initial training sample file from a previous run.
         path_to_queried: str
             Full path to queried sample file from a previous run.
+        nclass: int (optional)
+            Number of classes to consider in the classification
+            Currently only nclass == 2 is implemented.
+        queryable: bool (optional)
+            If True build also queryable sample for time domain analysis.
+            Default is False.
         sep_files: bool (optional)
             If True, consider train and test samples separately read 
             from independent files. Default is False.
         """
 
         # read initial training data from a previous run
-        train_previous = pd.read_csv(path_to_train, index_col=False)
+        train_previous = pd.read_csv(path_to_train, index_col=False, sep=' ')
         
         # read all queried objects in previous loops
-        queried_previous = pd.read_csv(path_to_queried, index_col=False)
+        queried_previous = pd.read_csv(path_to_queried, index_col=False,
+                                       sep=' ')
+        
+        for i in range(queried_previous.shape[0]):
+            self.queried_sample.append(queried_previous.iloc[i].values[:-1])
 
         # object if keyword
         id_name = self.identify_keywords()
@@ -615,9 +635,9 @@ class DataBase:
 
         # populate sample properties
         self.train_metadata = data_copy[train_flag]
-        self.train_features = self.features[train_flag]
+        self.train_features = self.features[train_flag].values
         self.test_metadata = data_copy[~train_flag]
-        self.test_features = self.features[~train_flag]
+        self.test_features = self.features[~train_flag].values
 
         if queryable:
             queryable_flag = self.test_metadata['queryable'].values
@@ -636,7 +656,7 @@ class DataBase:
                              "\n Feel free to add other options.")
 
     def build_samples(self, initial_training='original', nclass=2,
-                      screen=False, Ia_frac=1.0,
+                      screen=False, Ia_frac=0.5,
                       queryable=False, save_samples=False, sep_files=False,
                       survey='DES', output_fname=' ', path_to_train=' ',
                       path_to_queried=' ', method='Bazin'):
@@ -656,7 +676,7 @@ class DataBase:
             ensuring that at least half are SN Ia.
         Ia_frac: float in [0,1] (optional)
             Fraction of Ia required in initial training sample.
-            Default is 1.
+            Default is 0.5.
         method: str (optional)
             Feature extraction method. The current implementation only
             accepts method=='Bazin' or 'photometry'.
@@ -695,9 +715,9 @@ class DataBase:
                                     queryable=queryable, sep_files=sep_files)
        
         elif initial_training == 'previous':
-            build_previous_runs(path_to_train=path_to_train, 
-                                path_to_queried=path_to_queried,
-                                sep_files=sep_files)          
+            self.build_previous_runs(path_to_train=path_to_train, 
+                                    path_to_queried=path_to_queried,
+                                    sep_files=sep_files, nclass=nclass)          
 
         elif isinstance(initial_training, int):
             self.build_random_training(initial_training=initial_training, 
@@ -711,6 +731,7 @@ class DataBase:
             print('Queryable set size: ', sum(self.metadata['queryable']))
 
         if save_samples:
+
             full_header = self.metadata_names + self.features_names
             wsample = open(output_fname, 'w')
             for item in full_header:
@@ -719,32 +740,58 @@ class DataBase:
 
             for j in range(self.train_metadata.shape[0]):
                 for name in self.metadata_names:
-                    wsample.write(str(self.train_metadata[name].iloc[j].value) + ' ')
+                    wsample.write(str(self.train_metadata[name].iloc[j]) + ' ')
                 for k in range(self.train_features.shape[1] - 1):
-                    wsample.write(self.train_features[j][k] + ' ')
-                wsample.write(self.train_features[j][-1] + '\n')
+                    wsample.write(str(self.train_features[j][k]) + ' ')
+                wsample.write(str(self.train_features[j][-1]) + '\n')
             wsample.close()
 
-    def classify(self, method='RandomForest'):
+    def classify(self, method: str, **kwargs):
         """Apply a machine learning classifier.
 
         Populate properties: predicted_class and class_prob
 
         Parameters
         ----------
-        method: str (optional)
+        method: str
             Chosen classifier.
-            The current implementation on accepts `RandomForest`.
+            The current implementation accepts `RandomForest`, 
+            'GradientBoostedTrees', 'KNN', 'MLP' and 'NB'.
+        kwargs: extra parameters
+            Parameters required by the chosen classifier.
         """
 
         if method == 'RandomForest':
             self.predicted_class,  self.classprob = \
                 random_forest(self.train_features, self.train_labels,
-                              self.test_features)
+                              self.test_features, **kwargs)
+        elif method == 'GradientBoostedTrees':
+            self.predicted_class,  self.classprob = \
+                gradient_boosted_trees(self.train_features, self.train_labels,
+                                       self.test_features, **kwargs)
+        elif method == 'KNN':
+            self.predicted_class,  self.classprob = \
+                knn_classifier(self.train_features, self.train_labels,
+                               self.test_features, **kwargs)
+        elif method == 'MLP':
+            self.predicted_class,  self.classprob = \
+                mlp_classifier(self.train_features, self.train_labels,
+                               self.test_features, **kwargs)
+        elif method == 'SVM':
+            self.predicted_class, self.classprob = \
+                svm_classifier(self.train_features, self.train_labels,
+                               self.test_features, **kwargs)
+        elif method == 'NB':
+            self.predicted_class, self.classprob = \
+                nbg_classifier(self.train_features, self.train_labels,
+                          self.test_features, **kwargs)
+
 
         else:
-            raise ValueError('Only RandomForest classifier is implemented!'
-                             '\n Feel free to add other options.')
+            raise ValueError("The only classifiers implemented are" +
+                              "'RandomForest', 'GradientBoostedTrees'," +
+                              "'KNN', 'MLP' and NB'." + 
+                             "\n Feel free to add other options.")
 
     def evaluate_classification(self, metric_label='snpcc'):
         """Evaluate results from classification.
@@ -802,7 +849,7 @@ class DataBase:
             id_name = 'objid'
         elif 'id' in self.test_metadata.keys():
             id_name = 'id'
-            
+        
         if strategy == 'UncSampling':
             query_indx = uncertainty_sampling(class_prob=self.classprob,
                                               queryable_ids=self.queryable_ids,
@@ -814,7 +861,8 @@ class DataBase:
         elif strategy == 'RandomSampling':
             query_indx = random_sampling(queryable_ids=self.queryable_ids,
                                          test_ids=self.test_metadata[id_name].values,
-                                         batch=batch, query_thre=query_thre)
+                                         queryable=queryable, batch=batch,
+                                         query_thre=query_thre)
 
             for n in query_indx:
                 if self.test_metadata[id_name].values[n] not in self.queryable_ids:
@@ -845,9 +893,13 @@ class DataBase:
             id_name = 'id'
         elif 'objid' in self.train_metadata.keys():
             id_name = 'objid'
-            
+
         all_queries = []
-        for obj in query_indx:
+
+        while len(query_indx) > 0 and self.test_metadata.shape[0] > 0:
+
+            # identify queried object index
+            obj = query_indx[0]
 
             # add object to the query sample
             query_header = self.test_metadata.values[obj]
@@ -877,6 +929,19 @@ class DataBase:
             self.test_features = np.delete(self.test_features, obj, axis=0)
             all_queries.append(line)
 
+            # update ids order
+            query_indx.remove(obj)
+
+            new_query_indx = []
+
+            for item in query_indx:
+                if item < obj:
+                    new_query_indx.append(item)
+                else:
+                    new_query_indx.append(item - 1)
+
+            query_indx = new_query_indx
+
         # update queried samples
         self.queried_sample.append(all_queries)
 
@@ -905,7 +970,7 @@ class DataBase:
                 for name in self.metrics_list_names:
                     metrics.write(name + ' ')
                 for j in range(batch):
-                    metrics.write('query_id' + str(j + 1))
+                    metrics.write('query_id' + str(j + 1) + ' ')
                 metrics.write('\n')
 
         # write to file
@@ -914,7 +979,7 @@ class DataBase:
                 metrics.write(str(epoch) + ' ')
                 for value in self.metrics_list_values:
                     metrics.write(str(value) + ' ')
-                for j in range(batch):
+                for j in range(len(self.queried_sample[loop])):
                     metrics.write(str(self.queried_sample[loop][j][1]) + ' ')
                 metrics.write('\n')
 

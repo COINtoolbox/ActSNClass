@@ -16,7 +16,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-__all__ = ['time_domain_loop', 'get_original_training']
+__all__ = ['time_domain_loop']
 
 import numpy as np
 
@@ -27,12 +27,12 @@ def time_domain_loop(days: list,  output_metrics_file: str,
                      path_to_features_dir: str, strategy: str,
                      fname_pattern: list,
                      batch=1, canonical = False,  classifier='RandomForest',
-                     cont=False, features_method='Bazin', output_fname="",
-                     path_to_canonical="",
+                     cont=False, first_loop=20, features_method='Bazin', nclass=2,
+                     Ia_frac=0.5, output_fname="", path_to_canonical="",
                      path_to_full_lc_features="", path_to_train="",
                      path_to_queried="", queryable=True,
-                     query_thre=1.0, save_samples=False, screen=True, 
-                     survey='PLAsTiCC', training='original'):
+                     query_thre=1.0, save_samples=False, sep_files=False,
+                     screen=True, survey='LSST', initial_training='original'):
     """Perform the active learning loop. All results are saved to file.
 
     Parameters
@@ -60,9 +60,21 @@ def time_domain_loop(days: list,  output_metrics_file: str,
         Default is False.
     classifier: str (optional)
         Machine Learning algorithm.
-        Currently only 'RandomForest' is implemented.
+        Currently 'RandomForest', 'GradientBoostedTrees',
+        'KNN', 'MLP', 'SVM' and 'NB' are implemented.
+        Default is 'RandomForest'.
+    first_loop: int (optional)
+        First day of the survey already calculated in previous runs.
+        Only used if initial_training == 'previous'.
+        Default is 20.
     features_method: str (optional)
         Feature extraction method. Currently only 'Bazin' is implemented.
+    Ia_frac: float in [0,1] (optional)
+        Fraction of Ia required in initial training sample.
+        Default is 0.5.
+    nclass: int (optional)
+        Number of classes to consider in the classification
+        Currently only nclass == 2 is implemented.
     path_to_canonical: str (optional)
         Path to canonical sample features files.
         It is only used if "strategy==canonical".
@@ -85,10 +97,13 @@ def time_domain_loop(days: list,  output_metrics_file: str,
         Default is False.
     screen: bool (optional)
         If True, print on screen number of light curves processed.
+    sep_files: bool (optional)
+        If True, consider train and test samples separately read 
+        from independent files. Default is False.
     survey: str (optional)
         Name of survey to be analyzed. Accepts 'DES' or 'LSST'.
-        Default is DES.
-    training: str or int (optional)
+        Default is LSST.
+    initial_training: str or int (optional)
         Choice of initial training sample.
         If 'original': begin from the train sample flagged in the file
         eilf 'previous': read training and queried from previous run.
@@ -110,12 +125,12 @@ def time_domain_loop(days: list,  output_metrics_file: str,
                        screen=screen, survey=survey)
 
     # constructs training, test and queryable
-    data.build_samples(initial_training=training, nclass=nclass,
+    data.build_samples(initial_training=initial_training, nclass=nclass,
                       screen=screen, Ia_frac=Ia_frac,
                       queryable=queryable, save_samples=save_samples, 
                       sep_files=sep_files, survey=survey, 
                       output_fname=output_fname, path_to_train=path_to_train,
-                      path_to_queried=path_to_queried, method=method)
+                      path_to_queried=path_to_queried, method=features_method)
 
     # get list of canonical ids
     if canonical:
@@ -129,17 +144,20 @@ def time_domain_loop(days: list,  output_metrics_file: str,
             print('Processing night: ', night)
 
         # cont loop
-        loop = night - int(days[0])
+        if initial_training == 'previous':
+            loop = night - first_loop
+        else:
+            loop = night - int(days[0])
 
-        # classify
-        data.classify(method=classifier)
+        if data.test_metadata.shape[0] > 0:
+            # classify
+            data.classify(method=classifier)
 
-        # calculate metrics
-        data.evaluate_classification()
-
-        # choose object to query
-        indx = data.make_query(strategy=strategy, batch=batch, queryable=queryable,
-                               query_thre=query_thre)
+            # calculate metrics
+            data.evaluate_classification()
+        
+            indx = data.make_query(strategy=strategy, batch=batch, queryable=queryable,
+                                   query_thre=query_thre)
 
         # update training and test samples
         data.update_samples(indx, loop=loop)
@@ -150,7 +168,7 @@ def time_domain_loop(days: list,  output_metrics_file: str,
 
         # save query sample to file
         data.save_queried_sample(output_queried_file, loop=loop,
-                                 full_sample=False)
+                                     full_sample=False)
 
         # load features for next day
         path_to_features2 = path_to_features_dir + fname_pattern[0] + \
