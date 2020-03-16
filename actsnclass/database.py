@@ -165,7 +165,7 @@ class DataBase:
         self.train_labels = np.array([])
 
     def load_bazin_features(self, path_to_bazin_file: str, screen=False,
-                            survey='DES', queryable=False, sample=None):
+                            survey='DES', sample=None):
         """Load Bazin features from file.
 
         Populate properties: features, feature_names, metadata
@@ -175,9 +175,6 @@ class DataBase:
         ----------
         path_to_bazin_file: str
             Complete path to Bazin features file.
-        queryable: bool (optional)
-            If True take into account queryable flag.
-            Default is False.
         screen: bool (optional)
             If True, print on screen number of light curves processed.
             Default is False.
@@ -202,21 +199,21 @@ class DataBase:
             data = pd.read_csv(path_to_bazin_file, index_col=False)
             if ' ' in data.keys()[0]:
                 data = pd.read_csv(path_to_bazin_file, sep=' ', index_col=False)
-                
+
+        # check if queryable is there
+        if 'queryable' not in data.keys():
+            data['queryable'] = [True for i in range(data.shape[0])]
+            
         # list of features to use
         if survey == 'DES':
             self.features_names = ['gA', 'gB', 'gt0', 'gtfall', 'gtrise', 'rA',
                                    'rB', 'rt0', 'rtfall', 'rtrise', 'iA', 'iB',
                                    'it0', 'itfall', 'itrise', 'zA', 'zB', 'zt0',
                                    'ztfall', 'ztrise']
-            if queryable:
-                self.metadata_names = ['id', 'redshift', 'type', 'code',
-                                       'orig_sample', 'queryable']
-            else:
-                self.metadata_names = ['id', 'redshift', 'type', 'code',
-                                       'orig_sample']
+    
+            self.metadata_names = ['id', 'redshift', 'type', 'code',
+                                   'orig_sample', 'queryable']
                 
-
         elif survey == 'LSST':
             self.features_names = ['uA', 'uB', 'ut0', 'utfall', 'utrise',
                                    'gA', 'gB', 'gt0', 'gtfall', 'gtrise',
@@ -225,12 +222,9 @@ class DataBase:
                                    'zA', 'zB', 'zt0', 'ztfall', 'ztrise',
                                    'YA', 'YB', 'Yt0', 'Ytfall', 'Ytrise']
 
-            if queryable:
-                self.metadata_names = ['objid', 'redshift', 'type', 'code',
-                                       'orig_sample', 'queryable']
-            else:
-                self.metadata_names = ['objid', 'redshift', 'type', 'code', 'orig_sample']
-                
+            self.metadata_names = ['objid', 'redshift', 'type', 'code',
+                                   'orig_sample', 'queryable']
+
         else:
             raise ValueError('Only "DES" and "LSST" filters are implemented at this point!')
 
@@ -243,12 +237,8 @@ class DataBase:
 
                 ntrain = sum(self.metadata['orig_sample'] == 'train')
                 ntest = sum(self.metadata['orig_sample'] == 'test')
-
-                if queryable:
-                    nquery = sum(self.metadata['queryable'])
-                else:
-                    nquery = ntest
-
+                nquery = sum(self.metadata['queryable'])
+                    
                 print('   ... of which')
                 print('       original train: ', ntrain)
                 print('       original test: ', ntest)
