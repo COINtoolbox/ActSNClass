@@ -37,23 +37,39 @@ Full documentation can be found at [readthedocs](https://actsnclass.readthedocs.
 
 # Install
 
-The current version runs in Python-3.7.
+The current version runs in Python-3.7 or higher and it was not tested on Windows.  
 
-We recommend you use anaconda to create a suitable environment.
+We recommend that you work within a [virtual environment](https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/).  
+ 
+You will need to install the `Python` package ``virtualenv``. In MacOS or Linux, do
 
-To set up the enviroment clone this repository, navigate to its location in the 
-terminal and do::  
+    >> python3 -m pip install --user virtualenv
 
-    >> conda env create -f environment.yml
+Navigate to a ``env_directory`` where you will store the new virtual environment and create it  
 
-Once the environment is created, activate it using::
+    >> python3 -m venv ActSNClass  
 
-    >> conda activate ActSNClass
-    
-You will notice a `(ActSNCLass)` to the left of your terminal line.
-This means everything is ok!
+> Make sure you deactivate any ``conda`` environment you might have running before moving forward.   
 
-In order to install this code you should clone this repository and do::  
+Once the environment is set up you can activate it,
 
-    (ActSNClass) >> python setup.py install
+    >> source <env_directory>/bin/activate  
+
+You should see a ``(ActSNClass)`` flag in the extreme left of terminal command line.   
+
+Next, clone this repository in another chosen location:  
+
+    (ActSNClass) >> git clone -b RESSPECT https://github.com/COINtoolbox/ActSNClass.git  
+
+Navigate to the repository folder and do  
+
+    (ActSNClass) >> pip install -r requirements.txt  
+
+
+You can now install this package with:  
+
+    (ActSNClass) >>> python setup.py install  
+
+> You may choose to create your virtual environment within the folder of the repository. If you choose to do this, you must remember to exclude the virtual environment directory from version control using e.g., ``.gitignore``.   
+
 

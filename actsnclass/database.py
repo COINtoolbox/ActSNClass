@@ -673,7 +673,6 @@ class DataBase:
             raise ValueError("Only 'Ia x non-Ia' are implemented! "
                              "\n Feel free to add other options.")
 
-
     def build_samples(self, initial_training='original', nclass=2,
                       screen=False, Ia_frac=0.5,
                       queryable=False, save_samples=False, sep_files=False,
