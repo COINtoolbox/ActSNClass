@@ -277,6 +277,9 @@ class LightCurve(object):
         elif 'objid' in all_photo.keys():
             flag = all_photo['objid'] == snid
             self.id_name = 'objid'
+        elif 'id' in all_photo.keys():
+            flag = all_photo['id'] == snid
+            self.id_name = 'id'
 
         photo = all_photo[flag]
            
