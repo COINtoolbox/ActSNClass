@@ -137,7 +137,7 @@ You can load this data using:
    >>> lc.load_snpcc_lc(path_to_lc)             # read data
 
 
-Fit 1 band:
+Fit 1 light curve:
 -----------
 
 Once the data is properly loaded, the photometry can be recovered by:
@@ -145,6 +145,7 @@ Once the data is properly loaded, the photometry can be recovered by:
 
 .. code-block:: python
    :linenos:
+
    >>> lc.photometry                            # check structure of photometry
              mjd band     flux  fluxerr   SNR
     0    56194.145    g   7.600    4.680   1.62
@@ -152,7 +153,7 @@ Once the data is properly loaded, the photometry can be recovered by:
     ...        ...  ...      ...      ...   ...
     106  56348.008    z  70.690    6.706  10.54
     107  56348.996    g  26.000    5.581   4.66
-    [108 rows x 5 columns]
+
 
 You can now fit each individual filter to the parametric function proposed by
 `Bazin et al., 2009 <https://arxiv.org/abs/0904.1066>`_ in one specific filter.
@@ -181,11 +182,11 @@ It is possible to perform the fit in all filters at once and visualize the resul
    >>> lc.plot_bazin_fit(save=True, show=True,
                          output_file='plots/SN' + str(lc.id) + '.png')   # save to file
 
-.. image:: images/SN848233.png
+.. image:: images/SN7948.png
    :align: center
    :height: 480 px
    :width: 640 px
-   :alt: Bazing fit to light curve. This is an example from SNPCC data.
+   :alt: Bazing fit to light curve. This is an example from RESSPECT perfect simulations.
 
 
 Processing all light curves in the data set
