@@ -6,11 +6,69 @@ Feature Extraction
 The first stage in consists in transforming the raw data into a uniform data matrix which will subsequently be given
 as input to the learning algorithm.
 
-The current implementation of ``actsnclass`` text-like data from the SuperNova Photometric Classification Challenge
+The original implementation of ``actsnclass`` can handle text-like data from the SuperNova Photometric Classification Challenge
 (SNPCC) which is described in `Kessler et al., 2010 <https://arxiv.org/abs/1008.1024>`_.
 
-Processing 1 Light curve
-------------------------
+This version is equiped to input ``RESSPECT`` simulatons made with the `SNANA simulator <http://snana.uchicago.edu/>`_.
+
+
+For RESSPECT: Processing 1 Light curve
+--------------------------------------
+
+In order to fit a single light curve from the RESSPECT simulations you need to have its identification number. This information is stored in the header SNANA files. One of the possible ways to retrieve it is:
+
+.. code-block:: python
+    :linenos:
+
+    >>> import io
+    >>> import pandas as pd
+    >>> import tarfile
+
+    >>> path_to_header = '~/RESSPECT_PERFECT_V2_TRAIN_HEADER.tar.gz'
+
+    # openning '.tar.gz' files requires some juggling ...
+    >>> tar = tarfile.open(path_to_header, 'r:gz')
+    >>> fname = tar.getmembers()[0]
+    >>> content = tar.extractfile(fname).read()
+    >>> header = pd.read_csv(io.BytesIO(content))
+    >>> tar.close()
+
+    # get keywords
+    >>> header.keys()
+    Index(['objid', 'redshift', 'type', 'code', 'sample'], dtype='object')
+
+    # check the first chunks of ids and types
+    >>> header[['objid', 'type']].iloc[:10]
+       objid     type
+    0   3228  Ibc_V19
+    1   2241      IIn
+    2   6770       Ia
+    3    302      IIn
+    4   7948       Ia
+    5   4376   II_V19
+    6    337   II_V19
+    7   6017       Ia
+    8   1695       Ia
+    9   1660   II-NMF
+
+    >> snid = header['objid'].values[4]
+
+
+Now that you have selected on object, you can fit its light curve using :class:`LightCurve` :
+
+.. code-block:: python
+    :linenos:
+
+    >>> from actsnclass.fit_lightcurves import LightCurve
+
+    >>> path_to_lightcurves = '~/RESSPECT_PERFECT_V2_TRAIN_LIGHTCURVES.tar.gz'
+
+    >>> lc = LightCurve()
+    >>> lc.load_resspect_lc(photo_file=path_to_lightcurves, snid=snid)    
+    
+
+For SNPCC: Processing 1 Light curve
+-----------------------------------
 
 The raw data looks like this:
 
