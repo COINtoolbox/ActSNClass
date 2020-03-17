@@ -19,6 +19,7 @@
 import argparse
 
 from actsnclass.fit_lightcurves import fit_snpcc_bazin
+from actsnclass.fit_lightcurves import fit_resspect_bazin
 
 __all__ = ['main']
 
@@ -37,7 +38,7 @@ def main(user_choices):
     -dd: str (optional)
         Path to directory containing raw data.
         Only used for SNPCC simulations.
-    -h: str (optional)
+    -hd: str (optional)
         Path to header file. Only used for RESSPECT simulations.
     -p: str (optional)
         Path to photometry file. Only used for RESSPECT simulations.
@@ -55,7 +56,7 @@ def main(user_choices):
     For RESSPECT:
 
     >>> fit_dataset.py -s RESSPECT -p <path_to_photo_file> 
-             -h <path_to_header_file> -o <output_file> 
+             -hd <path_to_header_file> -o <output_file> 
     """
 
     # raw data directory
@@ -82,7 +83,7 @@ if __name__ == '__main__':
     parser.add_argument('-dd', '--datadir', dest='input',
                         help='Path to directory holding raw data. Only used for SNPCC',
                         required=False, default=' ')
-    parser.add_argument('-h', '--header', dest='header_file', 
+    parser.add_argument('-hd', '--header', dest='header_file', 
                         help='Path to header file. Only used for RESSPECT.',
                         required=False, default=' ')
     parser.add_argument('-o', '--output', dest='output', help='Path to output file.', 
