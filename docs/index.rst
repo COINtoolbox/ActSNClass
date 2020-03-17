@@ -128,7 +128,7 @@ Alternatively, you can also perform the full light curve fit for the entire samp
 
 .. code-block:: bash
 
-    >>> fit_dataset.py -dd <path_to_data_dir> -o <output_file>
+    >>> fit_dataset.py -s RESSPECT -p <path_to_photo_file> -hd <path_to_header_file> -o <output_file> 
 
 Once the data has been processed you can apply the full Active Learning loop according to your needs.
 A detail description on how to use this tool is provided in the :ref:`Learning Loop page <learnloop>`.

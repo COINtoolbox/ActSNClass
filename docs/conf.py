@@ -58,7 +58,7 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store','conf.py']
 # a list of builtin themes.
 #
 html_theme = "sphinx_rtd_theme"
-html_logo = 'images/COIN_logo_very_small.png'
+html_logo = 'images/logo_small.png'
 html_theme_options = {
     'canonical_url': '',
     'analytics_id': 'UA-XXXXXXX-1',  #  Provided by Google in your dashboard

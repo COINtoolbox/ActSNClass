@@ -251,7 +251,7 @@ class LightCurve(object):
         Parameters
         ----------
         photo_file: str
-            Complete path to full sample file.
+            Complete path to light curves file.
         snid: int
             Identification number for the desired light curve.
         """
@@ -301,7 +301,7 @@ class LightCurve(object):
         Parameters
         ----------
         photo_file: str
-            Complete path to full sample file.
+            Complete path to light curve file.
         snid: int
             Identification number for the desired light curve.
         """
@@ -556,7 +556,7 @@ def fit_snpcc_bazin(path_to_data_dir: str, features_file: str):
 
     # add headers to files
     with open(features_file, 'w') as param_file:
-        param_file.write('id redshift type code sample gA gB gt0 gtfall gtrise rA rB rt0 rtfall rtrise iA iB it0 ' +
+        param_file.write('id redshift type code orig_sample gA gB gt0 gtfall gtrise rA rB rt0 rtfall rtrise iA iB it0 ' +
                          'itfall itrise zA zB zt0 ztfall ztrise\n')
 
     for file in lc_list:
@@ -616,7 +616,7 @@ def fit_resspect_bazin(path_photo_file: str, path_header_file:str,
     
     # add headers to files
     with open(output_file, 'w') as param_file:
-        param_file.write('id redshift type code sample uA uB ut0 utfall ' +
+        param_file.write('id redshift type code orig_sample uA uB ut0 utfall ' +
                          'utrise gA gB gt0 gtfall gtrise rA rB rt0 rtfall ' +
                          'rtrise iA iB it0 itfall itrise zA zB zt0 ztfall ' + 
                          'ztrise YA YB Yt0 Ytfall Ytrise\n')
@@ -722,7 +722,7 @@ def fit_plasticc_bazin(path_photo_file: str, path_header_file:str,
 
     # add headers to files
     with open(output_file, 'w') as param_file:
-        param_file.write('id redshift type code sample uA uB ut0 utfall ' +
+        param_file.write('id redshift type code orig_sample uA uB ut0 utfall ' +
                          'utrise gA gB gt0 gtfall gtrise rA rB rt0 rtfall ' +
                          'rtrise iA iB it0 itfall itrise zA zB zt0 ztfall ' + 
                          'ztrise YA YB Yt0 Ytfall Ytrise\n')
