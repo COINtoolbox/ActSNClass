@@ -262,7 +262,7 @@ class LightCurve(object):
             content = tar.extractfile(fname).read()
             all_photo = pd.read_csv(io.BytesIO(content))
             tar.close()
-        elif '.FITS' i photo_file:
+        elif '.FITS' in photo_file:
             df_header, all_photo = read_fits(photo_file, drop_separators=True)
         else:    
             all_photo = pd.read_csv(photo_file, index_col=False)
