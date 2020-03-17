@@ -41,13 +41,21 @@ def main(user_choices):
         Path to header file. Only used for RESSPECT simulations.
     -p: str (optional)
         Path to photometry file. Only used for RESSPECT simulations.
+    -sp: str or None (optional)
+        Sample to be fitted. Options are 'train', 'test' or None.
+        Default is None.
 
     Examples
     --------
 
-    Run directly from the command line.
+    For SNPCC: 
 
-    >>> fit_dataset.py -dd <path_to_data_dir> -o <output_file>
+    >>> fit_dataset.py -s SNPCC -dd <path_to_data_dir> -o <output_file>
+
+    For RESSPECT:
+
+    >>> fit_dataset.py -s RESSPECT -p <path_to_photo_file> 
+             -h <path_to_header_file> -o <output_file> 
     """
 
     # raw data directory
@@ -84,8 +92,12 @@ if __name__ == '__main__':
                         required=False, default=' ')
     parser.add_argument('-s', '--simulation', dest='sim_name', 
                         help='Name of simulation (data set). ' + \
-                             'Options are "SNPC" or "RESSPECT".',
+                             'Options are "SNPCC" or "RESSPECT".',
                         required=True)
+    parser.add_argument('-sp', '--sample', dest='sample',
+                        help='Sample to be fitted. Options are "train", ' + \
+                             ' "test" or None.',
+                        required=False, default=None)
 
     user_input = parser.parse_args()
 

@@ -1,8 +1,8 @@
-=======================
-Welcome to RESSPECT
-=======================
+========================================
+Welcome to ActSNClass - RESSPECT version
+========================================
 -------------------------------------------------
-REcommendation System for SPECTroscopic follow-up
+Recommendation System for Spectroscopic Follow-up
 -------------------------------------------------
 
 This tool allows the constructon of an optimized spectroscopic observation strategy which enables photometric supernova cosmology. It was developed as a collaboration between the LSST DESC and the Cosmostatistics Initiative.
@@ -28,7 +28,7 @@ Navigate to a ``working_directory`` where you will store the new virtual environ
 
 .. code-block:: bash
 
-    >>> python3 -m venv RESSPECT
+    >>> python3 -m venv ActSNClass
 
 .. hint:: Make sure you deactivate any ``conda`` environment you might have running before moving forward. 
 
@@ -38,26 +38,26 @@ Once the environment is set up you can activate it:
 
    >>> source <working_directory>/bin/activate
 
-You should see a ``(RESSPECT)`` flag in the extreme left of terminal command line. 
+You should see a ``(ActSNClass)`` flag in the extreme left of terminal command line. 
 
 Next, clone this repository in another chosen location:
 
 .. code-block:: bash
 
-    (RESSPECT) >>> git clone https://github.com/COINtoolbox/ActSNClass
+    (ActSNClass) >>> git clone https://github.com/COINtoolbox/ActSNClass
 
 Navigate to the repository folder and do
 
 .. code-block:: bash
 
-    (RESSPECT) >>> pip install -r requirements.txt
+    (ActSNClass) >>> pip install -r requirements.txt
 
 
 You can now install this package with:
 
 .. code-block:: bash
 
-    (RESSPECT) >>> python setup.py install
+    (ActSNClass) >>> python setup.py install
 
 .. hint:: You may choose to create your virtual environment within the folder of the repository. If you choose to do this, you must remember to exclude the virtual environment directory from version control using e.g., ``.gitignore``. 
 
@@ -73,7 +73,7 @@ In a your choosing, create the following directory structure:
     ├── plots
     ├── results
 
-The outputs of ``RESSPECT`` will be stored in these directories.
+The outputs of ``ActSNClass`` will be stored in these directories.
 
 In order to set things properly, navigate to the repository you just cloned and move the data directory to your
 chosen working directory and unpack the data.
@@ -87,6 +87,9 @@ chosen working directory and unpack the data.
 This data was provided by Rick Kessler, after the publication of results from the
 `SuperNova Photometric Classification Challenge <https://arxiv.org/abs/1008.1024>`_.
 It allows you to run tests and validate your installation.
+
+
+For the RESSPECT project data can be found in the COIN server. Check the minutes document for the module you are interested in for information about the exact location.
 
 
 Analysis steps
