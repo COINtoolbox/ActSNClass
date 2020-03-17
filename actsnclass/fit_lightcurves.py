@@ -17,6 +17,7 @@
 # limitations under the License.
 
 from actsnclass.bazin import bazin, fit_scipy
+from actsnclass.snana_fits_to_pd import read_fits
 
 import io
 import matplotlib.pylab as plt
@@ -262,7 +263,7 @@ class LightCurve(object):
             content = tar.extractfile(fname).read()
             all_photo = pd.read_csv(io.BytesIO(content))
             tar.close()
-        elif '.FITS' i photo_file:
+        elif '.FITS' in photo_file:
             df_header, all_photo = read_fits(photo_file, drop_separators=True)
         else:    
             all_photo = pd.read_csv(photo_file, index_col=False)
@@ -284,16 +285,34 @@ class LightCurve(object):
             self.id_name = 'id'
 
         photo = all_photo[flag]
-           
+
         self.dataset_name = 'RESSPECT'                      # name of data set
-        self.filters = ['u', 'g', 'r', 'i', 'z', 'Y']       # list of filters
+        self.filters = ['u', 'g', 'r', 'i', 'z', 'Y']       # list of filters  
+        
+        # check filter name
+        if 'b' in str(photo['FLT'].values[0]):
+            band = []
+            for i in range(photo.shape[0]):
+                for f in self.filters:
+                    if "b'" + f + " '" == str(photo['FLT'].values[i]):
+                        band.append(f)
+            photo.insert(1, 'band', band, True)
+                        
         self.id = snid 
         self.photometry = {}
         self.photometry['mjd'] = photo['MJD'].values
-        self.photometry['band'] = photo['FLT'].values
+        self.photometry['band'] = photo['band'].values
         self.photometry['flux'] = photo['FLUXCAL'].values
         self.photometry['fluxerr'] = photo['FLUXCALERR'].values
-        self.photometry['SNR'] = photo['SNR'].values
+
+        if 'SNR' in photo.keys():
+            self.photometry['SNR'] = photo['SNR'].values
+        else:
+            signal = self.photometry['flux']
+            noise = self.photometry['fluxerr']
+            self.photometry['SNR'] = \
+                np.array([signal[i]/noise[i] for i in range(signal.shape[0])])
+            
         self.photometry = pd.DataFrame(self.photometry)
         
     def load_plasticc_lc(self, photo_file: str, snid: int):
@@ -656,13 +675,7 @@ def fit_resspect_bazin(path_photo_file: str, path_header_file:str,
         lc = LightCurve()                       
         lc.load_resspect_lc(path_photo_file, snid)
 
-        # check filter name
-        if 'b' in lc.photometry['band'].iloc[0]:
-            for i in range(lc.photometry['band'].values.shape[0]):
-                for f in lc.filters:
-                    if "b'" + f + " '" == str(lc.photometry['band'].values[i]):
-                        lc.photometry['band'].iloc[i] = f
-                
+        # fit all bands                
         lc.fit_bazin_all()
 
         # get model name 
