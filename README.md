@@ -22,6 +22,7 @@ Full documentation can be found at [readthedocs](https://actsnclass.readthedocs.
 
  - Python>=3.7  
  - argparse>=1.1  
+ - astropy>=4.0  
  - matplotlib>=3.1.1  
  - numpy>=1.17.0  
  - pandas>=0.25.0  

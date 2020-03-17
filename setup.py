@@ -32,16 +32,18 @@ setuptools.setup(
                 'actsnclass/metrics',
                 'actsnclass/plot_results',
                 'actsnclass/query_strategies',
-                'actsnclass/time_domain'],
+                'actsnclass/snana_fits_to_pd',
+                'actsnclass/time_domain',
+                'actsnclass/time_domain_PLAsTiC'],
     scripts=['actsnclass/scripts/build_canonical.py',
              'actsnclass/scripts/build_time_domain.py',
              'actsnclass/scripts/fit_dataset.py',
              'actsnclass/scripts/make_metrics_plots.py',
              'actsnclass/scripts/run_loop.py',
              'actsnclass/scripts/run_time_domain.py'],
-    url='https://github.com/COINtoolbox/ActSNClass',
+    url='https://github.com/COINtoolbox/ActSNClass/tree/RESSPECT',
     license='GNU3',
-    author='Emille E. O.Ishida',
-    author_email='emille@cosmostatistics-initiative.org',
-    description='Active Learning for SN photometric classification'
+    author='The RESSPECT team',
+    author_email='contact@cosmostatistics-initiative.org',
+    description='ActSNClass - Recommendation System for Spectroscopic Follow-up'
 )
