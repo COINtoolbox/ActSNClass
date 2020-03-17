@@ -262,6 +262,8 @@ class LightCurve(object):
             content = tar.extractfile(fname).read()
             all_photo = pd.read_csv(io.BytesIO(content))
             tar.close()
+        elif '.FITS' i photo_file:
+            df_header, all_photo = read_fits(photo_file, drop_separators=True)
         else:    
             all_photo = pd.read_csv(photo_file, index_col=False)
 
@@ -283,7 +285,7 @@ class LightCurve(object):
 
         photo = all_photo[flag]
            
-        self.dataset_name = 'RESSPECT'              # name of data set
+        self.dataset_name = 'RESSPECT'                      # name of data set
         self.filters = ['u', 'g', 'r', 'i', 'z', 'Y']       # list of filters
         self.id = snid 
         self.photometry = {}
@@ -608,7 +610,8 @@ def fit_resspect_bazin(path_photo_file: str, path_header_file:str,
         content = tar.extractfile(fname).read()
         header = pd.read_csv(io.BytesIO(content))
         tar.close()
-        
+    elif 'FITS' in path_header_file:
+        header, photo = read_fits(path_photo_file, drop_separators=True)    
     else:    
         header = pd.read_csv(path_header_file, index_col=False)
         if ' ' in header.keys()[0]:

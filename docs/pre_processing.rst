@@ -12,8 +12,11 @@ The original implementation of ``actsnclass`` can handle text-like data from the
 This version is equiped to input ``RESSPECT`` simulatons made with the `SNANA simulator <http://snana.uchicago.edu/>`_.
 
 
-For RESSPECT: Processing 1 Light curve
---------------------------------------
+Load 1 light curve: 
+-------------------
+
+For RESSPECT
+^^^^^^^^^^^^
 
 In order to fit a single light curve from the RESSPECT simulations you need to have its identification number. This information is stored in the header SNANA files. One of the possible ways to retrieve it is:
 
@@ -49,12 +52,12 @@ In order to fit a single light curve from the RESSPECT simulations you need to h
     6    337   II_V19
     7   6017       Ia
     8   1695       Ia
-    9   1660   II-NMF
+    9   1660   II-NMF  
 
     >> snid = header['objid'].values[4]
 
 
-Now that you have selected on object, you can fit its light curve using :class:`LightCurve` :
+Now that you have selected on object, you can fit its light curve using the `LightCurve class <https://actsnclass.readthedocs.io/en/resspect/api/actsnclass.LightCurve.html#actsnclass.LightCurve>`_ :
 
 .. code-block:: python
     :linenos:
@@ -64,11 +67,27 @@ Now that you have selected on object, you can fit its light curve using :class:`
     >>> path_to_lightcurves = '~/RESSPECT_PERFECT_V2_TRAIN_LIGHTCURVES.tar.gz'
 
     >>> lc = LightCurve()
-    >>> lc.load_resspect_lc(photo_file=path_to_lightcurves, snid=snid)    
+    >>> lc.load_resspect_lc(photo_file=path_to_lightcurves, snid=snid)
+
+    # check light curve format
+    >>> lc.photometry
+              mjd band      flux   fluxerr        SNR
+    0     53058.0    u  0.138225  0.142327   0.971179
+    1     53058.0    g -0.064363  0.141841  -0.453768 
+    ...       ...  ...       ...       ...        ...
+    1054  53440.0    z  1.173433  0.145918   8.041707
+    1055  53440.0    Y  0.980438  0.145256   6.749742
+
+[1056 rows x 5 columns]
+
+
+For PLAsTiCC:
+^^^^^^^^^^^^^
+
     
 
-For SNPCC: Processing 1 Light curve
------------------------------------
+For SNPCC:
+^^^^^^^^^^
 
 The raw data looks like this:
 
@@ -130,7 +149,7 @@ It is possible to perform the fit in all filters at once and visualize the resul
 
 
 Processing all light curves in the data set
--------------------------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 There are 2 way to perform the Bazin fits for the entire SNPCC data set. Using a python interpreter,
 

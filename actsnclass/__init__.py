@@ -25,6 +25,7 @@ from .learn_loop import *
 from .metrics import *
 from .query_strategies import *
 from .plot_results import *
+from .snana_fits_to_pd import *
 from .scripts.build_canonical import main as build_canonical
 from .scripts.build_time_domain import main as build_time_domain
 from .scripts.fit_dataset import main as fit_dataset
@@ -60,8 +61,10 @@ __all__ = ['accuracy',
            'make_metrics_plots',
            'plot_snpcc_train_canonical',
            'purity',
+           'save_fits',
            'random_forest',           
            'random_sampling',
+           'read_fits',
            'run_loop',
            'run_time_domain',
            'SNPCCPhotometry',
