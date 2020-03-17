@@ -57,7 +57,7 @@ You can now install this package with:
 
 .. code-block:: bash
 
-    (ActSNClass) >>> python setup.py install
+    (ActSNClass) >>> python setup.py develop
 
 .. hint:: You may choose to create your virtual environment within the folder of the repository. If you choose to do this, you must remember to exclude the virtual environment directory from version control using e.g., ``.gitignore``. 
 
