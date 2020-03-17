@@ -30,10 +30,17 @@ def main(user_choices):
 
     Parameters
     ----------
-    -dd: str
-        Path to directory containing raw data.
     -o: str
         Path to output feature file.
+    -s: str
+        Simulation name. Options are 'SNPCC' or 'RESSPECT'.
+    -dd: str (optional)
+        Path to directory containing raw data.
+        Only used for SNPCC simulations.
+    -h: str (optional)
+        Path to header file. Only used for RESSPECT simulations.
+    -p: str (optional)
+        Path to photometry file. Only used for RESSPECT simulations.
 
     Examples
     --------
@@ -47,8 +54,14 @@ def main(user_choices):
     data_dir = user_choices.input
     features_file = user_choices.output
 
-    # fit the entire sample
-    fit_snpcc_bazin(path_to_data_dir=data_dir, features_file=features_file)
+    if user_choices.sim_name == 'SNPCC':
+        # fit the entire sample
+        fit_snpcc_bazin(path_to_data_dir=data_dir, features_file=features_file)
+    
+    elif user_choices.sim_name == 'RESSPECT':
+        fit_resspect_bazin(path_photo_file=user_choices.photo_file,
+                           path_header_file=user_choices.header_file,
+                           output_file=features_file, sample=user_choices.sample)
 
     return None
 
@@ -57,9 +70,22 @@ if __name__ == '__main__':
 
     # get input directory and output file name from user
     parser = argparse.ArgumentParser(description='actsnclass - Fit Light curves module')
+   
     parser.add_argument('-dd', '--datadir', dest='input',
-                        help='Path to directory holding raw data.', required=True)
-    parser.add_argument('-o', '--output', dest='output', help='Path to output file.', required=True)
+                        help='Path to directory holding raw data. Only used for SNPCC',
+                        required=False, default=' ')
+    parser.add_argument('-h', '--header', dest='header_file', 
+                        help='Path to header file. Only used for RESSPECT.',
+                        required=False, default=' ')
+    parser.add_argument('-o', '--output', dest='output', help='Path to output file.', 
+                        required=True)
+    parser.add_argument('-p', '--photo', dest='photo_file',
+                        help='Path to photometry file. Only used for RESSPECT.',
+                        required=False, default=' ')
+    parser.add_argument('-s', '--simulation', dest='sim_name', 
+                        help='Name of simulation (data set). ' + \
+                             'Options are "SNPC" or "RESSPECT".',
+                        required=True)
 
     user_input = parser.parse_args()
 
