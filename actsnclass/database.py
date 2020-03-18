@@ -830,7 +830,7 @@ class DataBase:
         photo_Ia_ids = self.test_metadata[id_name].values[photo_flag]
 
         if to_file:
-            np.savetext(filename, photo_Ia_ids.astype(int), fmt='%i')
+            np.savetxt(filename, photo_Ia_ids.astype(int), fmt='%i')
         else:
             self.photo_Ia_list = photo_Ia_ids     
 

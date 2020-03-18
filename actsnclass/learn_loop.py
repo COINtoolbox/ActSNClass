@@ -26,7 +26,7 @@ def learn_loop(nloops: int, strategy: str, path_to_features: str,
                features_method='Bazin', classifier='RandomForest',
                training='original', batch=1, screen=True, survey='DES',
                nclass=2, photo_class_thr=0.5, photo_ids=False, photo_ids_tofile = False,
-               photo_ids_file=' ', **kwargs):
+               photo_ids_froot=' ', **kwargs):
     """Perform the active learning loop. All results are saved to file.
 
     Parameters
@@ -65,8 +65,9 @@ def learn_loop(nloops: int, strategy: str, path_to_features: str,
         Get photometrically classified ids. Default is False.
     photo_ids_to_file: bool (optional)
         If True, save photometric ids to file. Default is False.
-    photo_ids_file: str (optional)
-        Output file to save photo ids. Only used if photo_ids is True.
+    photo_ids_froot: str (optional)
+        Output root of file name to store photo ids. 
+        Only used if photo_ids is True.
     screen: bool (optional)
         If True, print on screen number of light curves processed.
     survey: str (optional)
@@ -112,8 +113,9 @@ def learn_loop(nloops: int, strategy: str, path_to_features: str,
 
         # save photo ids
         if photo_ids and photo_ids_tofile:
+            fname = photo_ids_froot + '_' + str(loop) + '.dat'
             data.output_photo_Ia(photo_class_thr, to_file=photo_ids_tofile, 
-                                 filename=photo_ids_file)
+                                 filename=fname)
         elif photo_ids:
             data.output_photo_Ia(photo_class_thr, to_file=False)
 
