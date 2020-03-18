@@ -26,7 +26,8 @@ import os
 import pandas as pd
 import tarfile
 
-__all__ = ['LightCurve', 'fit_snpcc_bazin', 'fit_resspect_bazin', 'fit_plasticc_bazin']
+__all__ = ['LightCurve', 'fit_snpcc_bazin', 'fit_resspect_bazin',
+           'fit_plasticc_bazin']
 
 
 class LightCurve(object):
@@ -81,52 +82,34 @@ class LightCurve(object):
 
     Examples
     --------
+
+    ##### for RESSPECT and PLAsTiCC light curves it is necessary to
+    ##### input the object identification for dealing with 1 light curve
+
+    >>> import io
+    >>> import pandas as pd
+    >>> import tarfile
+
     >>> from actsnclass import LightCurve
 
-    ##### for SNPCC light curves
-    define path to light curve file
+    # path to header file
+    >>> path_to_header = '~/RESSPECT_PERFECT_V2_TRAIN_HEADER.tar.gz'
 
-    >>> path_to_lc = 'data/SIMGEN_PUBLIC_DES/DES_SN431546.DAT'
+    # openning '.tar.gz' files requires some juggling ...
+    >>> tar = tarfile.open(path_to_header, 'r:gz')
+    >>> fname = tar.getmembers()[0]
+    >>> content = tar.extractfile(fname).read()
+    >>> header = pd.read_csv(io.BytesIO(content))
+    >>> tar.close()
+
+    # choose one object
+    >>> snid = header['objid'].values[4]
+
+    # once you have the identification you can use this class
+    >>> path_to_lightcurves = '~/RESSPECT_PERFECT_V2_TRAIN_LIGHTCURVES.tar.gz'
 
     >>> lc = LightCurve()                        # create light curve instance
-    >>> lc.load_snpcc_lc(path_to_lc)             # read data
-    >>> lc.photometry                            # display photometry
-              mjd band     flux  fluxerr   SNR
-    0   56207.188    g   9.6560    4.369  2.21
-    1   56207.195    r   6.3370    3.461  1.83
-    ...        ...  ...      ...      ...   ...
-    96  56336.043    r  14.4300    3.098  4.66
-    97  56336.055    i  18.9500    5.029  3.77
-    [98 rows x 5 columns]
-
-    >>> lc.fit_bazin_all()                  # perform Bazin fit in all filters
-    >>> lc.bazin_features                   # display Bazin parameters
-    [62.0677260096896, -7.959383808822104, 47.37511467606875, 37.4919069623379,
-    ... ... ...
-    206.65806244385922, -4.777010246622081]
-
-    plot light curve fit
-
-    >>> lc.plot_bazin_fit(output_file=str(lc.id) + '.png')
-
-    for fitting the entire sample...
-
-    >>> path_to_data_dir = 'data/SIMGEN_PUBLIC_DES/'     # raw data directory
-    >>> output_file = 'results/Bazin.dat'       # output file
-    >>> fit_snpcc_bazin(path_to_data_dir=path_to_data_dir, features_file=output_file)
-
-    a file with all Bazin fits for this data set was produced.
-
-    ##### for RESSPECT light curves 
-    >>> data_dir = '../data/light_curves/'           # path to data directory
-    >>> header_file = 'RESSPECT_PERFECT_PHOTO_TRAIN.csv'
-    >>> photo_file = 'RESSPECT_PERFECT_HEADER_TRAIN.csv'
-
-    >>> header = pd.read_csv(data_dir + header_file)
-    >>> snid = header['SNID'].values[0]
-
-    >>> lc = LightCurve()                       
-    >>> lc.load_resspect_lc(data_dir + photo_file, snid) 
+    >>> lc.load_snpcc_lc(path_to_lightcurves)    # read data
     >>> lc.photometry
              mjd band       flux   fluxerr         SNR
     0    53214.0    u   0.165249  0.142422    1.160276
@@ -144,7 +127,8 @@ class LightCurve(object):
     for fitting the entire sample ...
 
     >>> output_file = 'RESSPECT_PERFECT_TRAIN.DAT'
-    >>> fit_resspect_bazin(photo_file, header_file, output_file, sample='train')
+    >>> fit_resspect_bazin(path_to_lightcurves, path_to_header,
+                           output_file, sample='train')
     """
 
     def __init__(self):
@@ -558,7 +542,7 @@ class LightCurve(object):
 
 
 def fit_snpcc_bazin(path_to_data_dir: str, features_file: str):
-    """Fit Bazin functions to all filters in training and test samples.
+    """Perform Bazin fit to all objects in the SNPCC data.
 
     Parameters
     ----------
@@ -606,7 +590,7 @@ def fit_snpcc_bazin(path_to_data_dir: str, features_file: str):
 
 def fit_resspect_bazin(path_photo_file: str, path_header_file:str,
                        output_file: str, sample=None):
-    """Fit Bazin functions to all filters.
+    """Perform Bazin fit to all objects in a given RESSPECT data file.
 
     Parameters
     ----------
@@ -702,7 +686,7 @@ def fit_resspect_bazin(path_photo_file: str, path_header_file:str,
 
 def fit_plasticc_bazin(path_photo_file: str, path_header_file:str,
                        output_file: str, sample=None):
-    """Fit Bazin functions to all filters.
+    """Perform Bazin fit to all objects in a given PLAsTiCC data file.
 
     Parameters
     ----------

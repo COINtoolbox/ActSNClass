@@ -188,6 +188,8 @@ It is possible to perform the fit in all filters at once and visualize the resul
    :width: 640 px
    :alt: Bazing fit to light curve. This is an example from RESSPECT perfect simulations.
 
+   Example of light curve from RESSPECT perfect simulations.
+
 
 Processing all light curves in the data set
 -------------------------------------------
