@@ -84,6 +84,36 @@ Now that you have selected on object, you can fit its light curve using the `Lig
 For PLAsTiCC:
 ^^^^^^^^^^^^^
 
+Similar to the case presented below, reading only 1 light curve from PLAsTiCC requires an object identifier. This can be done by:
+
+.. code-block:: python
+    :linenos:
+
+    >>> from actsnclass.fit_lightcurves import LightCurve
+    >>> import pandas as pd
+
+    >>> path_to_metadata = '~/plasticc_train_metadata.csv.gz'
+    >>> path_to_lightcurves = '~/plasticc_train_lightcurves.csv.gz'
+    
+    # read metadata for the entire sample
+    >>> metadata = pd.read_csv(path_to_metadata)
+
+    # check keys
+    metadata.keys()
+    Index(['object_id', 'ra', 'decl', 'ddf_bool', 'hostgal_specz',
+           'hostgal_photoz', 'hostgal_photoz_err', 'distmod', 'mwebv', 'target',
+           'true_target', 'true_submodel', 'true_z', 'true_distmod',
+           'true_lensdmu', 'true_vpec', 'true_rv', 'true_av', 'true_peakmjd',
+           'libid_cadence', 'tflux_u', 'tflux_g', 'tflux_r', 'tflux_i', 'tflux_z',
+           'tflux_y'],
+         dtype='object')
+    
+    # choose 1 object
+    snid = metadata['object_id'].values[0]
+
+    # create light curve object and load data
+    lc = LightCurve()
+    lc.load_plasticc_lc(photo_file=path_to_lightcurves, snid=snid)
     
 
 For SNPCC:
@@ -105,6 +135,17 @@ You can load this data using:
 
    >>> lc = LightCurve()                        # create light curve instance
    >>> lc.load_snpcc_lc(path_to_lc)             # read data
+
+
+Fit 1 light curve:
+-----------
+
+Once the data is properly loaded, the photometry can be recovered by:
+
+
+.. code-block:: python
+   :linenos:
+
    >>> lc.photometry                            # check structure of photometry
              mjd band     flux  fluxerr   SNR
     0    56194.145    g   7.600    4.680   1.62
@@ -112,9 +153,9 @@ You can load this data using:
     ...        ...  ...      ...      ...   ...
     106  56348.008    z  70.690    6.706  10.54
     107  56348.996    g  26.000    5.581   4.66
-    [108 rows x 5 columns]
 
-Once the data is loaded, you can fit each individual filter to the parametric function proposed by
+
+You can now fit each individual filter to the parametric function proposed by
 `Bazin et al., 2009 <https://arxiv.org/abs/0904.1066>`_ in one specific filter.
 
 .. code-block:: python
@@ -141,15 +182,17 @@ It is possible to perform the fit in all filters at once and visualize the resul
    >>> lc.plot_bazin_fit(save=True, show=True,
                          output_file='plots/SN' + str(lc.id) + '.png')   # save to file
 
-.. image:: images/SN848233.png
+.. image:: images/SN7948.png
    :align: center
    :height: 480 px
    :width: 640 px
-   :alt: Bazing fit to light curve.
+   :alt: Bazing fit to light curve. This is an example from RESSPECT perfect simulations.
+
+   Example of light curve from RESSPECT perfect simulations.
 
 
 Processing all light curves in the data set
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+-------------------------------------------
 
 There are 2 way to perform the Bazin fits for the entire SNPCC data set. Using a python interpreter,
 
@@ -168,4 +211,9 @@ The same result can be achieved using the command line:
 
 .. code-block:: bash
 
-   >> fit_dataset.py -dd <path_to_data_dir> -o <output_file>
+   # for SNPCC
+    >>> fit_dataset.py -s SNPCC -dd <path_to_data_dir> -o <output_file>
+
+    # for RESSPECT or PLAsTiCC
+    >>> fit_dataset.py -s <dataset_name> -p <path_to_photo_file> 
+             -hd <path_to_header_file> -o <output_file> 

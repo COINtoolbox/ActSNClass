@@ -20,6 +20,7 @@ import argparse
 
 from actsnclass.fit_lightcurves import fit_snpcc_bazin
 from actsnclass.fit_lightcurves import fit_resspect_bazin
+from actsnclass.fit_lightcurves import fit_plasticc_bazin
 
 __all__ = ['main']
 
@@ -34,7 +35,7 @@ def main(user_choices):
     -o: str
         Path to output feature file.
     -s: str
-        Simulation name. Options are 'SNPCC' or 'RESSPECT'.
+        Simulation name. Options are 'SNPCC', 'RESSPECT' or 'PLAsTiCC'.
     -dd: str (optional)
         Path to directory containing raw data.
         Only used for SNPCC simulations.
@@ -53,9 +54,9 @@ def main(user_choices):
 
     >>> fit_dataset.py -s SNPCC -dd <path_to_data_dir> -o <output_file>
 
-    For RESSPECT:
+    For RESSPECT or PLAsTiCC:
 
-    >>> fit_dataset.py -s RESSPECT -p <path_to_photo_file> 
+    >>> fit_dataset.py -s <dataset_name> -p <path_to_photo_file> 
              -hd <path_to_header_file> -o <output_file> 
     """
 
@@ -71,6 +72,12 @@ def main(user_choices):
         fit_resspect_bazin(path_photo_file=user_choices.photo_file,
                            path_header_file=user_choices.header_file,
                            output_file=features_file, sample=user_choices.sample)
+
+    elif user_choices.sim_name == 'PLAsTiCC':
+        fit_plasticc_bazin(path_photo_file=user_choices.photo_file, 
+                           path_header_file=user_choices.header_file,
+                           output_file=features_file,
+                           sample=user_choices.sample)
 
     return None
 
@@ -93,7 +100,7 @@ if __name__ == '__main__':
                         required=False, default=' ')
     parser.add_argument('-s', '--simulation', dest='sim_name', 
                         help='Name of simulation (data set). ' + \
-                             'Options are "SNPCC" or "RESSPECT".',
+                             'Options are "SNPCC", "RESSPECT" or "PLAsTiCC".',
                         required=True)
     parser.add_argument('-sp', '--sample', dest='sample',
                         help='Sample to be fitted. Options are "train", ' + \
