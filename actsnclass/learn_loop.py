@@ -25,7 +25,7 @@ def learn_loop(nloops: int, strategy: str, path_to_features: str,
                output_metrics_file: str, output_queried_file: str,
                features_method='Bazin', classifier='RandomForest',
                training='original', batch=1, screen=True, survey='DES',
-               nclass=2, photo_ids=False, photo_ids_tofile = False,
+               nclass=2, photo_class_thr=0.5, photo_ids=False, photo_ids_tofile = False,
                photo_ids_file=' ', **kwargs):
     """Perform the active learning loop. All results are saved to file.
 
@@ -58,6 +58,9 @@ def learn_loop(nloops: int, strategy: str, path_to_features: str,
         Default is 'original'.
     batch: int (optional)
         Size of batch to be queried in each loop. Default is 1.
+    photo_class_thr: float (optional)
+        Threshold for photometric classification. Default is 0.5.
+        Only used if photo_ids is True.
     photo_ids: bool (optional)
         Get photometrically classified ids. Default is False.
     photo_ids_to_file: bool (optional)
