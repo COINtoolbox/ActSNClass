@@ -25,7 +25,8 @@ def learn_loop(nloops: int, strategy: str, path_to_features: str,
                output_metrics_file: str, output_queried_file: str,
                features_method='Bazin', classifier='RandomForest',
                training='original', batch=1, screen=True, survey='DES',
-               nclass=2, **kwargs):
+               nclass=2, photo_ids=False, photo_ids_tofile = False,
+               photo_ids_file=' ', **kwargs):
     """Perform the active learning loop. All results are saved to file.
 
     Parameters
@@ -57,6 +58,12 @@ def learn_loop(nloops: int, strategy: str, path_to_features: str,
         Default is 'original'.
     batch: int (optional)
         Size of batch to be queried in each loop. Default is 1.
+    photo_ids: bool (optional)
+        Get photometrically classified ids. Default is False.
+    photo_ids_to_file: bool (optional)
+        If True, save photometric ids to file. Default is False.
+    photo_ids_file: str (optional)
+        Output file to save photo ids. Only used if photo_ids is True.
     screen: bool (optional)
         If True, print on screen number of light curves processed.
     survey: str (optional)
@@ -99,6 +106,13 @@ def learn_loop(nloops: int, strategy: str, path_to_features: str,
 
         # calculate metrics
         data.evaluate_classification()
+
+        # save photo ids
+        if photo_ids and photo_ids_tofile:
+            data.output_photo_Ia(photo_class_thr, to_file=photo_ids_tofile, 
+                                 filename=photo_ids_file)
+        elif photo_ids:
+            data.output_photo_Ia(photo_class_thr, to_file=False)
 
         # choose object to query
         indx = data.make_query(strategy=strategy, batch=batch)
