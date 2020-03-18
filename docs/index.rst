@@ -95,11 +95,13 @@ For the RESSPECT project data can be found in the COIN server. Check the minutes
 Analysis steps
 ==============
 
-.. image:: images/active_learning_loop.png
+.. figure:: images/active_learning_loop.png
    :align: right
    :height: 255.6px
    :width: 225 px
    :alt: Active learning loop
+
+   Figure by Bruno Quint.
 
 The active learning pipeline is composed of 4 important steps:
 
