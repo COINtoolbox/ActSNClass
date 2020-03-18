@@ -194,7 +194,7 @@ class DataBase:
             content = tar.extractfile(fname).read()
             data = pd.read_csv(io.BytesIO(content))
             tar.close()
-            
+
         else:
             data = pd.read_csv(path_to_bazin_file, index_col=False)
             if ' ' in data.keys()[0]:
@@ -203,17 +203,17 @@ class DataBase:
         # check if queryable is there
         if 'queryable' not in data.keys():
             data['queryable'] = [True for i in range(data.shape[0])]
-            
+
         # list of features to use
         if survey == 'DES':
             self.features_names = ['gA', 'gB', 'gt0', 'gtfall', 'gtrise', 'rA',
                                    'rB', 'rt0', 'rtfall', 'rtrise', 'iA', 'iB',
                                    'it0', 'itfall', 'itrise', 'zA', 'zB', 'zt0',
                                    'ztfall', 'ztrise']
-    
+
             self.metadata_names = ['id', 'redshift', 'type', 'code',
                                    'orig_sample', 'queryable']
-                
+
         elif survey == 'LSST':
             self.features_names = ['uA', 'uB', 'ut0', 'utfall', 'utrise',
                                    'gA', 'gB', 'gt0', 'gtfall', 'gtrise',
@@ -238,7 +238,7 @@ class DataBase:
                 ntrain = sum(self.metadata['orig_sample'] == 'train')
                 ntest = sum(self.metadata['orig_sample'] == 'test')
                 nquery = sum(self.metadata['queryable'])
-                    
+
                 print('   ... of which')
                 print('       original train: ', ntrain)
                 print('       original test: ', ntest)
@@ -257,7 +257,7 @@ class DataBase:
 
             if screen:
                 print('Loaded ', self.test_metadata.shape[0], ' ' + sample +  ' samples!')
-            
+
 
     def load_photometry_features(self, path_to_photometry_file: str,
                                  screen=False, sample=None):
@@ -292,7 +292,7 @@ class DataBase:
             data = pd.read_csv(path_to_photometry_file, index_col=False)
             if ' ' in data.keys()[0]:
                 data = pd.read_csv(path_to_photometry_file, sep=' ', index_col=False)
-        
+
         # list of features to use
         self.features_names = data.keys()[5:]
 
@@ -300,7 +300,7 @@ class DataBase:
             id_name = 'objid'
         elif 'id' in data.keys():
             id_name = 'id'
-            
+
         self.metadata_names = [id_name, 'redshift', 'type', 'code', 'orig_sample']
 
         if sample == None:
@@ -323,7 +323,7 @@ class DataBase:
 
             if screen:
                 print('Loaded ', self.test_metadata.shape[0], ' samples!')
-        
+
 
     def load_features(self, path_to_file: str, method='Bazin', screen=False,
                       survey='DES', sample=None ):
@@ -366,7 +366,7 @@ class DataBase:
 
     def load_plasticc_mjd(self, path_to_data_dir):
         """Return all MJDs from 1 file from PLAsTiCC simulations.
-    
+
         Parameters
         ----------
         path_to_data_dir: str
@@ -441,7 +441,7 @@ class DataBase:
         screen: bool (optional)
             If True display the dimensions of training and test samples.
         sep_files: bool (optional)
-            If True, consider train and test samples separately read 
+            If True, consider train and test samples separately read
             from independent files.
         """
 
@@ -451,7 +451,7 @@ class DataBase:
         if sep_files:
             # get samples labels in a separate object
             train_labels = self.train_metadata['type'].values == 'Ia'
-            self.train_labels = train_labels.astype(int) 
+            self.train_labels = train_labels.astype(int)
 
             test_labels = self.test_metadata['type'].values == 'Ia'
             self.test_labels = test_labels.astype(int)
@@ -472,7 +472,7 @@ class DataBase:
             train_data = self.features[train_flag]
             self.train_features = train_data.values
             self.train_metadata = self.metadata[train_flag]
-  
+
             test_flag = self.metadata['orig_sample'] == 'test'
 
             test_data = self.features[test_flag]
@@ -498,7 +498,7 @@ class DataBase:
     def build_random_training(self, initial_training: int, nclass=2, screen=False,
                               Ia_frac=0.5, queryable=True, sep_files=False):
         """Construct initial random training and corresponding test sample.
- 
+
         Populate properties: train_features, train_header, test_features,
         test_header, queryable_ids (if flag available), train_labels and
         test_labels.
@@ -520,8 +520,8 @@ class DataBase:
             Fraction of Ia required in initial training sample.
             Default is 0.5.
         sep_files: bool (optional)
-            If True, consider train and test samples separately read 
-            from independent files.        
+            If True, consider train and test samples separately read
+            from independent files.
         """
 
         # object if keyword
@@ -531,11 +531,11 @@ class DataBase:
             # build complete metadata object
             self.metadata = pd.concat([self.train_metadata, self.test_metadata])
             self.features = np.concatenate((self.train_features, self.test_features))
-            
+
         # identify Ia
         data_copy = self.metadata.copy()
         ia_flag = data_copy['type'] == 'Ia'
-            
+
         # separate per class
         Ia_data = data_copy[ia_flag]
         nonIa_data = data_copy[~ia_flag]
@@ -586,8 +586,8 @@ class DataBase:
         if sum(test_train_flag) > 0:
             raise ValueError('There are repeated ids!!')
 
-    def build_previous_runs(self, path_to_train: str, 
-                            path_to_queried: str, nclass=2, 
+    def build_previous_runs(self, path_to_train: str,
+                            path_to_queried: str, nclass=2,
                             sep_files=False, queryable=False):
         """Build train, test and queryable samples from previous runs.
 
@@ -608,17 +608,17 @@ class DataBase:
             If True build also queryable sample for time domain analysis.
             Default is False.
         sep_files: bool (optional)
-            If True, consider train and test samples separately read 
+            If True, consider train and test samples separately read
             from independent files. Default is False.
         """
 
         # read initial training data from a previous run
         train_previous = pd.read_csv(path_to_train, index_col=False, sep=' ')
-        
+
         # read all queried objects in previous loops
         queried_previous = pd.read_csv(path_to_queried, index_col=False,
                                        sep=' ')
-        
+
         for i in range(queried_previous.shape[0]):
             self.queried_sample.append(queried_previous.iloc[i].values[:-1])
 
@@ -636,7 +636,7 @@ class DataBase:
 
         # make a copy of the metadata to avoid warnings
         data_copy = self.metadata.copy()
-        
+
         # identify training sample
         train_flag = np.array([data_copy[id_name].values[i] in train_ids
                                for i in range(data_copy.shape[0])])
@@ -711,25 +711,25 @@ class DataBase:
             only accepts survey='DES' or 'LSST'.
             Default is 'DES'.
         sep_files: bool (optional)
-            If True, consider train and test samples separately read 
+            If True, consider train and test samples separately read
             from independent files. Default is False.
         output_fname: str (optional)
             Complete path to output file where initial training will be stored.
             Only used if save_samples == True.
-        """        
-            
+        """
+
         if initial_training == 'original':
-            self.build_orig_samples(nclass=nclass, screen=screen, 
+            self.build_orig_samples(nclass=nclass, screen=screen,
                                     queryable=queryable, sep_files=sep_files)
-       
+
         elif initial_training == 'previous':
-            self.build_previous_runs(path_to_train=path_to_train, 
+            self.build_previous_runs(path_to_train=path_to_train,
                                     path_to_queried=path_to_queried,
-                                    sep_files=sep_files, nclass=nclass)          
+                                    sep_files=sep_files, nclass=nclass)
 
         elif isinstance(initial_training, int):
-            self.build_random_training(initial_training=initial_training, 
-                                       nclass=nclass, screen=screen, 
+            self.build_random_training(initial_training=initial_training,
+                                       nclass=nclass, screen=screen,
                                        Ia_frac=Ia_frac, queryable=queryable,
                                        sep_files=sep_files)
 
@@ -763,7 +763,7 @@ class DataBase:
         ----------
         method: str
             Chosen classifier.
-            The current implementation accepts `RandomForest`, 
+            The current implementation accepts `RandomForest`,
             'GradientBoostedTrees', 'KNN', 'MLP' and 'NB'.
         kwargs: extra parameters
             Parameters required by the chosen classifier.
@@ -798,7 +798,7 @@ class DataBase:
         else:
             raise ValueError("The only classifiers implemented are" +
                               "'RandomForest', 'GradientBoostedTrees'," +
-                              "'KNN', 'MLP' and NB'." + 
+                              "'KNN', 'MLP' and NB'." +
                              "\n Feel free to add other options.")
 
     def evaluate_classification(self, metric_label='snpcc'):
@@ -857,7 +857,7 @@ class DataBase:
             id_name = 'objid'
         elif 'id' in self.test_metadata.keys():
             id_name = 'id'
-        
+
         if strategy == 'UncSampling':
             query_indx = uncertainty_sampling(class_prob=self.classprob,
                                               queryable_ids=self.queryable_ids,
@@ -865,7 +865,27 @@ class DataBase:
                                               batch=batch, screen=screen,
                                               query_thre=query_thre)
             return query_indx
-
+        elif strategy == 'UncSamplingEntropy':
+            query_indx = uncertainty_sampling_entropy(class_prob=self.classprob,
+                                              queryable_ids=self.queryable_ids,
+                                              test_ids=self.test_metadata[id_name].values,
+                                              batch=batch, screen=screen,
+                                              query_thre=query_thre)
+            return query_indx
+        elif strategy == 'UncSamplingLeastConfident':
+            query_indx = uncertainty_sampling_least_confident(class_prob=self.classprob,
+                                              queryable_ids=self.queryable_ids,
+                                              test_ids=self.test_metadata[id_name].values,
+                                              batch=batch, screen=screen,
+                                              query_thre=query_thre)
+            return query_indx
+        elif strategy == 'UncSamplingMargin':
+            query_indx = uncertainty_sampling_margin(class_prob=self.classprob,
+                                              queryable_ids=self.queryable_ids,
+                                              test_ids=self.test_metadata[id_name].values,
+                                              batch=batch, screen=screen,
+                                              query_thre=query_thre)
+            return query_indx
         elif strategy == 'RandomSampling':
             query_indx = random_sampling(queryable_ids=self.queryable_ids,
                                          test_ids=self.test_metadata[id_name].values,
