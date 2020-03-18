@@ -105,18 +105,34 @@ class Canvas(object):
         self.nmetrics = 0
         self.metrics_names = []
         self.unc_sampling = pd.DataFrame()
-        self.colors = {'Canonical': '#dd0100',      # red
-                       'RandomSampling': '#fac901',  # yellow
-                       'UncSampling': '#225095'}   # blue
+        self.unc_sampling_entropy = pd.DataFrame()
+        self.unc_sampling_least_confident = pd.DataFrame()
+        self.unc_sampling_margin = pd.DataFrame()
+        self.colors = {'Canonical': '#dd0100',                 # red
+                       'RandomSampling': '#fac901',            # yellow
+                       'UncSampling': '#225095',               # blue
+                       'UncSamplingEntropy': '#74eb34',        # lime green
+                       'UncSamplingLeastConfident': '#eb34de', # pink
+                       'UncSamplingMargin': '#ff8f05'          # orange
+                       }
         self.labels = {'Canonical': 'Canonical',
                        'RandomSampling': 'Passive Learning',
-                       'UncSampling': 'AL - Uncertainty Sampling'}
+                       'UncSampling': 'AL - Uncertainty Sampling',
+                       'UncSamplingEntropy': 'Uncertainty Sampling Entropy',
+                       'UncSamplingLeastConfident': 'Uncertainty Sampling LC',
+                       'UncSamplingMargin': 'Uncertainty Sampling Margin'}
         self.markers = {'Canonical': '--',
                         'RandomSampling': ':',
-                        'UncSampling': '-.'}
+                        'UncSampling': '-.',
+                        'UncSamplingEntropy': '-.',
+                        'UncSamplingLeastConfident': '-.',
+                        'UncSamplingMargin': '-.'}
         self.strategies = {'Canonical': self.canonical,
                            'RandomSampling': self.rand_sampling,
-                           'UncSampling': self.unc_sampling}
+                           'UncSampling': self.unc_sampling,
+                           'UncSamplingEntropy': self.unc_sampling_entropy,
+                           'UncSamplingLeastConfident': self.unc_sampling_least_confident,
+                           'UncSamplingMargin': self.unc_sampling_margin}
 
     def load_metrics(self, path_to_files: list, strategies_list: list):
         """Load and identify set of metrics.
@@ -201,7 +217,7 @@ class Canvas(object):
                 else:
                     xnew = x
                     ynew = y
-                    
+
                 color = self.colors[strategies_list[j]]
                 marker = self.markers[strategies_list[j]]
 
