@@ -211,4 +211,9 @@ The same result can be achieved using the command line:
 
 .. code-block:: bash
 
-   >> fit_dataset.py -dd <path_to_data_dir> -o <output_file>
+   # for SNPCC
+    >>> fit_dataset.py -s SNPCC -dd <path_to_data_dir> -o <output_file>
+
+    # for RESSPECT or PLAsTiCC
+    >>> fit_dataset.py -s <dataset_name> -p <path_to_photo_file> 
+             -hd <path_to_header_file> -o <output_file> 
