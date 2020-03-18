@@ -281,6 +281,9 @@ class LightCurve(object):
                     if "b'" + f + " '" == str(photo['FLT'].values[i]):
                         band.append(f)
             photo.insert(1, 'band', band, True)
+
+        else:
+            photo.insert(1, 'band', photo['FLT'].values, True)
                         
         self.id = snid 
         self.photometry = {}
