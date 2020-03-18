@@ -50,6 +50,8 @@ class DataBase:
         Header for metadata.
     metrics_list_names: list
         Values for metric elements.
+    photo_Ia_ids: list
+        List of photometrically classified object ids.
     plasticc_mjd_lim: list
         [min, max] mjds for plasticc data
     predicted_class: np.array
@@ -800,6 +802,37 @@ class DataBase:
                               "'RandomForest', 'GradientBoostedTrees'," +
                               "'KNN', 'MLP' and NB'." + 
                              "\n Feel free to add other options.")
+
+    def output_photo_Ia(self, threshold: float, to_file=True, 
+                        filename=' '):
+        """Generates a list of photometrically classified SN Ia.
+
+        Parameters
+        ----------
+        threshold: float
+            Probability threshold above which an object is considered Ia.
+        to_file: bool (optional)
+            If true, populate the photo_Ia_list attribute. Otherwise
+            write to file. Default is False.
+        filename: str (optional)
+            Name of output file. Only used if to_file is True.
+        """
+
+        # photo Ia flag
+        photo_flag = self.classprob[:,1] >= threshold
+
+        if 'objid' in self.test_metadata.keys():
+            id_name = 'objid'
+        elif 'id' in self.test_metadata.keys():
+            id_name = 'id'
+
+        # get ids
+        photo_Ia_ids = self.test_metadata[id_name].values[photo_flag]
+
+        if to_file:
+            np.savetext(filename, photo_Ia_ids.astype(int), fmt='%i')
+        else:
+            self.photo_Ia_list = photo_Ia_ids     
 
     def evaluate_classification(self, metric_label='snpcc'):
         """Evaluate results from classification.
