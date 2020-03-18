@@ -182,7 +182,7 @@ It is possible to perform the fit in all filters at once and visualize the resul
    >>> lc.plot_bazin_fit(save=True, show=True,
                          output_file='plots/SN' + str(lc.id) + '.png')   # save to file
 
-.. image:: images/SN7948.png
+.. figure:: images/SN7948.png
    :align: center
    :height: 480 px
    :width: 640 px
