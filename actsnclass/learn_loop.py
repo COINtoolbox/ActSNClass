@@ -25,12 +25,8 @@ def learn_loop(nloops: int, strategy: str, path_to_features: str,
                output_metrics_file: str, output_queried_file: str,
                features_method='Bazin', classifier='RandomForest',
                training='original', batch=1, screen=True, survey='DES',
-<<<<<<< HEAD
                nclass=2, photo_class_thr=0.5, photo_ids=False, photo_ids_tofile = False,
                photo_ids_froot=' ', bootstrap=False, **kwargs):
-=======
-               nclass=2, bootstrap=False, **kwargs):
->>>>>>> al_strategies
     """Perform the active learning loop. All results are saved to file.
 
     Parameters
