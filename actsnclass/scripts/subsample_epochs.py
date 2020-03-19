@@ -19,32 +19,31 @@ import argparse
 import numpy as np
 import os
 import pandas as pd
-​
-from actsnclass.snana_fits_to_pd import read_fits, save_fits
+
+from actsnclass.snana_fits_to_pd import *
 
 
-def  _parse_arguments():
-    """
-    Parses arguments from the command line.
-    """
-    parser = argparse.ArgumentParser(description='Sub-sample photometric curves.')
+if __name__ == 'main':
+
+    # get parameters from user
+    parser = argparse.ArgumentParser(description='actnsclass - ' +
+                                     'Sub-sample photometric curves.')
     
-    parser.add_argument('frequency', type=int, 
+    parser.add_argument('-f', '--frequency', dest=frequency, type=int, 
                         help='sub-sample frequency in number of days')
-​
     parser.add_argument('filename', type=str, 
                         help='input photometric curve data filename')
-​
+
     return parser.parse_args()
 
-​
+
 def main():
     """
     Sub-sample PHOT data getting data on each X days.
     """
     
     args = _parse_arguments()
-​
+
     print('\n Reading input file:\n  {:s}'.format(args.filename))
 
     header, photo = read_fits(args.filename)
@@ -56,10 +55,10 @@ def main():
     mjd = mjd[mjd > 0]
     mjd.sort()
     mjd = np.arange(mjd.min(), mjd.max(), args.frequency)
-​
+
     sub_photo = photo[photo.MJD.isin(mjd)]
     print(sub_photo.columns)
-​
+
     header_fname = args.filename.replace("_PHOT", "_HEAD_{:d}days".format(args.frequency)) 
     print(' Writing metadata to:\n  {}'.format(header_fname))
     save_fits(header, header_fname)
@@ -67,7 +66,7 @@ def main():
     photo_fname = args.filename.replace("_PHOT", "_PHOT_{:d}days".format(args.frequency))
     print(' Writing data frame to:\n  {}\n'.format(photo_fname))
     save_fits(sub_photo, photo_fname)
-​
-​
+
+
 if __name__ == "__main__":
     main()
