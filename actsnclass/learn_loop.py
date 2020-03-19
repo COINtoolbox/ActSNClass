@@ -26,7 +26,7 @@ def learn_loop(nloops: int, strategy: str, path_to_features: str,
                features_method='Bazin', classifier='RandomForest',
                training='original', batch=1, screen=True, survey='DES',
                nclass=2, photo_class_thr=0.5, photo_ids=False, photo_ids_tofile = False,
-               photo_ids_froot=' ', bootstrap=False, **kwargs):
+               photo_ids_froot=' ', classifier_bootstrap=False, **kwargs):
     """Perform the active learning loop. All results are saved to file.
 
     Parameters
@@ -82,7 +82,7 @@ def learn_loop(nloops: int, strategy: str, path_to_features: str,
     kwargs: extra parameters
         All keywords required by the classifier function.
     """
-    if 'QBD' in strategy and not bootstrap:
+    if 'QBD' in strategy and not classifier_bootstrap:
         raise ValueError('bootstrap must be true when using disagreement strategy')
 
     # initiate object
@@ -111,7 +111,7 @@ def learn_loop(nloops: int, strategy: str, path_to_features: str,
             print('Processing... ', loop)
 
         # classify
-        if bootstrap:
+        if classifier_bootstrap:
             data.classify_bootstrap(method=classifier, **kwargs)
         else:
             data.classify(method=classifier, **kwargs)
