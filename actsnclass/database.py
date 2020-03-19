@@ -225,8 +225,12 @@ class DataBase:
                                    'zA', 'zB', 'zt0', 'ztfall', 'ztrise',
                                    'YA', 'YB', 'Yt0', 'Ytfall', 'Ytrise']
 
-            self.metadata_names = ['objid', 'redshift', 'type', 'code',
-                                   'orig_sample', 'queryable']
+            if 'objid' in data.keys():
+                self.metadata_names = ['objid', 'redshift', 'type', 'code',
+                                       'orig_sample', 'queryable']
+            elif 'id' in data.keys():
+                self.metadata_names = ['id', 'redshift', 'type', 'code',
+                                       'orig_sample', 'queryable']
 
         else:
             raise ValueError('Only "DES" and "LSST" filters are implemented at this point!')

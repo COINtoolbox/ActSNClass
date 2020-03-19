@@ -278,7 +278,9 @@ class LightCurve(object):
             band = []
             for i in range(photo.shape[0]):
                 for f in self.filters:
-                    if "b'" + f + " '" == str(photo['FLT'].values[i]):
+                    if "b'" + f + " '" == str(photo['FLT'].values[i]) or \
+                    "b'" + f + "'" == str(photo['FLT'].values[i]) or \
+                    "b'" + f + "' " == str(photo['FLT'].values[i]):
                         band.append(f)
             photo.insert(1, 'band', band, True)
 
@@ -649,12 +651,16 @@ def fit_resspect_bazin(path_photo_file: str, path_header_file:str,
         type_name = 'type'
     elif 'SIM_TYPE_NAME' in header.keys():
         type_name = 'SIM_TYPE_NAME'
+    elif 'TYPE' in header.keys():
+        type_name = 'TYPE'
 
     # check subtype flag
     if 'code' in header.keys():
         subtype_name = 'code'
     elif 'SIM_TYPE_INDEX' in header.keys():
         subtype_name = 'SIM_TYPE_NAME'
+    elif 'SNTYPE_SUBCLASS' in header.keys():
+        subtype_name = 'SNTYPE_SUBCLASS'
 
     for snid in header[id_name].values:      
 
