@@ -23,6 +23,15 @@ import seaborn as sns
 
 __all__ = ['Canvas']
 
+strategies = ['Canonical',
+               'RandomSampling',
+               'UncSampling',
+               'UncSamplingEntropy',
+               'UncSamplingLeastConfident',
+               'UncSamplingMargin',
+               'QBDMI',
+               'QBDEntropy']
+
 
 class Canvas(object):
     """Canvas object, handles and plot information from multiple strategies.
@@ -108,31 +117,41 @@ class Canvas(object):
         self.unc_sampling_entropy = pd.DataFrame()
         self.unc_sampling_least_confident = pd.DataFrame()
         self.unc_sampling_margin = pd.DataFrame()
+        self.qbd_mi = pd.DataFrame()
+        self.qbd_entropy = pd.DataFrame()
         self.colors = {'Canonical': '#dd0100',                 # red
                        'RandomSampling': '#fac901',            # yellow
                        'UncSampling': '#225095',               # blue
                        'UncSamplingEntropy': '#74eb34',        # lime green
                        'UncSamplingLeastConfident': '#eb34de', # pink
-                       'UncSamplingMargin': '#ff8f05'          # orange
+                       'UncSamplingMargin': '#ff8f05',         # orange
+                       'QBDMI': '#0a4f08',                     # dark green
+                       'QBDEntropy': '#434773'                  # grey blue
                        }
         self.labels = {'Canonical': 'Canonical',
                        'RandomSampling': 'Passive Learning',
                        'UncSampling': 'AL - Uncertainty Sampling',
                        'UncSamplingEntropy': 'Uncertainty Sampling Entropy',
                        'UncSamplingLeastConfident': 'Uncertainty Sampling LC',
-                       'UncSamplingMargin': 'Uncertainty Sampling Margin'}
+                       'UncSamplingMargin': 'Uncertainty Sampling Margin',
+                       'QBDMI': 'QBD with MI',
+                       'QBDEntropy': 'QBD with Entropy'}
         self.markers = {'Canonical': '--',
                         'RandomSampling': ':',
                         'UncSampling': '-.',
                         'UncSamplingEntropy': '-.',
                         'UncSamplingLeastConfident': '-.',
-                        'UncSamplingMargin': '-.'}
+                        'UncSamplingMargin': '-.',
+                        'QBDMI': '-.',
+                        'QBDEntropy': '-.'}
         self.strategies = {'Canonical': self.canonical,
                            'RandomSampling': self.rand_sampling,
                            'UncSampling': self.unc_sampling,
                            'UncSamplingEntropy': self.unc_sampling_entropy,
                            'UncSamplingLeastConfident': self.unc_sampling_least_confident,
-                           'UncSamplingMargin': self.unc_sampling_margin}
+                           'UncSamplingMargin': self.unc_sampling_margin,
+                           'QBDMI': self.qbd_mi,
+                           'QBDEntropy': self.qbd_entropy}
 
     def load_metrics(self, path_to_files: list, strategies_list: list):
         """Load and identify set of metrics.

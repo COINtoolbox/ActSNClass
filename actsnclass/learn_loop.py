@@ -25,7 +25,7 @@ def learn_loop(nloops: int, strategy: str, path_to_features: str,
                output_metrics_file: str, output_queried_file: str,
                features_method='Bazin', classifier='RandomForest',
                training='original', batch=1, screen=True, survey='DES',
-               nclass=2, **kwargs):
+               nclass=2, bootstrap=False, **kwargs):
     """Perform the active learning loop. All results are saved to file.
 
     Parameters
@@ -36,8 +36,8 @@ def learn_loop(nloops: int, strategy: str, path_to_features: str,
         Query strategy. Options are 'UncSampling' and 'RandomSampling'.
     path_to_features: str or dict
         Complete path to input features file.
-        if dict, keywords should be 'train' and 'test', 
-        and values must contain the path for separate train 
+        if dict, keywords should be 'train' and 'test',
+        and values must contain the path for separate train
         and test sample files.
     output_metrics_file: str
         Full path to output file to store metric values of each loop.
@@ -45,7 +45,7 @@ def learn_loop(nloops: int, strategy: str, path_to_features: str,
         Full path to output file to store the queried sample.
     features_method: str (optional)
         Feature extraction method. Currently only 'Bazin' is implemented.
-    classifier: str 
+    classifier: str
         Machine Learning algorithm.
         Currently implemented options are 'RandomForest', 'GradientBoostedTrees',
         'K-NNclassifier','MLPclassifier','SVMclassifier' and 'NBclassifier'.
@@ -66,7 +66,7 @@ def learn_loop(nloops: int, strategy: str, path_to_features: str,
         Number of classes to consider in the classification
         Currently only nclass == 2 is implemented.
     kwargs: extra parameters
-        All keywords required by the classifier function.    
+        All keywords required by the classifier function.
     """
 
     # initiate object
@@ -88,14 +88,17 @@ def learn_loop(nloops: int, strategy: str, path_to_features: str,
 
         data.build_samples(initial_training=training, nclass=nclass,
                            screen=screen, sep_files=True)
-        
+
     for loop in range(nloops):
 
         if screen:
             print('Processing... ', loop)
 
         # classify
-        data.classify(method=classifier, **kwargs)
+        if bootstrap:
+            data.classify_bootstrap(method=classifier, **kwargs)
+        else:
+            data.classify(method=classifier, **kwargs)
 
         # calculate metrics
         data.evaluate_classification()

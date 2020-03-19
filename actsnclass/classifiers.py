@@ -17,7 +17,7 @@
 # limitations under the License.
 
 __all__ = ['random_forest','gradient_boosted_trees','knn',
-           'mlp','svm','nbg']
+           'mlp','svm','nbg', 'bootstrap_clf']
 
 import numpy as np
 from sklearn.ensemble import RandomForestClassifier
@@ -26,6 +26,26 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.neural_network import MLPClassifier
 from sklearn.svm import SVC
 from sklearn.naive_bayes import GaussianNB
+from sklearn.utils import resample
+
+
+def bootstrap_clf(clf_function, n_ensembles, train_features,
+                  train_labels, test_features, **kwargs):
+    n_labels = np.unique(train_labels).size
+    num_test_data = test_features.shape[0]
+    ensemble_probs = np.zeros((num_test_data, n_ensembles, n_labels))
+    for i in range(n_ensembles):
+        x_train, y_train = resample(train_features, train_labels)
+        predicted_class, class_prob = clf_function(x_train,
+                                                   y_train,
+                                                   test_features,
+                                                   **kwargs)
+        ensemble_probs[:, i, :] = class_prob
+
+    class_prob = ensemble_probs.mean(axis=1)
+    predictions = np.argmax(class_prob, axis=1)
+    return predictions, class_prob, ensemble_probs
+
 
 def random_forest(train_features:  np.array, train_labels: np.array,
                   test_features: np.array, **kwargs):
@@ -40,8 +60,8 @@ def random_forest(train_features:  np.array, train_labels: np.array,
     test_features: np.array
         Test sample features.
     kwargs: extra parameters
-        All keywords required by 
-        sklearn.ensemble.RandomForestClassifier function. 
+        All keywords required by
+        sklearn.ensemble.RandomForestClassifier function.
 
     Returns
     -------
@@ -60,7 +80,7 @@ def random_forest(train_features:  np.array, train_labels: np.array,
     return predictions, prob
 
 
-def gradient_boosted_trees(train_features: np.array, 
+def gradient_boosted_trees(train_features: np.array,
                            train_labels: np.array,
                            test_features: np.array, **kwargs):
     """Gradient Boosted Trees classifier.
@@ -150,14 +170,14 @@ def mlp(train_features: np.array, train_labels: np.array,
     prob: np.array
         Classification probability for all objects, [pIa, pnon-Ia].
     """
-    
+
     #create classifier instance
     clf=MLPClassifier(**kwargs)
 
     clf.fit(train_features, train_labels)              # train
     predictions = clf.predict(test_features)           # predict
     prob = clf.predict_proba(test_features)            # get probabilities
-        
+
     return predictions, prob
 
 def svm(train_features: np.array, train_labels: np.array,
@@ -224,7 +244,7 @@ def nbg(train_features: np.array, train_labels: np.array,
     clf.fit(train_features, train_labels)         # fit
     predictions = clf.predict(test_features)      # predict
     prob = clf.predict_proba(test_features)       # get probabilities
-    
+
     return predictions, prob
 
 
