@@ -163,6 +163,7 @@ class DataBase:
         self.train_features = np.array([])
         self.train_metadata = pd.DataFrame()
         self.train_labels = np.array([])
+        self.ensemble_probs = None
 
     def load_bazin_features(self, path_to_bazin_file: str, screen=False,
                             survey='DES', sample=None):
@@ -801,6 +802,60 @@ class DataBase:
                               "'KNN', 'MLP' and NB'." +
                              "\n Feel free to add other options.")
 
+    def classify_bootstrap(self, method: str, **kwargs):
+        """Apply a machine learning classifier bootstrapping the classifier.
+
+        Populate properties: predicted_class and class_prob
+
+        Parameters
+        ----------
+        method: str
+            Chosen classifier.
+            The current implementation accepts `RandomForest`,
+            'GradientBoostedTrees', 'KNN', 'MLP' and 'NB'.
+        kwargs: extra parameters
+            Parameters required by the chosen classifier.
+        """
+        n_ensembles = 10
+        if method == 'RandomForest':
+            self.predicted_class, self.class_prob, self.ensemble_probs = \
+            bootstrap_clf(random_forest, n_ensembles,
+                          self.train_features, self.train_labels,
+                          self.test_features, **kwargs)
+
+        elif method == 'GradientBoostedTrees':
+            self.predicted_class, self.class_prob, self.ensemble_probs = \
+            bootstrap_clf(gradient_boosted_trees, n_ensembles,
+                          self.train_features, self.train_labels,
+                          self.test_features, **kwargs)
+        elif method == 'KNN':
+            self.predicted_class, self.class_prob, self.ensemble_probs = \
+            bootstrap_clf(knn, n_ensembles,
+                          self.train_features, self.train_labels,
+                          self.test_features, **kwargs)
+        elif method == 'MLP':
+            self.predicted_class, self.class_prob, self.ensemble_probs = \
+            bootstrap_clf(mlp, n_ensembles,
+                          self.train_features, self.train_labels,
+                          self.test_features, **kwargs)
+        elif method == 'SVM':
+            self.predicted_class, self.class_prob, self.ensemble_probs = \
+            bootstrap_clf(svm, n_ensembles,
+                          self.train_features, self.train_labels,
+                          self.test_features, **kwargs)
+        elif method == 'NB':
+            self.predicted_class, self.class_prob, self.ensemble_probs = \
+            bootstrap_clf(nbg, n_ensembles,
+                          self.train_features, self.train_labels,
+                          self.test_features, **kwargs)
+
+
+        else:
+            raise ValueError("The only classifiers implemented are" +
+                              "'RandomForest', 'GradientBoostedTrees'," +
+                              "'KNN', 'MLP' and NB'." +
+                             "\n Feel free to add other options.")
+
     def evaluate_classification(self, metric_label='snpcc'):
         """Evaluate results from classification.
 
@@ -885,6 +940,20 @@ class DataBase:
                                               test_ids=self.test_metadata[id_name].values,
                                               batch=batch, screen=screen,
                                               query_thre=query_thre)
+            return query_indx
+        elif strategy == 'QBDMI':
+            query_indx = qbd_entropy(ensemble_probs=self.ensemble_probs,
+                                    queryable_ids=self.queryable_ids,
+                                    test_ids=self.test_metadata[id_name].values,
+                                    batch=batch, screen=screen,
+                                    query_thre=query_thre)
+            return query_indx
+        elif strategy =='QBDEntropy':
+            query_indx = qbd_entropy(ensemble_probs=self.ensemble_probs,
+                                    queryable_ids=self.queryable_ids,
+                                    test_ids=self.test_metadata[id_name].values,
+                                    batch=batch, screen=screen,
+                                    query_thre=query_thre)
             return query_indx
         elif strategy == 'RandomSampling':
             query_indx = random_sampling(queryable_ids=self.queryable_ids,
