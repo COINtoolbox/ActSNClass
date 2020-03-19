@@ -65,9 +65,14 @@ def learn_loop(nloops: int, strategy: str, path_to_features: str,
     nclass: int (optional)
         Number of classes to consider in the classification
         Currently only nclass == 2 is implemented.
+    bootstrap: bool (optional)
+        Flag for bootstrapping on the classifier
+        Must be true if using disagreement based strategy
     kwargs: extra parameters
         All keywords required by the classifier function.
     """
+    if 'QBD' in strategy and not bootstrap:
+        raise ValueError('bootstrap must be true when using disagreement strategy')
 
     # initiate object
     data = DataBase()
