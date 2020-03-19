@@ -942,11 +942,11 @@ class DataBase:
                                               query_thre=query_thre)
             return query_indx
         elif strategy == 'QBDMI':
-            query_indx = qbd_entropy(ensemble_probs=self.ensemble_probs,
-                                    queryable_ids=self.queryable_ids,
-                                    test_ids=self.test_metadata[id_name].values,
-                                    batch=batch, screen=screen,
-                                    query_thre=query_thre)
+            query_indx = qbd_mi(ensemble_probs=self.ensemble_probs,
+                                queryable_ids=self.queryable_ids,
+                                test_ids=self.test_metadata[id_name].values,
+                                batch=batch, screen=screen,
+                                query_thre=query_thre)
             return query_indx
         elif strategy =='QBDEntropy':
             query_indx = qbd_entropy(ensemble_probs=self.ensemble_probs,

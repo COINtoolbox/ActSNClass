@@ -126,7 +126,7 @@ class Canvas(object):
                        'UncSamplingLeastConfident': '#eb34de', # pink
                        'UncSamplingMargin': '#ff8f05',         # orange
                        'QBDMI': '#0a4f08',                     # dark green
-                       'QBDEntropy': '#434773'                  # grey blue
+                       'QBDEntropy': '#434773'                 # grey blue
                        }
         self.labels = {'Canonical': 'Canonical',
                        'RandomSampling': 'Passive Learning',
