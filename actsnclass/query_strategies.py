@@ -73,6 +73,7 @@ def uncertainty_sampling(class_prob: np.array, test_ids: np.array,
             it will return only the available objects -- so the list of
             objects to query can be smaller than 'batch'.
     """
+
     if class_prob.shape[0] != test_ids.shape[0]:
         raise ValueError('Number of probabiblities is different ' +
                          'from number of objects in the test sample!')

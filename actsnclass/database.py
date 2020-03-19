@@ -50,8 +50,10 @@ class DataBase:
         Header for metadata.
     metrics_list_names: list
         Values for metric elements.
-    photo_Ia_ids: list
-        List of photometrically classified object ids.
+    output_photo_Ia: pd.DataFrame
+        Returns metadata for photometrically classified Ia. 
+    photo_Ia_metadata: pd.DataFrame
+        Metadata for photometrically classified object ids.
     plasticc_mjd_lim: list
         [min, max] mjds for plasticc data
     predicted_class: np.array
@@ -780,6 +782,7 @@ class DataBase:
             self.predicted_class,  self.classprob = \
                 random_forest(self.train_features, self.train_labels,
                               self.test_features, **kwargs)
+
         elif method == 'GradientBoostedTrees':
             self.predicted_class,  self.classprob = \
                 gradient_boosted_trees(self.train_features, self.train_labels,
@@ -864,7 +867,7 @@ class DataBase:
 
     def output_photo_Ia(self, threshold: float, to_file=True, 
                         filename=' '):
-        """Generates a list of photometrically classified SN Ia.
+        """Returns the metadata for  photometrically classified SN Ia.
 
         Parameters
         ----------
@@ -886,12 +889,13 @@ class DataBase:
             id_name = 'id'
 
         # get ids
-        photo_Ia_ids = self.test_metadata[id_name].values[photo_flag]
+        photo_Ia_metadata = self.test_metadata[photo_flag]
+        
 
         if to_file:
-            np.savetxt(filename, photo_Ia_ids.astype(int), fmt='%i')
+            photo_Ia_metadata.to_csv(filename, index=False)
         else:
-            self.photo_Ia_list = photo_Ia_ids     
+            self.photo_Ia_metadata = photo_Ia_metadata     
 
     def evaluate_classification(self, metric_label='snpcc'):
         """Evaluate results from classification.

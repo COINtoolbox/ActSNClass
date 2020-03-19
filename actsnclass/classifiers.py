@@ -76,7 +76,7 @@ def random_forest(train_features:  np.array, train_labels: np.array,
     clf.fit(train_features, train_labels)                     # train
     predictions = clf.predict(test_features)                # predict
     prob = clf.predict_proba(test_features)       # get probabilities
-
+    
     return predictions, prob
 
 
