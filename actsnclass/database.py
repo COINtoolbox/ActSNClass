@@ -178,11 +178,15 @@ class DataBase:
                                'ztfall', 'ztrise']
 
         self.metadata_names = ['id', 'redshift', 'type', 'code', 
-                               'orig_sample', 'queryable']
+                               'orig_sample', 'queryable']          
 
         self.features = self.data[self.features_names]
-        self.metadata = self.data[self.metadata_names]
 
+        if 'queryable' not in self.data.keys():
+            self.data['queryable'] = True
+            
+        self.metadata = self.data[self.metadata_names]
+        
         if screen:
             print('Loaded ', self.metadata.shape[0], ' samples!')
 
