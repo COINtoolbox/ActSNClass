@@ -108,7 +108,7 @@ def time_domain_loop(days: list,  output_metrics_file: str,
 
     # change training
     if training == 'original':
-        data.build_samples(initial_training='original', screen=screen)
+        data.build_samples(initial_training='original', screen=screen, queryable=False)
         full_lc_features = get_original_training(path_to_features=path_to_full_lc_features)
         data.train_metadata = full_lc_features.train_metadata
         data.train_labels = full_lc_features.train_labels
