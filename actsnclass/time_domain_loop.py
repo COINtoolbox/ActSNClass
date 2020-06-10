@@ -82,7 +82,7 @@ def time_domain_loop(days: list,  output_diag_file: str,
         It is only used if "strategy==canonical".
     path_to_full_lc_features: str (optional)
         Path to full light curve features file.
-        Only used if training is a number.
+        Only used if training is a 'original'.
     screen: bool (optional)
         If True, print on screen number of light curves processed.
     training: str or int (optional)
