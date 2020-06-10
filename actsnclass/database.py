@@ -177,7 +177,7 @@ class DataBase:
                                'it0', 'itfall', 'itrise', 'zA', 'zB', 'zt0',
                                'ztfall', 'ztrise']
 
-        self.metadata_names = ['id', 'redshift', 'type', 'code', 'sample']
+        self.metadata_names = ['id', 'redshift', 'type', 'code', 'orig_sample']
 
         self.features = self.data[self.features_names]
         self.metadata = self.data[self.metadata_names]
@@ -234,19 +234,19 @@ class DataBase:
 
         # separate original training and test samples
         if initial_training == 'original':
-            train_flag = self.metadata['sample'] == 'train'
+            train_flag = self.metadata['orig_sample'] == 'train'
             train_data = self.features[train_flag]
             self.train_features = train_data.values
             self.train_metadata = self.metadata[train_flag]
 
-            test_flag = np.logical_or(self.metadata['sample'] == 'test',
-                                      self.metadata['sample'] == 'queryable')
+            test_flag = np.logical_or(self.metadata['orig_sample'] == 'test',
+                                      self.metadata['orig_sample'] == 'queryable')
             test_data = self.features[test_flag]
             self.test_features = test_data.values
             self.test_metadata = self.metadata[test_flag]
 
-            if 'queryable' in self.metadata['sample'].values:
-                queryable_flag = self.metadata['sample'].values == 'queryable'
+            if 'queryable' in self.metadata['orig_sample'].values:
+                queryable_flag = self.metadata['orig_sample'].values == 'queryable'
                 self.queryable_ids = self.metadata[queryable_flag]['id'].values
             else:
                 self.queryable_ids = self.test_metadata['id'].values
@@ -291,10 +291,10 @@ class DataBase:
             self.test_metadata = pd.DataFrame(self.metadata.values[test_indexes],
                                               columns=self.metadata_names)
 
-            if 'queryable' in self.metadata['sample'].values:
+            if 'queryable' in self.metadata['orig_sample'].values:
                 test_flag = np.array([True if i in test_indexes else False
                                       for i in range(self.metadata.shape[0])])
-                queryable_flag = self.metadata['sample'] == 'queryable'
+                queryable_flag = self.metadata['orig_sample'] == 'queryable'
                 combined_flag = np.logical_and(test_flag, queryable_flag)
                 self.queryable_ids = self.metadata[combined_flag]['id'].values
             else:
