@@ -180,7 +180,10 @@ class Canvas(object):
         # hold axis
         axis = []
 
+        self.set_plot_dimensions()
+        
         plt.figure(figsize=self.fig_size)
+
         for i in range(self.nmetrics):
             ax = plt.subplot(self.nlines, self.ncolumns, i + 1)
 
