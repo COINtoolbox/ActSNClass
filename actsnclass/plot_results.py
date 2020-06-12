@@ -118,7 +118,8 @@ class Canvas(object):
                            'RandomSampling': self.rand_sampling,
                            'UncSampling': self.unc_sampling}
 
-    def load_metrics(self, path_to_files: list, strategies_list: list):
+    def load_metrics(self, path_to_files: list, strategies_list: list,
+                     metrics_name='snpcc'):
         """Load and identify set of metrics.
 
         Populates attributes: canonical, unc_sampling or rand_sampling,
@@ -132,6 +133,9 @@ class Canvas(object):
             List of all strategies to be included in the same plot.
             Current possibibilities are:
             ['canonical', 'rand_sampling', 'unc_sampling'].
+        metrics_name: str (optional)
+            Identify the metrics to be read.
+            Only option is 'snpcc'.
         """
 
         # read data
@@ -142,9 +146,11 @@ class Canvas(object):
                                                 index_col=False)
 
             # get metrics names
-            if len(self.metrics_names) == 0:
-                self.metrics_names = \
-                    list(self.strategies[name].columns[1: -1])
+            if metrics_name == 'snpcc':
+                self.metrics_names = ['accuracy', 'efficiency',
+                                      'purity', 'fom']
+            else:
+                raise ValueError('Invalid metric choice!')
 
     def set_plot_dimensions(self):
         """Set directives for plot sizes.
