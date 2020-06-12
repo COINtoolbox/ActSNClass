@@ -158,11 +158,18 @@ def time_domain_loop(days: list,  output_metrics_file: str,
         data_tomorrow = DataBase()
         data_tomorrow.load_features(path_to_features2, method=features_method,
                                     screen=False)
+        data_tomorrow.build_samples('original')
 
+        data.test_metadata = data_tomorrow.test_metadata
+        data.test_labels = data_tomorrow.test_labels
+        data.test_features = data_tomorrow.test_features
+
+        """
         # identify objects in the new day which must be in training
         train_flag = np.array([item in data.train_metadata['id'].values 
                               for item in data_tomorrow.metadata['id'].values])
    
+        
         # use new data        
         data.train_metadata = data_tomorrow.metadata[train_flag]
         data.train_features = data_tomorrow.features.values[train_flag]
@@ -174,10 +181,12 @@ def time_domain_loop(days: list,  output_metrics_file: str,
                                      data.train_metadata['type'].values])
         data.test_labels = np.array([int(item == 'Ia') for item in 
                                     data.test_metadata['type'].values])
-
+        """
         if strategy == 'canonical':
             data.queryable_ids = canonical.queryable_ids
-
+        else:
+            data.queryable_ids = data_tomorrow.queryable_ids
+        """
         if  queryable:
             queryable_flag = data_tomorrow.metadata['queryable'].values
             queryable_test_flag = np.logical_and(~train_flag, queryable_flag)
@@ -188,7 +197,7 @@ def time_domain_loop(days: list,  output_metrics_file: str,
         if screen:
             print('Training set size: ', data.train_metadata.shape[0])
             print('Test set size: ', data.test_metadata.shape[0])
-
+        """
 
 def main():
     return None
