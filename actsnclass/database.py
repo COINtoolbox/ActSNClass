@@ -248,7 +248,6 @@ class DataBase:
             self.train_metadata = self.metadata[train_flag]
 
             test_flag = self.metadata['orig_sample'] == 'test'
-
             test_data = self.features[test_flag]
             self.test_features = test_data.values
             self.test_metadata = self.metadata[test_flag]
@@ -261,10 +260,10 @@ class DataBase:
 
             if nclass == 2:
                 train_ia_flag = self.train_metadata['type'] == 'Ia'
-                self.train_labels = np.array([int(item) for item in train_ia_flag])
+                self.train_labels = train_ia_flag.astype(int)
 
                 test_ia_flag = self.test_metadata['type'] == 'Ia'
-                self.test_labels = np.array([int(item) for item in test_ia_flag])
+                self.test_labels = test_ia_flag.astype(int)
             else:
                 raise ValueError("Only 'Ia x non-Ia' are implemented! "
                                  "\n Feel free to add other options.")
