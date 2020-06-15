@@ -503,6 +503,9 @@ class DataBase:
 
             query_indx = new_query_indx
 
+            if screen: 
+                print('  query_indx: ', query_indx)
+
         # update queried samples
         self.queried_sample.append(all_queries)
 
