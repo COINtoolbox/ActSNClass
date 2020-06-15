@@ -179,8 +179,8 @@ class DataBase:
 
         self.metadata_names = ['id', 'redshift', 'type', 'code', 'orig_sample']
 
-        #if 'queryable' in self.data.keys():
-        #    self.metadata_names.append('queryable')
+        if 'queryable' in self.data.keys():
+            self.metadata_names.append('queryable')
 
         self.features = self.data[self.features_names]
         self.metadata = self.data[self.metadata_names]

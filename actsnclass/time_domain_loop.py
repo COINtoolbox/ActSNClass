@@ -19,6 +19,7 @@
 __all__ = ['time_domain_loop', 'get_original_training']
 
 import numpy as np
+import pandas as pd
 
 from actsnclass import DataBase
 
@@ -164,15 +165,29 @@ def time_domain_loop(days: list,  output_diag_file: str,
         data_tomorrow.build_samples('original')
 
         # remove training samples from new test
-        train_ids =  data.train_metadata['id'].values
-        tomorrow_test_ids = data_tomorrow.test_metadata['id'].values
+        for obj in data.train_metadata['id'].values:
+            if obj in data_tomorrow.test_metadata['id'].values:
+                # remove old features from training
+                indx_today = list(data.train_metadata['id'].values).index(obj)
+                data.train_metadata = data.train_metadata.drop(data.train_metadata.index[indx_today])
+                data.train_labels = np.delete(data.train_labels, indx_today, axis=0)
+                data.train_features = np.delete(data.train_features, indx_today, axis=0)
+                
+                # update new features of the training with new obs
+                indx_tomorrow = list(data_tomorrow.test_metadata['id'].values).index(obj)
+                
+                flag = np.arange(0, data_tomorrow.test_metadata.shape[0]) == indx_tomorrow
+                data.train_metadata = pd.concat([data.train_metadata, data_tomorrow.test_metadata[flag]], axis=0,
+                                                 ignore_index=True)
+                data.train_features = np.append(data.train_features,
+                                                data_tomorrow.test_features[flag], axis=0)
+                data.train_labels = np.append(data.train_labels,
+                                              data_tomorrow.test_labels[flag], axis=0)  
 
-        for obj in train_ids:
-            if obj in tomorrow_test_ids:
-                indx_remove = list(data_tomorrow.test_metadata['id'].values).index(obj)
-                data_tomorrow.test_metadata = data_tomorrow.test_metadata.drop(data_tomorrow.test_metadata.index[indx_remove])
-                data_tomorrow.test_labels = np.delete(data_tomorrow.test_labels, indx_remove, axis=0)
-                data_tomorrow.test_features = np.delete(data_tomorrow.test_features, indx_remove, axis=0)
+                # remove from new test sample
+                data_tomorrow.test_metadata = data_tomorrow.test_metadata.drop(data_tomorrow.test_metadata.index[indx_tomorrow])
+                data_tomorrow.test_labels = np.delete(data_tomorrow.test_labels, indx_tomorrow, axis=0)
+                data_tomorrow.test_features = np.delete(data_tomorrow.test_features, indx_tomorrow, axis=0)
 
         # use new test data
         data.test_metadata = data_tomorrow.test_metadata
