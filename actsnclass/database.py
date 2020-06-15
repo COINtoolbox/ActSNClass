@@ -178,7 +178,10 @@ class DataBase:
                                'ztfall', 'ztrise']
 
         self.metadata_names = ['id', 'redshift', 'type', 'code', 
-                               'orig_sample', 'queryable']
+                               'orig_sample']
+
+        if 'queryable' in self.data.keys():
+            self.metadata_names.append('queryable')
 
         self.features = self.data[self.features_names]
         self.metadata = self.data[self.metadata_names]
@@ -418,7 +421,16 @@ class DataBase:
 
         all_queries = []
 
+        data_copy = self.test_metadata.copy()
+        query_ids = [data_copy['id'].iloc[item] for item in query_indx]
+
         while len(query_indx) > 0:
+
+            obj = query_indx[0]
+
+            print('\n Inside update_samples: ')
+            print('       query_id: ', self.test_metadata['id'].values[obj], '\n')
+
             # add object to the query sample
             query_header = self.test_metadata.values[obj]
             query_features = self.test_features[obj]
@@ -462,6 +474,16 @@ class DataBase:
         # update queried samples
         self.queried_sample.append(all_queries)
 
+        # check queried objects placement
+        
+        print('query_ids: ', query_ids)
+        for name in query_ids:
+            if name in self.test_metadata['id'].values:
+                raise ValueError('Queried object ', name, ' is still in test sample!')
+
+            if name not in self.train_metadata['id'].values:
+                raise ValueError('Queried object ', name, ' not in training!')
+
     def save_metrics(self, loop: int, output_metrics_file: str, epoch: int, batch=1):
         """Save current metrics to file.
 
@@ -503,7 +525,7 @@ class DataBase:
                             full_sample=False, batch=1):
         """Save queried sample to file.
 
-        Parameters
+        Parameters; 
         ----------
         queried_sample_file: str
             Complete path to output file.

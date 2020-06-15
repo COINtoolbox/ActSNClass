@@ -139,7 +139,7 @@ def time_domain_loop(days: list,  output_metrics_file: str,
         data.evaluate_classification()
 
         # choose object to query
-        indx = data.make_query(strategy=strategy, batch=batch)
+        indx = data.make_query(strategy=strategy, batch=batch, dump=screen)
 
         # update training and test samples
         data.update_samples(indx, loop=loop)
