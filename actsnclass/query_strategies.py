@@ -73,9 +73,9 @@ def uncertainty_sampling(class_prob: np.array, test_ids: np.array,
         print('       query_ids: ', test_ids[final_order][:batch], '\n')
         print('   number of test_ids: ', test_ids.shape[0])
         print('   number of queryable_ids: ', len(queryable_ids), '\n')
-        print('*** Displacement caused by constraints on query****')
-        print(' 0 -> ', list(order).index(final_order[0]))
-        print(class_prob[order[0]], '-- > ', class_prob[final_order[0]], '\n')
+        print('   *** Displacement caused by constraints on query****')
+        print('   0 -> ', list(order).index(final_order[0]))
+        print('   ', class_prob[order[0]], '-- > ', class_prob[final_order[0]], '\n')
 
     # return the index of the highest uncertain objects which are queryable
     return list(final_order)[:batch]

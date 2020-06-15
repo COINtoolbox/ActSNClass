@@ -106,14 +106,17 @@ def time_domain_loop(days: list,  output_diag_file: str,
 
     # change training
     if training == 'original':
-        data.build_samples(initial_training='original')
-        full_lc_features = get_original_training(path_to_features=path_to_full_lc_features)
+        data.build_samples(initial_training='original', screen=screen)
+        full_lc_features = get_original_training(path_to_features=path_to_full_lc_features,
+                                                 screen=screen)
         data.train_metadata = full_lc_features.train_metadata
+        ini_train_ids = full_lc_features.train_metadata['id'].values
         data.train_labels = full_lc_features.train_labels
         data.train_features = full_lc_features.train_features
 
     else:
-        data.build_samples(initial_training=int(training))
+        data.build_samples(initial_training=int(training), screen=screen)
+        ini_train_ids = []
 
     # get list of canonical ids
     if canonical:
@@ -125,13 +128,16 @@ def time_domain_loop(days: list,  output_diag_file: str,
     for night in range(int(days[0]), int(days[-1]) - 1):
 
         if screen:
-            print('Processing night: ', night)
+            print('\n Processing night: ', night)
+            print('    ... train: ', data.train_metadata.shape[0])
+            print('    ... test: ', data.test_metadata.shape[0])
+            print('    ... queryable_ids: ', data.queryable_ids.shape[0])
 
         # cont loop
         loop = night - int(days[0])
 
         # classify
-        data.classify(method=classifier)
+        data.classify(method=classifier, screen=screen)
 
         # calculate metrics
         data.evaluate_classification()
@@ -156,17 +162,20 @@ def time_domain_loop(days: list,  output_diag_file: str,
         # load features for next day
         path_to_features2 = path_to_features_dir + 'day_' + str(night + 1) + '.dat'
 
+        if screen:
+            print('\n ** Reading tomorrow data ... ***')
+
         data_tomorrow = DataBase()
         data_tomorrow.load_features(path_to_features2, method=features_method,
-                                    screen=False)
+                                    screen=screen)
 
         # notice that original here corresponds to original in the file
         # not original full light curve training
-        data_tomorrow.build_samples('original')
+        data_tomorrow.build_samples(initial_training=0, screen=screen)
 
         # remove training samples from new test
         for obj in data.train_metadata['id'].values:
-            if obj in data_tomorrow.test_metadata['id'].values:
+            if obj in data_tomorrow.test_metadata['id'].values and obj not in ini_train_ids:
                 # remove old features from training
                 indx_today = list(data.train_metadata['id'].values).index(obj)
                 data.train_metadata = data.train_metadata.drop(data.train_metadata.index[indx_today])
@@ -199,12 +208,18 @@ def time_domain_loop(days: list,  output_diag_file: str,
         else:
             data.queryable_ids = data_tomorrow.queryable_ids
 
+        # check if there are repeated ids
+        for name in data.train_metadata['id'].values:
+            if name in data.test_metadata['id'].values:
+                raise ValueError('End of time_domain_loop: ' + \
+                                 'Object ', name, ' found in test and training sample!')
+
         if screen:
-            # check if there are repeated ids
-            for name in data.train_metadata['id'].values:
-                if name in data.test_metadata['id'].values:
-                    raise ValueError('End of time_domain_loop: ' + \
-                                     'Object ', name, ' found in test and training sample!')
+            print('\n End of time domain loop:')
+            print('    ... train: ', data.train_metadata.shape[0])
+            print('    ... test: ', data.test_metadata.shape[0])
+            print('    ... queryable: ', data.queryable_ids.shape[0], '\n')
+            
 
 
 def main():
