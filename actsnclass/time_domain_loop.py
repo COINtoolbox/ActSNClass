@@ -19,6 +19,7 @@
 __all__ = ['time_domain_loop', 'get_original_training']
 
 import numpy as np
+import pandas as pd
 
 from actsnclass import DataBase
 
@@ -43,7 +44,7 @@ def get_original_training(path_to_features, method='Bazin', screen=False):
 
     data = DataBase()
     data.load_features(path_to_features, method=method, screen=screen)
-    data.build_samples(initial_training='original')
+    data.build_samples(initial_training='original', screen=screen)
 
     return data
 
@@ -108,14 +109,25 @@ def time_domain_loop(days: list,  output_metrics_file: str,
 
     # change training
     if training == 'original':
-        data.build_samples(initial_training='original', screen=screen, queryable=False)
-        full_lc_features = get_original_training(path_to_features=path_to_full_lc_features)
+        data.build_samples(initial_training=0, screen=screen, queryable=queryable)
+        full_lc_features = get_original_training(path_to_features=path_to_full_lc_features,
+                                                 screen=screen)
+        ini_train_ids = full_lc_features.train_metadata['id'].values
         data.train_metadata = full_lc_features.train_metadata
         data.train_labels = full_lc_features.train_labels
         data.train_features = full_lc_features.train_features
 
+        # remove repeated ids
+        test_flag = np.array([item not in ini_train_ids
+                              for item in data.test_metadata['id'].values])
+        data.test_metadata = data.test_metadata[test_flag]
+        data.test_labels = data.test_labels[test_flag]
+        data.test_features = data.test_features[test_flag]
+
     else:
-        data.build_samples(initial_training=int(training), screen=screen)
+        data.build_samples(initial_training=int(training), screen=screen,
+                           queryable=queryable)
+        ini_train_ids = []
 
     # get list of canonical ids
     if canonical:
@@ -128,21 +140,24 @@ def time_domain_loop(days: list,  output_metrics_file: str,
 
         if screen:
             print('Processing night: ', night)
+            print('    ... train: ', data.train_metadata.shape[0])
+            print('    ... test: ', data.test_metadata.shape[0])
+            print('    ... queryable_ids: ', data.queryable_ids.shape[0])
 
         # cont loop
         loop = night - int(days[0])
 
         # classify
-        data.classify(method=classifier)
+        data.classify(method=classifier, screen=screen)
 
         # calculate metrics
         data.evaluate_classification()
 
         # choose object to query
-        indx = data.make_query(strategy=strategy, batch=batch)
+        indx = data.make_query(strategy=strategy, batch=batch, screen=screen)
 
         # update training and test samples
-        data.update_samples(indx, loop=loop)
+        data.update_samples(indx, loop=loop, screen=screen)
 
         # save metrics for current state
         data.save_metrics(loop=loop, output_metrics_file=output_metrics_file,
@@ -158,46 +173,63 @@ def time_domain_loop(days: list,  output_metrics_file: str,
         data_tomorrow = DataBase()
         data_tomorrow.load_features(path_to_features2, method=features_method,
                                     screen=False)
-        data_tomorrow.build_samples('original')
+        data_tomorrow.build_samples(initial_training=0, screen=screen)
 
+        # remove training samples from new test
+        for obj in data.train_metadata['id'].values:
+            if obj in data_tomorrow.test_metadata['id'].values:
+
+                indx_tomorrow = list(data_tomorrow.test_metadata['id'].values).index(obj)
+
+                if obj not in ini_train_ids:
+                    # remove old features from training
+                    indx_today = list(data.train_metadata['id'].values).index(obj)
+                    data.train_metadata = data.train_metadata.drop(data.train_metadata.index[indx_today])
+                    data.train_labels = np.delete(data.train_labels, indx_today, axis=0)
+                    data.train_features = np.delete(data.train_features, indx_today, axis=0)
+                
+                    # update new features of the training with new obs                
+                    flag = np.arange(0, data_tomorrow.test_metadata.shape[0]) == indx_tomorrow
+                    data.train_metadata = pd.concat([data.train_metadata, data_tomorrow.test_metadata[flag]], axis=0,
+                                                     ignore_index=True)
+                    data.train_features = np.append(data.train_features,
+                                                    data_tomorrow.test_features[flag], axis=0)
+                    data.train_labels = np.append(data.train_labels,
+                                                  data_tomorrow.test_labels[flag], axis=0)  
+
+                # remove from new test sample
+                data_tomorrow.test_metadata = data_tomorrow.test_metadata.drop(data_tomorrow.test_metadata.index[indx_tomorrow])
+                data_tomorrow.test_labels = np.delete(data_tomorrow.test_labels, indx_tomorrow, axis=0)
+                data_tomorrow.test_features = np.delete(data_tomorrow.test_features, indx_tomorrow, axis=0)
+
+        # use new test data
         data.test_metadata = data_tomorrow.test_metadata
         data.test_labels = data_tomorrow.test_labels
         data.test_features = data_tomorrow.test_features
 
-        """
-        # identify objects in the new day which must be in training
-        train_flag = np.array([item in data.train_metadata['id'].values 
-                              for item in data_tomorrow.metadata['id'].values])
-   
-        
-        # use new data        
-        data.train_metadata = data_tomorrow.metadata[train_flag]
-        data.train_features = data_tomorrow.features.values[train_flag]
-        data.test_metadata = data_tomorrow.metadata[~train_flag]
-        data.test_features = data_tomorrow.features.values[~train_flag]
-
-        # new labels
-        data.train_labels = np.array([int(item  == 'Ia') for item in 
-                                     data.train_metadata['type'].values])
-        data.test_labels = np.array([int(item == 'Ia') for item in 
-                                    data.test_metadata['type'].values])
-        """
         if strategy == 'canonical':
             data.queryable_ids = canonical.queryable_ids
         else:
             data.queryable_ids = data_tomorrow.queryable_ids
-        """
+        
         if  queryable:
-            queryable_flag = data_tomorrow.metadata['queryable'].values
-            queryable_test_flag = np.logical_and(~train_flag, queryable_flag)
-            data.queryable_ids = data_tomorrow.metadata['id'].values[queryable_test_flag]
+            queryable_flag = data_tomorrow.test_metadata['queryable'].values
+            data.queryable_ids = data_tomorrow.test_metadata['id'].values[queryable_flag]
         else:
             data.queryable_ids = data_tomorrow.metadata['id'].values[~train_flag]
 
+        # check if there are repeated ids
+        for name in data.train_metadata['id'].values:
+            if name in data.test_metadata['id'].values:
+                raise ValueError('End of time_domain_loop: ' + \
+                                 'Object ', name, ' found in test and training sample!')
+
         if screen:
-            print('Training set size: ', data.train_metadata.shape[0])
-            print('Test set size: ', data.test_metadata.shape[0])
-        """
+            print('\n End of time domain loop:')
+            print('    ... train: ', data.train_metadata.shape[0])
+            print('    ... test: ', data.test_metadata.shape[0])
+            print('    ... queryable: ', data.queryable_ids.shape[0], '\n')
+
 
 def main():
     return None

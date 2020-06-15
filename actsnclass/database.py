@@ -180,7 +180,7 @@ class DataBase:
         self.metadata_names = ['id', 'redshift', 'type', 'code', 
                                'orig_sample', 'queryable']          
 
-        self.features = self.data[self.features_names]
+        self.features = self.data[self.features_names].values
 
         if 'queryable' not in self.data.keys():
             self.data['queryable'] = True
@@ -244,12 +244,12 @@ class DataBase:
         if initial_training == 'original':
             train_flag = self.metadata['orig_sample'] == 'train'
             train_data = self.features[train_flag]
-            self.train_features = train_data.values
+            self.train_features = train_data
             self.train_metadata = self.metadata[train_flag]
 
             test_flag = self.metadata['orig_sample'] == 'test'
             test_data = self.features[test_flag]
-            self.test_features = test_data.values
+            self.test_features = test_data
             self.test_metadata = self.metadata[test_flag]
 
             if queryable:
@@ -270,33 +270,39 @@ class DataBase:
 
         elif isinstance(initial_training, int):
 
-            # initialize the temporary label holder
-            train_indexes = np.array([1])
-            temp_labels = np.array([self.metadata['type'].values[train_indexes]])
-
-            # make sure half are Ias and half are non-Ias
-            while sum(temp_labels == 'Ia') != initial_training // 2 + 1:
-                # this is an array of 5 indexes
-                train_indexes = np.random.randint(low=0,
-                                                  high=self.metadata.shape[0],
-                                                  size=initial_training)
+            if initial_training > 0:
+                # initialize the temporary label holder
+                train_indexes = np.random.choice(np.arange(0, self.metadata.shape[0]),
+                                             size=initial_training, replace=False)
                 temp_labels = self.metadata['type'].values[train_indexes]
 
-            # set training
-            train_flag = self.metadata['type'].values[train_indexes] == 'Ia'
-            self.train_labels = np.array([int(item) for item in train_flag])
-            self.train_features = self.features.values[train_indexes]
-            self.train_metadata = pd.DataFrame(self.metadata.values[train_indexes],
-                                               columns=self.metadata_names)
+                # make sure there are the correct ratio of Ias and non-Ias
+                while sum(temp_labels == 'Ia') != max(1, initial_training // 2):
+                    # this is an array of 5 indexes
+                    train_indexes = np.random.choice(np.arange(0, self.metadata.shape[0]),
+                                                      size=initial_training,
+                                                      replace=False)
+                    temp_labels = self.metadata['type'].values[train_indexes]
+
+                if screen:
+                    print('\n temp_labels = ', temp_labels, '\n')
+
+                # set training
+                train_flag = self.metadata['type'].values[train_indexes] == 'Ia'
+                self.train_labels = train_flag.astype(int)
+                self.train_features = self.features[train_indexes]
+                self.train_metadata = pd.DataFrame(self.metadata.values[train_indexes],
+                                                   columns=self.metadata_names)
+            else:
+                train_indexes = []
 
             # set test set as all objs apart from those in training
             test_indexes = np.array([i for i in range(self.metadata.shape[0])
                                      if i not in train_indexes])
             test_ia_flag = self.metadata['type'].values[test_indexes] == 'Ia'
-            self.test_labels = np.array([int(item) for item in test_ia_flag])
-            self.test_features = self.features.values[test_indexes]
-            self.test_metadata = pd.DataFrame(self.metadata.values[test_indexes],
-                                              columns=self.metadata_names)
+            self.test_labels = test_ia_flag.astype(int)
+            self.test_features = self.features[test_indexes]
+            self.test_metadata = self.metadata.iloc[test_indexes]
 
             if queryable:
                 test_flag = np.array([item in test_indexes 
@@ -315,7 +321,7 @@ class DataBase:
             print('Training set size: ', self.train_metadata.shape[0])
             print('Test set size: ', self.test_metadata.shape[0])
 
-    def classify(self, method='RandomForest'):
+    def classify(self, method='RandomForest', screen=False):
         """Apply a machine learning classifier.
 
         Populate properties: predicted_class and class_prob
@@ -325,7 +331,16 @@ class DataBase:
         method: str (optional)
             Chosen classifier.
             The current implementation on accepts `RandomForest`.
+        screen: bool (optional) 
+            If True, print debug comments on screen.
+            Default is False.
         """
+
+        if screen:
+            print('\n Inside classify: ')
+            print('   ... train_features: ', self.train_features.shape)
+            print('   ... train_labels: ', self.train_labels.shape)
+            print('   ... test_features: ', self.test_features.shape)
 
         if method == 'RandomForest':
             self.predicted_class,  self.classprob = \
@@ -356,7 +371,7 @@ class DataBase:
                              '\n Feel free to add other options.')
 
     def make_query(self, strategy='UncSampling', batch=1,
-                   dump=False) -> list:
+                   screen=False) -> list:
         """Identify new object to be added to the training sample.
 
         Parameters
@@ -369,7 +384,7 @@ class DataBase:
         batch: int (optional)
             Number of objects to be chosen in each batch query.
             Default is 1.
-        dump: bool (optional)
+        screen: bool (optional)
             If true, display on screen information about the
             displacement in order and classificaion probability due to
             constraints on queryable sample.
@@ -381,31 +396,38 @@ class DataBase:
             order of importance.
             If strategy=='RandomSampling' the order is irrelevant.
         """
+        if screen:
+            print('\n Inside make_query: ')
+            print('       ... classprob: ', self.classprob.shape[0])
+            print('       ... queryable_ids: ', self.queryable_ids.shape[0])
+            print('       ... test_ids: ', self.test_metadata.shape[0])
 
         if strategy == 'UncSampling':
             query_indx = uncertainty_sampling(class_prob=self.classprob,
                                               queryable_ids=self.queryable_ids,
                                               test_ids=self.test_metadata['id'].values,
-                                              batch=batch, dump=dump)
-            return query_indx
+                                              batch=batch, screen=screen)
 
         elif strategy == 'RandomSampling':
             query_indx = random_sampling(queryable_ids=self.queryable_ids,
                                          test_ids=self.test_metadata['id'].values,
-                                         batch=batch)
+                                         batch=batch, screen=screen)
 
-            for n in query_indx:
-                if self.test_metadata['id'].values[n] not in self.queryable_ids:
-                    raise ValueError('Chosen object is not available for query!')
-
-            return query_indx
+            if screen:
+                print('\n    classprob: ', self.classprob[query_indx[0]])
 
         else:
             raise ValueError('Invalid strategy. Only "UncSampling" and '
                              '"RandomSampling are implemented! \n '
                              'Feel free to add other options. ')
 
-    def update_samples(self, query_indx: list, loop: int, epoch=0):
+        for n in query_indx:
+            if self.test_metadata['id'].values[n] not in self.queryable_ids:
+                raise ValueError('Chosen object is not available for query!')
+
+        return query_indx
+
+    def update_samples(self, query_indx: list, loop: int, epoch=0, screen=False):
         """Add the queried obj(s) to training and remove them from test.
 
         Update properties: train_headers, train_features, train_labels,
@@ -417,9 +439,22 @@ class DataBase:
             List of indexes identifying objects to be moved.
         loop: int
             Store number of loop when this query was made.
+        epoch: int (optional)
+            Initial epoch since survey started. Default is 0.
+        screen: bool (optional)
+            Print debug auxiliary information on screen. Default is False.
         """
 
         all_queries = []
+   
+        data_copy = self.test_metadata.copy()
+        query_ids = [data_copy['id'].values[item] for item in query_indx]
+
+        # check if there are repeated ids
+        for name in self.train_metadata['id'].values:
+            if name in self.test_metadata['id'].values:
+                raise ValueError('Before update! Object ', name, 
+                                 ' found in test and training sample!')
 
         while len(query_indx) > 0:
 
@@ -467,6 +502,22 @@ class DataBase:
 
         # update queried samples
         self.queried_sample.append(all_queries)
+
+        if screen:
+            print('query_ids: ', query_ids)
+            print('queried samples: ', np.array(all_queries)[:,1])
+       
+        for name in query_ids:
+            if name in self.test_metadata['id'].values:
+                raise ValueError('Queried object ', name, ' is still in test sample!')
+
+            if name not in self.train_metadata['id'].values:
+                raise ValueError('Queried object ', name, ' not in training!')
+
+        # check if there are repeated ids
+        for name in self.train_metadata['id'].values:
+            if name in self.test_metadata['id'].values:
+                raise ValueError('After update! Object ', name, ' found in test and training samples!')
 
     def save_metrics(self, loop: int, output_metrics_file: str, epoch: int, batch=1):
         """Save current metrics to file.
