@@ -351,7 +351,7 @@ class DataBase:
             raise ValueError('Only RandomForest classifier is implemented!'
                              '\n Feel free to add other options.')
 
-    def evaluate_classification(self, metric_label='snpcc'):
+    def evaluate_classification(self, metric_label='snpcc', screen=False):
         """Evaluate results from classification.
 
         Populate properties: metric_list_names and metrics_list_values.
@@ -369,6 +369,9 @@ class DataBase:
         else:
             raise ValueError('Only snpcc metric is implemented!'
                              '\n Feel free to add other options.')
+
+        if screen:
+            print('\n Metrics: ', self.metrics_list_values)
 
     def make_query(self, strategy='UncSampling', batch=1,
                    screen=False) -> list:
