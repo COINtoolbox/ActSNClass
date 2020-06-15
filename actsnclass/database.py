@@ -33,11 +33,11 @@ class DataBase:
 
     Attributes
     ----------
-    classprob: np.array
+    classprob: np.array()
         Classification probability for all objects, [pIa, pnon-Ia].
     data: pd.DataFrame
         Complete information read from features files.
-    features: pd.DataFrame
+    features: pd.DataFrame()
         Feature matrix to be used in classification (no metadata).
     features_names: list
         Header for attribute `features`.
@@ -47,23 +47,23 @@ class DataBase:
         Header for metadata.
     metrics_list_names: list
         Values for metric elements.
-    predicted_class: np.array
+    predicted_class: np.array()
         Predicted classes - results from ML classifier.
-    queried_sample: list
+    queried_sample: np.array()
         Complete information of queried objects.
     queryable_ids: np.array()
         Flag for objects available to be queried.
     test_features: pd.DataFrame
         Features matrix for the test sample.
-    test_metadata: pd.DataFrame
+    test_metadata: pd.DataFrame()
         Metadata for the test sample
     test_labels: np.array()
         True classification for the test sample.
-    train_features: pd.DataFrame
+    train_features: pd.DataFrame()
         Features matrix for the train sample.
-    train_metadata: pd.DataFrame
+    train_metadata: pd.DataFrame()
         Metadata for the training sample.
-    train_labels: np.array
+    train_labels: np.array()
         Classes for the training sample.
 
     Methods
@@ -447,9 +447,9 @@ class DataBase:
         screen: bool (optional)
             Print debug auxiliary information on screen. Default is False.
         """
-
-        all_queries = []
    
+        all_queries = []
+
         data_copy = self.test_metadata.copy()
         query_ids = [data_copy['id'].values[item] for item in query_indx]
 
@@ -488,6 +488,7 @@ class DataBase:
             self.test_labels = np.delete(self.test_labels, obj, axis=0)
             self.test_features = np.delete(self.test_features, obj, axis=0)
 
+            # update queried samples
             all_queries.append(line)
 
             # update ids order
@@ -506,12 +507,12 @@ class DataBase:
             if screen: 
                 print('  query_indx: ', query_indx)
 
-        # update queried samples
+        # update query sample
         self.queried_sample.append(all_queries)
 
         if screen:
             print('query_ids: ', query_ids)
-            print('queried samples: ', np.array(all_queries)[:,1])
+            print('queried sample: ', self.queried_sample[-1][-1][1])
        
         for name in query_ids:
             if name in self.test_metadata['id'].values:
