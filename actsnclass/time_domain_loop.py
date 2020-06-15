@@ -225,7 +225,7 @@ def time_domain_loop(days: list,  output_metrics_file: str,
                                  'Object ', name, ' found in test and training sample!')
 
         # check if all queried samples are in the training sample
-        for name in data.queried_sample[:,1]:
+        for name in np.array(data.queried_sample)[:,1]:
             if name not in data.train_metadata['id'].values:
                 raise ValueError('Object ', name, 'was queried but is missing from training!')
 
