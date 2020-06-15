@@ -151,7 +151,7 @@ def time_domain_loop(days: list,  output_metrics_file: str,
         data.classify(method=classifier, screen=screen)
 
         # calculate metrics
-        data.evaluate_classification()
+        data.evaluate_classification(screen=screen)
 
         # choose object to query
         indx = data.make_query(strategy=strategy, batch=batch, screen=screen)
