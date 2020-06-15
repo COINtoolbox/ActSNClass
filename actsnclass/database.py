@@ -179,6 +179,9 @@ class DataBase:
 
         self.metadata_names = ['id', 'redshift', 'type', 'code', 'orig_sample']
 
+        #if 'queryable' in self.data.keys():
+        #    self.metadata_names.append('queryable')
+
         self.features = self.data[self.features_names]
         self.metadata = self.data[self.metadata_names]
 
@@ -349,7 +352,7 @@ class DataBase:
                              '\n Feel free to add other options.')
 
     def make_query(self, strategy='UncSampling', batch=1,
-                   dump=False) -> list:
+                   screen=False) -> list:
         """Identify new object to be added to the training sample.
 
         Parameters
@@ -362,10 +365,10 @@ class DataBase:
         batch: int (optional)
             Number of objects to be chosen in each batch query.
             Default is 1.
-        dump: bool (optional)
+        screen: bool (optional)
             If true, display on screen information about the
             displacement in order and classificaion probability due to
-            constraints on queryable sample.
+            constraints on queryable sample. Default is False.
 
         Returns
         -------
@@ -379,13 +382,13 @@ class DataBase:
             query_indx = uncertainty_sampling(class_prob=self.classprob,
                                               queryable_ids=self.queryable_ids,
                                               test_ids=self.test_metadata['id'].values,
-                                              batch=batch, dump=dump)
+                                              batch=batch, screen=screen)
             return query_indx
 
         elif strategy == 'RandomSampling':
             query_indx = random_sampling(queryable_ids=self.queryable_ids,
                                          test_ids=self.test_metadata['id'].values,
-                                         batch=batch)
+                                         batch=batch, screen=screen)
 
             for n in query_indx:
                 if self.test_metadata['id'].values[n] not in self.queryable_ids:
@@ -398,7 +401,7 @@ class DataBase:
                              '"RandomSampling are implemented! \n '
                              'Feel free to add other options. ')
 
-    def update_samples(self, query_indx: list, loop: int, epoch=0):
+    def update_samples(self, query_indx: list, loop: int, epoch=0, screen=False):
         """Add the queried obj(s) to training and remove them from test.
 
         Update properties: train_headers, train_features, train_labels,
@@ -410,9 +413,22 @@ class DataBase:
             List of indexes identifying objects to be moved.
         loop: int
             Store number of loop when this query was made.
+        epoch: int (optional)
+            Initial epoch since survey started. Default is 0.
+        screen: bool (optional)
+            Print debug auxiliary information on screen. Default is False.
         """
 
         all_queries = []
+
+        data_copy = self.test_metadata.copy()
+        query_ids = [data_copy['id'].values[item] for item in query_indx]
+
+        # check if there are repeated ids
+        for name in self.train_metadata['id'].values:
+            if name in self.test_metadata['id'].values:
+                raise ValueError('Before update! Object ', name, ' found in test and training sample!')
+
         for obj in query_indx:
             # add object to the query sample
             query_header = self.test_metadata.values[obj]
@@ -443,6 +459,23 @@ class DataBase:
 
         # update queried samples
         self.queried_sample.append(all_queries)
+
+        if screen:
+            print('query_ids: ', query_ids)
+            print('queried samples: ', np.array(all_queries)[:,1])
+       
+        for name in query_ids:
+            if name in self.test_metadata['id'].values:
+                raise ValueError('Queried object ', name, ' is still in test sample!')
+
+            if name not in self.train_metadata['id'].values:
+                raise ValueError('Queried object ', name, ' not in training!')
+
+        # check if there are repeated ids
+        for name in self.train_metadata['id'].values:
+            if name in self.test_metadata['id'].values:
+                raise ValueError('After update! Object ', name, ' found in test and training sample!')
+
 
     def save_metrics(self, loop: int, output_metrics_file: str, epoch: int, batch=1):
         """Save current metrics to file.

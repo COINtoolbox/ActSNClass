@@ -23,7 +23,7 @@ import numpy as np
 
 def uncertainty_sampling(class_prob: np.array, test_ids: np.array,
                          queryable_ids: np.array, batch=1,
-                         dump=False) -> list:
+                         screen=False) -> list:
     """Search for the sample with highest uncertainty in predicted class.
 
     Parameters
@@ -37,10 +37,11 @@ def uncertainty_sampling(class_prob: np.array, test_ids: np.array,
     batch: int (optional)
         Number of objects to be chosen in each batch query.
         Default is 1.
-    dump: bool (optional)
+    screen: bool (optional)
         If True display on screen the shift in index and
         the difference in estimated probabilities of being Ia
         caused by constraints on the sample available for querying.
+        Default is False.
 
     Returns
     -------
@@ -67,17 +68,21 @@ def uncertainty_sampling(class_prob: np.array, test_ids: np.array,
     flag = np.array(flag)
     final_order = order[flag]
 
-    if dump:
+    if screen:
+        print('\n Inside UncSampling: ')
+        print('       query_ids: ', test_ids[final_order][:batch], '\n')
+        print('   number of test_ids: ', test_ids.shape[0])
+        print('   number of queryable_ids: ', len(queryable_ids), '\n')
         print('*** Displacement caused by constraints on query****')
         print(' 0 -> ', list(order).index(final_order[0]))
-        print(class_prob[order[0]], '-- > ', class_prob[final_order[0]])
+        print(class_prob[order[0]], '-- > ', class_prob[final_order[0]], '\n')
 
     # return the index of the highest uncertain objects which are queryable
     return list(final_order)[:batch]
 
 
 def random_sampling(test_ids: np.array, queryable_ids: np.array,
-                    batch=1, seed=42) -> list:
+                    batch=1, seed=42, screen=False) -> list:
     """Randomly choose an object from the test sample.
 
     Parameters
@@ -89,6 +94,9 @@ def random_sampling(test_ids: np.array, queryable_ids: np.array,
     batch: int (optional)
         Number of objects to be chosen in each batch query.
         Default is 1.
+    screen: bool (optional)
+        If True display on screen the ids of queried objects.
+        Default is False.
     seed: int (optional)
         Seed for random number generator. Default is 42.
 
@@ -113,6 +121,12 @@ def random_sampling(test_ids: np.array, queryable_ids: np.array,
             flag.append(False)
 
     flag = np.array(flag)
+
+    if screen:
+        print('\n Inside RandomSampling: ')
+        print('       query_ids: ', test_ids[indx[flag]][:batch], '\n')
+        print('   number of test_ids: ', test_ids.shape[0])
+        print('   number of queryable_ids: ', len(queryable_ids), '\n')        
 
     # return the corresponding batch size
     return list(indx[flag])[:batch]

@@ -18,6 +18,8 @@
 
 __all__ = ['time_domain_loop', 'get_original_training']
 
+import numpy as np
+
 from actsnclass import DataBase
 
 
@@ -134,10 +136,13 @@ def time_domain_loop(days: list,  output_diag_file: str,
         data.evaluate_classification()
 
         # choose object to query
-        indx = data.make_query(strategy=strategy, batch=batch)
+        indx = data.make_query(strategy=strategy, batch=batch, screen=screen)
+        
+        # get id of queried objects
+        queried_ids = data.test_metadata['id'].iloc[indx]
 
         # update training and test samples
-        data.update_samples(indx, loop=loop)
+        data.update_samples(indx, loop=loop, screen=screen)
 
         # save diagnostics for current state
         data.save_metrics(loop=loop, output_metrics_file=output_diag_file,
@@ -158,6 +163,17 @@ def time_domain_loop(days: list,  output_diag_file: str,
         # not original full light curve training
         data_tomorrow.build_samples('original')
 
+        # remove training samples from new test
+        train_ids =  data.train_metadata['id'].values
+        tomorrow_test_ids = data_tomorrow.test_metadata['id'].values
+
+        for obj in train_ids:
+            if obj in tomorrow_test_ids:
+                indx_remove = list(data_tomorrow.test_metadata['id'].values).index(obj)
+                data_tomorrow.test_metadata = data_tomorrow.test_metadata.drop(data_tomorrow.test_metadata.index[indx_remove])
+                data_tomorrow.test_labels = np.delete(data_tomorrow.test_labels, indx_remove, axis=0)
+                data_tomorrow.test_features = np.delete(data_tomorrow.test_features, indx_remove, axis=0)
+
         # use new test data
         data.test_metadata = data_tomorrow.test_metadata
         data.test_labels = data_tomorrow.test_labels
@@ -167,6 +183,13 @@ def time_domain_loop(days: list,  output_diag_file: str,
             data.queryable_ids = canonical.queryable_ids
         else:
             data.queryable_ids = data_tomorrow.queryable_ids
+
+        if screen:
+            # check if there are repeated ids
+            for name in data.train_metadata['id'].values:
+                if name in data.test_metadata['id'].values:
+                    raise ValueError('End of time_domain_loop: ' + \
+                                     'Object ', name, ' found in test and training sample!')
 
 
 def main():
