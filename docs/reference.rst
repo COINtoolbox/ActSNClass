@@ -33,9 +33,9 @@ Light curve analysis
 .. autosummary::
    :toctree: api
 
-   bazin
-   errfunc
-   fit_scipy
+   bazin.bazin
+   bazin.errfunc
+   bazin.fit_scipy
 
 Canonical sample
 ================
