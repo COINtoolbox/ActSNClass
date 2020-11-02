@@ -31,6 +31,7 @@ Light curve analysis
 *Basic light curve analysis tools*
 
 .. autosummary::
+   :toctree: api
 
    bazin
    errfunc
@@ -163,6 +164,7 @@ Scripts
 =======
 
 .. autosummary::
+   :toctree: api
 
    build_canonical
    build_time_domain
