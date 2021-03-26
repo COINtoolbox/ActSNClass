@@ -349,7 +349,7 @@ class DataBase:
         if method == 'RandomForest':
             self.predicted_class,  self.classprob = \
                 random_forest(self.train_features, self.train_labels,
-                              self.test_features, n_est=n_est, seed=seed)
+                              self.test_features, nest=n_est, seed=seed)
 
         else:
             raise ValueError('Only RandomForest classifier is implemented!'
