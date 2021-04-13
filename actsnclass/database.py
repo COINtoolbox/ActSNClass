@@ -464,6 +464,12 @@ class DataBase:
             if name in self.test_metadata['id'].values:
                 raise ValueError('Before update! Object ', name, 
                                  ' found in test and training sample!')
+                
+        # update queryable ids
+        query_flag = np.array([item not in query_indx 
+                               for item in range(self.queryable_ids.shape[0])])
+        
+        self.queryable_ids = self.queryable_ids[query_flag]
 
         while len(query_indx) > 0:
 
@@ -510,12 +516,9 @@ class DataBase:
 
             query_indx = new_query_indx
             
-            # remove obj from queryable ids
-            self.queryable_ids = list(self.queryable_ids).remove(obj)
-
             if screen: 
                 print('  query_indx: ', query_indx)
-
+        
         # update query sample
         self.queried_sample.append(all_queries)
 
