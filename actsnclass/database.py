@@ -374,11 +374,13 @@ class DataBase:
             print('\n Metrics: ', self.metrics_list_values)
 
     def make_query(self, strategy='UncSampling', batch=1,
-                   screen=False) -> list:
+                   seed=42, screen=False) -> list:
         """Identify new object to be added to the training sample.
 
         Parameters
         ----------
+        seed: int (optional)
+            Random seed. Default is 42.
         strategy: str (optional)
             Strategy used to choose the most informative object.
             Current implementation accepts 'UncSampling' and
@@ -414,7 +416,7 @@ class DataBase:
         elif strategy == 'RandomSampling':
             query_indx = random_sampling(queryable_ids=self.queryable_ids,
                                          test_ids=self.test_metadata['id'].values,
-                                         batch=batch, screen=screen)
+                                         batch=batch, seed=seed, screen=screen)
 
             if screen:
                 print('\n    classprob: ', self.classprob[query_indx[0]])
