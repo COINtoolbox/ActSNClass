@@ -509,6 +509,9 @@ class DataBase:
                     new_query_indx.append(item - 1)
 
             query_indx = new_query_indx
+            
+            # remove obj from queryable ids
+            self.queryable_ids = list(self.queryable_ids).remove(obj)
 
             if screen: 
                 print('  query_indx: ', query_indx)
