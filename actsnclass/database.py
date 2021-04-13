@@ -321,7 +321,7 @@ class DataBase:
             print('Training set size: ', self.train_metadata.shape[0])
             print('Test set size: ', self.test_metadata.shape[0])
 
-    def classify(self, method='RandomForest', screen=False):
+    def classify(self, method='RandomForest', screen=False, n_est=1000, seed=42):
         """Apply a machine learning classifier.
 
         Populate properties: predicted_class and class_prob
@@ -331,9 +331,13 @@ class DataBase:
         method: str (optional)
             Chosen classifier.
             The current implementation on accepts `RandomForest`.
+        n_est: int (optional)
+            Number of trees. Default is 1000.
         screen: bool (optional) 
             If True, print debug comments on screen.
             Default is False.
+        seed: int (optional)
+            Random seed. Default is 42.
         """
 
         if screen:
@@ -345,7 +349,7 @@ class DataBase:
         if method == 'RandomForest':
             self.predicted_class,  self.classprob = \
                 random_forest(self.train_features, self.train_labels,
-                              self.test_features)
+                              self.test_features, nest=n_est, seed=seed)
 
         else:
             raise ValueError('Only RandomForest classifier is implemented!'
