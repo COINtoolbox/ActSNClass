@@ -45,7 +45,7 @@ def random_forest(train_features:  np.array, train_labels: np.array,
     predictions: np.array
         Predicted classes.
     prob: np.array
-        Classification probability for all objects, [pIa, pnon-Ia].
+        Classification probability for all objects, [pnon-Ia, pIa].
     """
 
     # create classifier instance
