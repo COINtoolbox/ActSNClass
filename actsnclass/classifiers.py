@@ -23,7 +23,7 @@ from sklearn.ensemble import RandomForestClassifier
 
 
 def random_forest(train_features:  np.array, train_labels: np.array,
-                  test_features: np.array, nest=1000, seed=42):
+                  test_features: np.array, nest=1000, seed=42, max_depth=None):
     """Random Forest classifier.
 
     Parameters
@@ -39,6 +39,9 @@ def random_forest(train_features:  np.array, train_labels: np.array,
         Default is 1000.
     seed: float (optional)
         Seed for random number generator. Default is 42.
+    max_depth: None or int (optional)
+        The maximum depth of the tree. Default is None.
+        
 
     Returns
     -------
@@ -49,7 +52,8 @@ def random_forest(train_features:  np.array, train_labels: np.array,
     """
 
     # create classifier instance
-    clf = RandomForestClassifier(n_estimators=nest, random_state=seed)
+    clf = RandomForestClassifier(n_estimators=nest, random_state=seed,
+                                 max_depth=max_depth)
     clf.fit(train_features, train_labels)                     # train
     predictions = clf.predict(test_features)                # predict
     prob = clf.predict_proba(test_features)       # get probabilities
