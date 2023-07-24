@@ -88,7 +88,7 @@ def learn_loop(nloops: int, strategy: str, path_to_features: str,
                           batch=batch, epoch=loop)
 
         # save query sample to file
-        data.save_queried_sample(output_queried_file, loop=loop,
+        data.save_queried_sample(output_queried_file, loop=loop, batch=batch,
                                  full_sample=False)
 
 
