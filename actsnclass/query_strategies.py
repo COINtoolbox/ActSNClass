@@ -19,7 +19,7 @@
 __all__ = ['uncertainty_sampling', 'random_sampling']
 
 import numpy as np
-
+import pandas as pd
 
 def uncertainty_sampling(class_prob: np.array, test_ids: np.array,
                          queryable_ids: np.array, batch=1,
@@ -54,15 +54,10 @@ def uncertainty_sampling(class_prob: np.array, test_ids: np.array,
 
     # get indexes in increasing order
     order = dist.argsort()
-
+                           
     # only allow objects in the query sample to be chosen
-    flag = []
-    for item in order:
-        if test_ids[item] in queryable_ids:
-            flag.append(True)
-        else:
-            flag.append(False)
-
+    flag = list(pd.Series(data=test_ids[order]).isin(queryable_ids))
+    
     # arrange queryable elements in increasing order
     flag = np.array(flag)
     final_order = order[flag]
@@ -110,14 +105,8 @@ def random_sampling(test_ids: np.array, queryable_ids: np.array,
     np.random.seed(seed)
     indx = np.random.randint(low=0, high=len(test_ids), size=len(test_ids))
 
-    # flag only the queryable objects
-    flag = []
-    for item in indx:
-        if test_ids[item] in queryable_ids:
-            flag.append(True)
-
-        else:
-            flag.append(False)
+    # only allow objects in the query sample to be chosen
+    flag = list(pd.Series(data=test_ids[order]).isin(queryable_ids))
 
     flag = np.array(flag)
 
