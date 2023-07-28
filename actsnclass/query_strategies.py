@@ -106,7 +106,7 @@ def random_sampling(test_ids: np.array, queryable_ids: np.array,
     indx = np.random.randint(low=0, high=len(test_ids), size=len(test_ids))
 
     # only allow objects in the query sample to be chosen
-    flag = list(pd.Series(data=test_ids[order]).isin(queryable_ids))
+    flag = list(pd.Series(data=test_ids[indx]).isin(queryable_ids))
 
     flag = np.array(flag)
 
