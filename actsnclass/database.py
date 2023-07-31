@@ -565,7 +565,7 @@ class DataBase:
         # add header to metrics file
         if not os.path.exists(output_metrics_file) or loop == 0:
             with open(output_metrics_file, 'w') as metrics:
-                metrics.write('loop ')
+                metrics.write('loop,')
                 for name in self.metrics_list_names:
                     metrics.write(name + ',')
                 for j in range(batch):
@@ -607,7 +607,7 @@ class DataBase:
                 # add header to query sample file
                 full_header = self.metadata_names + self.features_names
                 with open(queried_sample_file, 'w') as query:
-                    query.write('day ')
+                    query.write('day,')
                     for item in full_header:
                         query.write(item + ',')
                     query.write('\n')
