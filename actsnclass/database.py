@@ -169,7 +169,7 @@ class DataBase:
         """
 
         # read matrix with Bazin features
-        self.data = pd.read_csv(path_to_bazin_file, sep=' ', index_col=False)
+        self.data = pd.read_csv(path_to_bazin_file, index_col=False)
 
         # list of features to use
         self.features_names = ['gA', 'gB', 'gt0', 'gtfall', 'gtrise', 'rA',
@@ -567,18 +567,18 @@ class DataBase:
             with open(output_metrics_file, 'w') as metrics:
                 metrics.write('loop ')
                 for name in self.metrics_list_names:
-                    metrics.write(name + ' ')
+                    metrics.write(name + ',')
                 for j in range(batch):
-                    metrics.write('query_id' + str(j + 1) + ' ')
+                    metrics.write('query_id' + str(j + 1) + ',')
                 metrics.write('\n')
 
         # write to file
         with open(output_metrics_file, 'a') as metrics:
-            metrics.write(str(epoch) + ' ')
+            metrics.write(str(epoch) + ',')
             for value in self.metrics_list_values:
-                metrics.write(str(value) + ' ')
+                metrics.write(str(value) + ',')
             for j in range(batch):
-                metrics.write(str(self.queried_sample[loop][j][1]) + ' ')
+                metrics.write(str(self.queried_sample[loop][j][1]) + ',')
             metrics.write('\n')
 
     def save_queried_sample(self, queried_sample_file: str, loop: int,
@@ -600,7 +600,7 @@ class DataBase:
         if full_sample:
             full_header = self.metadata_names + self.features_names
             query_sample = pd.DataFrame(self.queried_sample, columns=full_header)
-            query_sample.to_csv(queried_sample_file, sep=' ', index=False)
+            query_sample.to_csv(queried_sample_file, index=False)
 
         elif isinstance(loop, int):
             if not os.path.exists(queried_sample_file) or loop == 0:
@@ -609,14 +609,14 @@ class DataBase:
                 with open(queried_sample_file, 'w') as query:
                     query.write('day ')
                     for item in full_header:
-                        query.write(item + ' ')
+                        query.write(item + ',')
                     query.write('\n')
 
             # save query sample to file
             with open(queried_sample_file, 'a') as query:
                 for batch in range(batch):
                     for elem in self.queried_sample[loop][batch]:
-                        query.write(str(elem) + ' ')
+                        query.write(str(elem) + ',')
                     query.write('\n')
 
 
