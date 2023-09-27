@@ -448,7 +448,7 @@ class DataBase:
 
         return query_indx
 
-    def update_samples(self, query_indx: list, loop: int, epoch=0, screen=False):
+    def update_samples(self, query_indx: list, loop: int, screen=False):
         """Add the queried obj(s) to training and remove them from test.
 
         Update properties: train_headers, train_features, train_labels,
@@ -460,8 +460,6 @@ class DataBase:
             List of indexes identifying objects to be moved.
         loop: int
             Store number of loop when this query was made.
-        epoch: int (optional)
-            Initial epoch since survey started. Default is 0.
         screen: bool (optional)
             Print debug auxiliary information on screen. Default is False.
         """
@@ -490,7 +488,7 @@ class DataBase:
             # add object to the query sample
             query_header = self.test_metadata.values[obj]
             query_features = self.test_features[obj]
-            line = [epoch]
+            line = [loop]
             for item in query_header:
                 line.append(item)
             for item1 in query_features:
@@ -613,7 +611,7 @@ class DataBase:
                 # add header to query sample file
                 full_header = self.metadata_names + self.features_names
                 with open(queried_sample_file, 'w') as query:
-                    query.write('day,')
+                    query.write('loop,')
                     for item in full_header:
                         query.write(item + ',')
                     query.write('\n')
