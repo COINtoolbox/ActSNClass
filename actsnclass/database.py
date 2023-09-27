@@ -20,7 +20,7 @@ import numpy as np
 import os
 import pandas as pd
 
-from actsnclass.classifiers import random_forest
+from actsnclass.classifiers import random_forest, xgboost_class
 from actsnclass.query_strategies import uncertainty_sampling, random_sampling
 from actsnclass.metrics import get_snpcc_metric
 
@@ -331,7 +331,7 @@ class DataBase:
         ----------
         method: str (optional)
             Chosen classifier.
-            The current implementation on accepts `RandomForest`.
+            The current implementation on accepts `RandomForest` and `XGBoost`.
         n_est: int (optional)
             Number of trees. Default is 1000.
         screen: bool (optional) 
@@ -356,9 +356,15 @@ class DataBase:
                 random_forest(self.train_features, self.train_labels,
                               self.test_features, nest=n_est, seed=seed,
                               max_depth=max_depth, n_jobs=n_jobs)
+            
+        elif method == 'XGBoost':
+            self.predicted_class,  self.classprob = \
+                xgboost_class(self.train_features, self.train_labels,
+                              self.test_features, nest=n_est, seed=seed,
+                              max_depth=max_depth, n_jobs=n_jobs)
 
         else:
-            raise ValueError('Only RandomForest classifier is implemented!'
+            raise ValueError('Only RandomForest and XGBoost classifiers are implemented!'
                              '\n Feel free to add other options.')
 
     def evaluate_classification(self, metric_label='snpcc', screen=False):
