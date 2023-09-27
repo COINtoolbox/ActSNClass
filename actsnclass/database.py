@@ -619,9 +619,9 @@ class DataBase:
             # save query sample to file
             with open(queried_sample_file, 'a') as query:
                 for batch in range(batch):
-                    for elem in self.queried_sample[loop][batch]:
+                    for elem in self.queried_sample[loop][batch][:-1]:
                         query.write(str(elem) + ',')
-                    query.write('\n')
+                    query.write(str(self.queried_sample[loop][batch][-1]) + '\n')
 
 
 def main():
