@@ -20,7 +20,7 @@ import numpy as np
 import os
 import pandas as pd
 
-from actsnclass.classifiers import random_forest, xgboost_class
+from actsnclass.classifiers import random_forest
 from actsnclass.query_strategies import uncertainty_sampling, random_sampling
 from actsnclass.metrics import get_snpcc_metric
 
