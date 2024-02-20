@@ -372,10 +372,10 @@ def fit_snpcc_bazin(path_to_data_dir: str, features_file: str):
 
             # save features to file
             with open(features_file, 'a') as param_file:
-                param_file.write(str(lc.id) + ' ' + str(lc.redshift) + ' ' + str(lc.sntype) + ' ')
-                param_file.write(str(lc.sncode) + ' ' + str(lc.sample) + ' ')
+                param_file.write(str(lc.id) + ',' + str(lc.redshift) + ',' + str(lc.sntype) + ',')
+                param_file.write(str(lc.sncode) + ',' + str(lc.sample) + ',')
                 for item in lc.bazin_features:
-                    param_file.write(str(item) + ' ')
+                    param_file.write(str(item) + ',')
                 param_file.write('\n')
 
     param_file.close()
