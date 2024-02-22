@@ -141,7 +141,7 @@ The command line option require a few more inputs than the feature extraction st
 .. code-block:: bash
 
    >>> run_loop.py -i <input features file> -b <batch size> -n <number of loops>
-   >>>             -d <output metrics file> -q <output queried sample file>
+   >>>             -m <output metrics file> -q <output queried sample file>
    >>>             -s <learning strategy> -t <choice of initial training>
 
 
