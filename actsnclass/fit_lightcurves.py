@@ -122,7 +122,7 @@ class LightCurve(object):
     def load_snpcc_lc(self, path_to_data: str):
         """Reads one LC from SNPCC data.
 
-        Populates the attributes: dataset_name, id, sample, redshift, sncode,
+        Populates the attributes: dataset_name, id, orig_sample, redshift, sncode,
         sntype, photometry and sim_peakmag.
 
         Parameters
@@ -353,8 +353,8 @@ def fit_snpcc_bazin(path_to_data_dir: str, features_file: str):
 
     # add headers to files
     with open(features_file, 'w') as param_file:
-        param_file.write('id redshift type code orig_sample gA gB gt0 gtfall gtrise rA rB rt0 rtfall rtrise iA iB it0 ' +
-                         'itfall itrise zA zB zt0 ztfall ztrise\n')
+        param_file.write('id,redshift,type,code,orig_sample,gA,gB,gt0,gtfall,gtrise,rA,rB,rt0,rtfall,rtrise,iA,iB,it0,' +
+                         'itfall,itrise,zA,zB,zt0,ztfall,ztrise\n')
 
     for file in lc_list:
 
@@ -372,11 +372,11 @@ def fit_snpcc_bazin(path_to_data_dir: str, features_file: str):
 
             # save features to file
             with open(features_file, 'a') as param_file:
-                param_file.write(str(lc.id) + ' ' + str(lc.redshift) + ' ' + str(lc.sntype) + ' ')
-                param_file.write(str(lc.sncode) + ' ' + str(lc.sample) + ' ')
-                for item in lc.bazin_features:
-                    param_file.write(str(item) + ' ')
-                param_file.write('\n')
+                param_file.write(str(lc.id) + ',' + str(lc.redshift) + ',' + str(lc.sntype) + ',')
+                param_file.write(str(lc.sncode) + ',' + str(lc.sample) + ',')
+                for item in lc.bazin_features[:-1]:
+                    param_file.write(str(item) + ',')
+                param_file.write(lc.bazin_features[-1] + '\n')
 
     param_file.close()
 

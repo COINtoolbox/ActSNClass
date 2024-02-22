@@ -116,7 +116,7 @@ Alternatively you can also run everything from the command line:
 .. code-block:: bash
 
    >>> run_loop.py -i <input features file> -b <batch size> -n <number of loops>
-   >>>             -d <output metrics file> -q <output queried sample file>
+   >>>             -m <output metrics file> -q <output queried sample file>
    >>>             -s <learning strategy> -t <choice of initial training>
 
 The queryable sample
