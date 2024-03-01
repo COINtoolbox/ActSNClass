@@ -141,9 +141,7 @@ class Canvas(object):
         # read data
         for i in range(len(strategies_list)):
             name = strategies_list[i]
-            self.strategies[name] = pd.read_csv(path_to_files[i],
-                                                sep=' ',
-                                                index_col=False)
+            self.strategies[name] = pd.read_csv(path_to_files[i])
 
             # get metrics names
             if metrics_name == 'snpcc':
