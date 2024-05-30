@@ -151,44 +151,39 @@ class LightCurve(object):
         op.close()
 
         # separate elements
-        data_all = np.array([elem.split() for elem in lin])
-
-        # flag useful lines
-        flag_lines = np.array([True if len(line) > 1 else False for line in data_all])
-
-        # get only informative lines
-        data = data_all[flag_lines]
+        data = [lin[i].split() for i in range(len(lin))]
 
         photometry_raw = []               # store photometry
         header = []                      # store parameter header
 
         # get header information
         for line in data:
-            if line[0] == 'SNID:':
-                self.id = int(line[1])
-            elif line[0] == 'SNTYPE:':
-                if line[1] == '-9':
-                    self.sample = 'test'
-                else:
-                    self.sample = 'train'
-            elif line[0] == 'SIM_REDSHIFT:':
-                self.redshift = float(line[1])
-            elif line[0] == 'SIM_NON1a:':
-                self.sncode = line[1]
-                if line[1] in snibc:
-                    self.sntype = 'Ibc'
-                elif line[1] in snii:
-                    self.sntype = 'II'
-                elif line[1] == '0':
-                    self.sntype = 'Ia'
-                else:
-                    raise ValueError('Unknown supernova type!')
-            elif line[0] == 'VARLIST:':
-                header: list = line[1:]
-            elif line[0] == 'OBS:':
-                photometry_raw.append(np.array(line[1:]))
-            elif line[0] == 'SIM_PEAKMAG:':
-                self.sim_peakmag = np.array([float(item) for item in line[1:5]])
+            if len(line) > 1:
+                if line[0] == 'SNID:':
+                    self.id = int(line[1])
+                elif line[0] == 'SNTYPE:':
+                    if line[1] == '-9':
+                        self.sample = 'test'
+                    else:
+                        self.sample = 'train'
+                elif line[0] == 'SIM_REDSHIFT:':
+                    self.redshift = float(line[1])
+                elif line[0] == 'SIM_NON1a:':
+                    self.sncode = line[1]
+                    if line[1] in snibc:
+                        self.sntype = 'Ibc'
+                    elif line[1] in snii:
+                        self.sntype = 'II'
+                    elif line[1] == '0':
+                        self.sntype = 'Ia'
+                    else:
+                        raise ValueError('Unknown supernova type!')
+                elif line[0] == 'VARLIST:':
+                    header: list = line[1:]
+                elif line[0] == 'OBS:':
+                    photometry_raw.append(np.array(line[1:]))
+                elif line[0] == 'SIM_PEAKMAG:':
+                    self.sim_peakmag = np.array([float(item) for item in line[1:5]])
 
         # transform photometry into array
         photometry_raw = np.array(photometry_raw)
@@ -376,7 +371,7 @@ def fit_snpcc_bazin(path_to_data_dir: str, features_file: str):
                 param_file.write(str(lc.sncode) + ',' + str(lc.sample) + ',')
                 for item in lc.bazin_features[:-1]:
                     param_file.write(str(item) + ',')
-                param_file.write(lc.bazin_features[-1] + '\n')
+                param_file.write(str(lc.bazin_features[-1]) + '\n')
 
     param_file.close()
 
