@@ -44,15 +44,8 @@ Clone this repository,
 
     >>> git clone https://github.com/COINtoolbox/ActSNClass
 
-We recommend the use of Anaconda environments to ensure the proper version of all dependencies are
-installed and do not interfere in your other applications. You can find instructions on how to install
-it `here <https://docs.anaconda.com/anaconda/install/>`_.
-
-If you wish to use this option, simple navigate to the directory of the repository and do:
-
-.. code-block:: python
-
-    >>> conda env create -f environment.yml
+We recommend the use of virtual environments to ensure the proper version of all dependencies are
+installed and do not interfere in your other applications. You can find instructions on how to set up an environment `here <https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/>`_.
 
 Once the environment is set up you can activate it:
 
@@ -62,11 +55,19 @@ Once the environment is set up you can activate it:
 
 If everything goes well you will see the name of the environment in the left most side of your command line.
 
+Navigate to the `ActSNClass` directory and you can then install the dependencies with:  
+
+.. code-block:: bash
+
+    (ActSNClass) >> pip install --upgrade pip
+    (ActSNClass) >> pip install -r requirements.txt
+
 You can now install `actsnclass` with:
 
 .. code-block:: bash
 
-    (ActSNClass)  >> python setup.py install
+    (ActSNClass) >> pip install 
+    (ActSNClass) >> python setup.py install
 
 
 Setting up a working directory
