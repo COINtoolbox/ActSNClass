@@ -51,7 +51,7 @@ Once the environment is set up you can activate it:
 
 .. code-block:: python
 
-   >>> conda activate ActSNClass
+   >>> source <path_to_venv>/bin/activate
 
 If everything goes well you will see the name of the environment in the left most side of your command line.
 
