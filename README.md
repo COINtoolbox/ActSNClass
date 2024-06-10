@@ -40,10 +40,10 @@ Full documentation can be found at [readthedocs](https://actsnclass.readthedocs.
 
 The current version runs in Python-3.7 or latter.
 
-We recommend you use a virtual environment to ensure the correct package versions.
+We recommend you use a [virtual environment](https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/) to ensure the correct package versions.
 
 Once your environment is created, you can source it :  
-    >> source <oath_to_venv>/bin/activate
+    >> source <path_to_venv>/bin/activate
     
 You will notice a `(ActSNCLass)` to the left of your terminal line.
 This means everything is ok!
