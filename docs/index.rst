@@ -66,7 +66,6 @@ You can now install `actsnclass` with:
 
 .. code-block:: bash
 
-    (ActSNClass) >> pip install 
     (ActSNClass) >> python setup.py install
 
 
