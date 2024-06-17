@@ -16,12 +16,32 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-__all__ = ['random_forest']
+__all__ = ['mlflow_tracking','random_forest']
 
 import numpy as np
 from sklearn.ensemble import RandomForestClassifier
 import mlflow
 import mlflow.sklearn
+from datetime import datetime
+
+def mlflow_tracking(clf):
+    # Set the MLflow experiment
+    mlflow.set_experiment("Random_Forest_Experiment")
+    
+    # Enable autolog
+    mlflow.sklearn.autolog()
+
+    # Get the current date in day-month-year format
+    current_date = datetime.now().strftime("%d-%m-%Y")
+
+    # Generate the model name with the current date
+    model_name = f"Random_Forest_Experiment_{current_date}"
+
+    # Start a new run
+    with mlflow.start_run() as run:
+        # Log the model with the generated name
+        mlflow.sklearn.log_model(clf, model_name)
+
 
 def random_forest(train_features:  np.array, train_labels: np.array,
                   test_features: np.array, nest=1000, seed=42, max_depth=None,
@@ -56,38 +76,15 @@ def random_forest(train_features:  np.array, train_labels: np.array,
     """
 
     # create classifier instance
-    '''    clf = RandomForestClassifier(n_estimators=nest, random_state=seed,
+    clf = RandomForestClassifier(n_estimators=nest, random_state=seed,
                                  max_depth=max_depth, n_jobs=n_jobs)
     clf.fit(train_features, train_labels)                     # train
     predictions = clf.predict(test_features)                # predict
     prob = clf.predict_proba(test_features)       # get probabilities
-    '''
+    
 
-    # Initialiser MLflow
-    mlflow.start_run()
-
-    try:
-        # Enregistrer les hyperparamètres
-        mlflow.log_param("n_estimators", nest)
-        mlflow.log_param("random_state", seed)
-        mlflow.log_param("max_depth", max_depth)
-        mlflow.log_param("n_jobs", n_jobs)
-
-        # Créer une instance du classificateur
-        clf = RandomForestClassifier(n_estimators=nest, random_state=seed,
-                                     max_depth=max_depth, n_jobs=n_jobs)
-        clf.fit(train_features, train_labels)  # Entraîner le modèle
-
-        # Prédire
-        predictions = clf.predict(test_features)
-        prob = clf.predict_proba(test_features)  # Obtenir les probabilités
-
-        
-        # Enregistrer le modèle
-        mlflow.sklearn.log_model(clf, "random_forest_model")
-
-    finally:
-        mlflow.end_run()
+    # Call mlflow_tracking function to handle MLflow logging
+    mlflow_tracking(clf)
 
     return predictions, prob
 
