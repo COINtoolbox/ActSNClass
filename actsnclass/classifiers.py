@@ -22,25 +22,44 @@ import numpy as np
 from sklearn.ensemble import RandomForestClassifier
 import mlflow
 import mlflow.sklearn
+from mlflow.tracking import MlflowClient
 from datetime import datetime
 
-def mlflow_tracking(clf):
+def mlflow_tracking_And_Registry(clf, train_features):
     # Set the MLflow experiment
     mlflow.set_experiment("Random_Forest_Experiment")
     
     # Enable autolog
     mlflow.sklearn.autolog()
 
+    train_size = train_features.shape[0]
+
+    # Generate the run name with the train size
+    run_name = f"Train_size_{train_size}"
+
     # Get the current date in day-month-year format
     current_date = datetime.now().strftime("%d-%m-%Y")
 
     # Generate the model name with the current date
-    model_name = f"Random_Forest_Experiment_{current_date}"
+    model_name = f"Random_Forest_Experiment_Vi_{current_date}"
 
     # Start a new run
-    with mlflow.start_run() as run:
+    with mlflow.start_run(run_name=run_name) as run:
         # Log the model with the generated name
         mlflow.sklearn.log_model(clf, model_name)
+
+
+        # Register the model in the Model Registry
+        model_uri = f"runs:/{run.info.run_id}/random_forest_model"
+        registered_model = mlflow.register_model(model_uri, model_name)
+
+        # Add a description or change the stage of the model version if needed
+        client = MlflowClient()
+        client.update_model_version(
+            name=model_name,
+            version=registered_model.version,
+            description="Random Forest model registered on " + current_date
+        )
 
 
 def random_forest(train_features:  np.array, train_labels: np.array,
@@ -74,7 +93,12 @@ def random_forest(train_features:  np.array, train_labels: np.array,
     prob: np.array
         Classification probability for all objects, [pnon-Ia, pIa].
     """
-
+#    mlflow.sklearn.autolog()
+    # Ensure no previous autolog is active
+    mlflow.autolog(disable=True)
+    
+    # Enable autolog before model training
+    mlflow.sklearn.autolog()
     # create classifier instance
     clf = RandomForestClassifier(n_estimators=nest, random_state=seed,
                                  max_depth=max_depth, n_jobs=n_jobs)
@@ -83,8 +107,10 @@ def random_forest(train_features:  np.array, train_labels: np.array,
     prob = clf.predict_proba(test_features)       # get probabilities
     
 
-    # Call mlflow_tracking function to handle MLflow logging
-    mlflow_tracking(clf)
+
+    
+    # Call mlflow_tracking_And_Registry function to handle MLflow logging
+    mlflow_tracking_And_Registry(clf, train_features)
 
     return predictions, prob
 
