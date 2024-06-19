@@ -16,7 +16,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-__all__ = ['mlflow_tracking','random_forest']
+__all__ = ['mlflow_tracking_And_Registry','random_forest']
 
 import numpy as np
 from sklearn.ensemble import RandomForestClassifier
@@ -50,7 +50,7 @@ def mlflow_tracking_And_Registry(clf, train_features):
 
 
         # Register the model in the Model Registry
-        model_uri = f"runs:/{run.info.run_id}/random_forest_model"
+        model_uri = f"runs:/{run.info.run_id}/{model_name}"
         registered_model = mlflow.register_model(model_uri, model_name)
 
         # Add a description or change the stage of the model version if needed
