@@ -51,6 +51,6 @@ This means everything is ok!
 In order to install this code you should clone this repository and do::  
 
     (ActSNClass) >> pip install --upgrade pip
-    (ActSNClass) >> pip install -r requirements
+    (ActSNClass) >> pip install -r requirements.txt
     (ActSNClass) >> python setup.py install
 
