@@ -3,7 +3,7 @@
 [![arXiv](https://img.shields.io/badge/arxiv-astro--ph%2F1804.03765-red)](https://arxiv.org/abs/1804.03765) 
 
 
-# <img align="right" src="docs/images/COIN_logo_very_small.png" width="350"> ActSNClass
+# [<img align="right" src="docs/images/COIN_logo_very_small.png" width="350">](https://cosmostatistics-initiative.org/) ActSNClass
 
 
 ## Active Learning for Supernova Photometric Classification 
