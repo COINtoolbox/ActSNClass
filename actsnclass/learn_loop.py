@@ -72,8 +72,14 @@ def learn_loop(nloops: int, strategy: str, path_to_features: str,
             print('Processing... ', loop)
 
         # classify
-        data.classify(method=classifier)
-
+        data.classify(train, method=classifier,
+                      Mlflow=True)
+        
+        print('\n i am before mlflow \n')
+        # save query sample to file
+        data.save_queried_samples_mlflow(output_queried_file, loop=loop, batch=batch,
+                                 full_sample=False)
+        print('\n i am after mlflow \n')
         # calculate metrics
         data.evaluate_classification()
 

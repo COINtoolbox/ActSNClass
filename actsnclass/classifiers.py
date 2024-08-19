@@ -22,8 +22,10 @@ import numpy as np
 from sklearn.ensemble import RandomForestClassifier
 import mlflow
 import mlflow.sklearn
+import pandas as pd
 from mlflow.tracking import MlflowClient
 from datetime import datetime
+
 
 def mlflow_tracking_And_Registry(clf, train_features):
     # Set the MLflow experiment
@@ -41,10 +43,25 @@ def mlflow_tracking_And_Registry(clf, train_features):
     current_date = datetime.now().strftime("%d-%m-%Y")
 
     # Generate the model name with the current date
-    model_name = f"Random_Forest_Experiment_Vi_{current_date}"
+    model_name = f"Random_Forest_Experiment_{current_date}"
 
     # Start a new run
     with mlflow.start_run(run_name=run_name) as run:
+
+        # Log the model parameters
+        params = clf.get_params()
+        for param_name, param_value in params.items():
+            mlflow.log_param(param_name, param_value)
+
+        train_sample = pd.DataFrame(train_features)
+        train_sample_file = f"train_sample.csv"
+
+        train_sample.to_csv(train_sample_file, index=False)
+        
+
+        mlflow.log_artifact(train_sample_file)
+        
+
         # Log the model with the generated name
         mlflow.sklearn.log_model(clf, model_name)
 
@@ -64,7 +81,7 @@ def mlflow_tracking_And_Registry(clf, train_features):
 
 def random_forest(train_features:  np.array, train_labels: np.array,
                   test_features: np.array, nest=1000, seed=42, max_depth=None,
-                  n_jobs=1):
+                  n_jobs=1, mlflow=True):
     """Random Forest classifier.
 
     Parameters
@@ -93,24 +110,18 @@ def random_forest(train_features:  np.array, train_labels: np.array,
     prob: np.array
         Classification probability for all objects, [pnon-Ia, pIa].
     """
-#    mlflow.sklearn.autolog()
-    # Ensure no previous autolog is active
-    mlflow.autolog(disable=True)
-    
-    # Enable autolog before model training
-    mlflow.sklearn.autolog()
+
     # create classifier instance
     clf = RandomForestClassifier(n_estimators=nest, random_state=seed,
                                  max_depth=max_depth, n_jobs=n_jobs)
     clf.fit(train_features, train_labels)                     # train
     predictions = clf.predict(test_features)                # predict
     prob = clf.predict_proba(test_features)       # get probabilities
-    
 
 
-    
-    # Call mlflow_tracking_And_Registry function to handle MLflow logging
-    mlflow_tracking_And_Registry(clf, train_features)
+    if(mlflow):
+    	# Call mlflow_tracking_And_Registry function to handle MLflow logging
+    	mlflow_tracking_And_Registry(clf, train_features)
 
     return predictions, prob
 
