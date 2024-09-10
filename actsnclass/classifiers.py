@@ -28,6 +28,39 @@ from datetime import datetime
 
 
 def mlflow_tracking_And_Registry(clf, train_features):
+
+    """Integrates MLflow tracking and registry features for machine learning model management.
+
+    This function sets up an MLflow experiment, logs various components including model parameters,
+    training data, and registers the model in MLflow's model registry. It handles creating unique
+    identifiers for experiments and models based on training size and current date.
+
+    Parameters
+    ----------
+    clf : estimator
+        A fitted model or classifier.
+    train_features : np.array
+        Features of the training data used to fit the model.
+
+    Notes
+    -----
+    - Requires an active MLflow environment.
+    - The function assumes that `mlflow` and its related functions are properly configured.
+
+    Outputs
+    -------
+    - Logs model parameters, training data sample, and registers the model with a unique name.
+    - Saves the training data sample to a CSV file.
+    - The model is registered under a generated name, combining the experiment's name with the current date.
+
+    Examples
+    --------
+    >>> from sklearn.ensemble import RandomForestClassifier
+    >>> clf = RandomForestClassifier(n_estimators=100)
+    >>> train_features = np.random.rand(100, 4)  # 100 samples, 4 features each
+    >>> mlflow_tracking_And_Registry(clf, train_features)
+    """
+
     # Set the MLflow experiment
     mlflow.set_experiment("Random_Forest_Experiment")
     
@@ -58,7 +91,7 @@ def mlflow_tracking_And_Registry(clf, train_features):
 
         train_sample.to_csv(train_sample_file, index=False)
         
-
+        # Log the training Data
         mlflow.log_artifact(train_sample_file)
         
 
@@ -70,7 +103,7 @@ def mlflow_tracking_And_Registry(clf, train_features):
         model_uri = f"runs:/{run.info.run_id}/{model_name}"
         registered_model = mlflow.register_model(model_uri, model_name)
 
-        # Add a description or change the stage of the model version if needed
+        # Add a description of the model version if needed
         client = MlflowClient()
         client.update_model_version(
             name=model_name,
