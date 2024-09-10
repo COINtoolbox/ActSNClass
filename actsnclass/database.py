@@ -19,7 +19,6 @@
 import numpy as np
 import os
 import pandas as pd
-import mlflow
 
 from actsnclass.classifiers import random_forest
 from actsnclass.query_strategies import uncertainty_sampling, random_sampling
@@ -625,61 +624,6 @@ class DataBase:
                     for elem in self.queried_sample[loop][batch][:-1]:
                         query.write(str(elem) + ',')
                     query.write(str(self.queried_sample[loop][batch][-1]) + '\n')
-
-    def save_queried_samples_mlflow(self, queried_sample_file: str, loop: int,
-                                full_sample=False, batch=1):
-        """Save queried sample to MLflow as an artifact.
-
-        Parameters
-         ----------
-        queried_sample_file: str
-             Complete path to output file.
-        loop: int
-            Number of learning loops finished at this stage.
-        full_sample: bool (optional)
-            If true, write down a complete queried sample stored in
-            property 'queried_sample'. Otherwise append 1 line per loop to
-            'queried_sample_file'. Default is False.
-        batch: int (optional)
-              Number of batches to save per loop. Default is 1.
-        """
-        # Ensure MLflow run is active
-        if not mlflow.active_run():
-            # raise RuntimeError("No active MLflow run. Start a run with `mlflow.start_run()` before calling this function.")
-            print('\n No active MLflow run. Start a run with `mlflow.start_run()` before calling this function. \n')
-        if full_sample:
-            print('\n full_sample is true \n')
-            full_header = self.metadata_names + self.features_names
-            query_sample = pd.DataFrame(self.queried_sample, columns=full_header)
-            query_sample.to_csv(queried_sample_file, index=False)
-
-            # Log the complete queried sample to MLflow
-            mlflow.log_artifact(queried_sample_file, artifact_path="full_queried_samples")
-
-        elif isinstance(loop, int):
-            print('\n i am in elif \n')
-            if not os.path.exists(queried_sample_file) or loop == 0:
-            # add header to query sample file
-                full_header = self.metadata_names + self.features_names
-                with open(queried_sample_file, 'w') as query:
-                    query.write('loop,')
-                    for item in full_header:
-                        query.write(item + ',')
-                    query.write('\n')
-
-            # save query sample to file
-            with open(queried_sample_file, 'a') as query:
-                for b in range(batch):
-                    for elem in self.queried_sample[loop][b][:-1]:
-                        query.write(str(elem) + ',')
-                    query.write(str(self.queried_sample[loop][b][-1]) + '\n')
-
-            # Log the current loop queried sample to MLflow
-            mlflow.log_artifact(queried_sample_file, artifact_path=f"queried_samples_loop_{loop}")
-            print('\n Data saved in mlflow as artifact \n')
-        else:
-           print('\n i am in else \n')
-           # raise ValueError("The loop parameter must be an integer.")
 
 
 def main():

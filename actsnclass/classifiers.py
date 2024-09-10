@@ -114,7 +114,7 @@ def mlflow_tracking_And_Registry(clf, train_features):
 
 def random_forest(train_features:  np.array, train_labels: np.array,
                   test_features: np.array, nest=1000, seed=42, max_depth=None,
-                  n_jobs=1, mlflow=True):
+                  n_jobs=1, mlflow=False):
     """Random Forest classifier.
 
     Parameters
