@@ -80,3 +80,7 @@ Once you have run the code with MLflow enabled, you can access the MLflow user i
      (ActSNClass) >> mlflow ui 
 
 - Visit the MLflow UI by opening your web browser and navigating to: http://127.0.0.1:5000 
+
+### Reusing Models from MLflow Registry
+
+To download and reuse models that have been registered in the MLflow Model Registry, you can refer to the example provided in the managemodel.py file located in the actsnclass directory
