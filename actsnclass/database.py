@@ -86,8 +86,6 @@ class DataBase:
         Save current metrics to file.
     save_queried_sample(queried_sample_file: str, loop: int, full_sample: str)
         Save queried sample to file.
-    save_queried_samples_mlflow(queried_sample_file: str, loop: int, full_sample: str)
-        Save queried sample to file in MLflow.
     
     Examples
     --------
