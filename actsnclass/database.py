@@ -612,9 +612,9 @@ class DataBase:
                 full_header = self.metadata_names + self.features_names
                 with open(queried_sample_file, 'w') as query:
                     query.write('loop,')
-                    for item in full_header:
+                    for item in full_header[:-1]:
                         query.write(item + ',')
-                    query.write('\n')
+                    query.write(full_header[-1] + '\n')
 
             # save query sample to file
             with open(queried_sample_file, 'a') as query:
