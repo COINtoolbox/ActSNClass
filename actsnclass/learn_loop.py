@@ -73,7 +73,7 @@ def learn_loop(nloops: int, strategy: str, path_to_features: str,
 
         # classify
         data.classify(method=classifier)
-
+        
         # calculate metrics
         data.evaluate_classification()
 
