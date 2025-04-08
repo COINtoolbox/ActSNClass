@@ -86,7 +86,7 @@ class DataBase:
         Save current metrics to file.
     save_queried_sample(queried_sample_file: str, loop: int, full_sample: str)
         Save queried sample to file.
-
+    
     Examples
     --------
     >>> from actsnclass import DataBase

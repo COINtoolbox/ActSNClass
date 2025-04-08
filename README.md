@@ -54,3 +54,33 @@ In order to install this code you should clone this repository and do::
     (ActSNClass) >> pip install -r requirements.txt
     (ActSNClass) >> python setup.py install
 
+
+# Mlflow Integration 
+
+I have successfully integrated MLflow for tracking and model registry in the project. This integration is implemented in the classifier.py file.
+
+### Function Name:
+ 
+- mlflow_tracking_And_Registry: this function handles the tracking of model metrics, parameters, and artifacts with MLflow, and registers the trained model in the MLflow Model Registry.
+
+
+### Enabling Mlflow
+
+To utilize MLflow for tracking and model registry, simply set the mlflow parameter to True in the random_forest function, which is located in the classifier.py file.
+
+- Example Usage: random_forest( Parameters, mlflow=True)
+
+
+### Accessing the Mlflow User Interface 
+
+Once you have run the code with MLflow enabled, you can access the MLflow user interface to monitor your experiments and models.
+
+- Start the MLflow UI by running the following command in your terminal::
+
+     (ActSNClass) >> mlflow ui 
+
+- Visit the MLflow UI by opening your web browser and navigating to: http://127.0.0.1:5000 
+
+### Reusing Models from MLflow Registry
+
+To download and reuse models that have been registered in the MLflow Model Registry, you can refer to the example provided in the managemodel.py file located in the actsnclass directory
