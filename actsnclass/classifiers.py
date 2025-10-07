@@ -24,7 +24,7 @@ from sklearn.ensemble import RandomForestClassifier
 
 def random_forest(train_features:  np.array, train_labels: np.array,
                   test_features: np.array, nest=1000, seed=42, max_depth=None,
-                  n_jobs=1):
+                  n_jobs=1, return_model=False):
     """Random Forest classifier.
 
     Parameters
@@ -43,7 +43,10 @@ def random_forest(train_features:  np.array, train_labels: np.array,
     max_depth: None or int (optional)
         The maximum depth of the tree. Default is None.
     n_jobs: int (optional)
-            Number of cores used to train the model. Default is 1.
+        Number of cores used to train the model. Default is 1.
+    return_model: bool (optional)
+        If True, return the trained model as a third output.
+        Default is False.
         
 
     Returns
@@ -61,7 +64,10 @@ def random_forest(train_features:  np.array, train_labels: np.array,
     predictions = clf.predict(test_features)                # predict
     prob = clf.predict_proba(test_features)       # get probabilities
 
-    return predictions, prob
+    if return_model:
+        return predictions, prob, clf
+    else:
+        return predictions, prob
 
 
 def main():
