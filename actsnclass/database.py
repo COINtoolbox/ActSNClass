@@ -322,7 +322,7 @@ class DataBase:
             print('Test set size: ', self.test_metadata.shape[0])
 
     def classify(self, method='RandomForest', screen=False, n_est=1000, seed=42,
-                max_depth=None, n_jobs=1):
+                max_depth=None, n_jobs=1, return_model=False):
         """Apply a machine learning classifier.
 
         Populate properties: predicted_class and class_prob
@@ -343,6 +343,9 @@ class DataBase:
             The maximum depth of the tree. Default is None.
         n_jobs: int (optional)
             Number of cores used to train the model. Default is 1.
+        return_model: bool (optional)
+            If True, returned the trained model as a third output.
+            Default is False.
         """
 
         if screen:
@@ -352,10 +355,18 @@ class DataBase:
             print('   ... test_features: ', self.test_features.shape)
 
         if method == 'RandomForest':
-            self.predicted_class,  self.classprob = \
-                random_forest(self.train_features, self.train_labels,
-                              self.test_features, nest=n_est, seed=seed,
-                              max_depth=max_depth, n_jobs=n_jobs)
+
+            if return_model:
+                self.predicted_class,  self.classprob, self.trained_model = \
+                    random_forest(self.train_features, self.train_labels,
+                                  self.test_features, nest=n_est, seed=seed,
+                                  max_depth=max_depth, n_jobs=n_jobs, 
+                                  return_model=return_model)
+            else:
+                self.predicted_class,  self.classprob = \
+                    random_forest(self.train_features, self.train_labels,
+                                  self.test_features, nest=n_est, seed=seed,
+                                  max_depth=max_depth, n_jobs=n_jobs)
             
         elif method == 'XGBoost':
             self.predicted_class,  self.classprob = \
