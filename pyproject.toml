@@ -1,23 +1,29 @@
+[build-system]
+requires = ["setuptools>=77", "wheel"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "actsnclass"
 version = "1.3"
-authors = [
-  { name="Emille E. O. Ishida", email="emilleishida@gmail.com" },
-]
 description = "Active Learning for Supernova Photometric Classification"
 readme = "README.md"
-requires-python = ">=3.12.3"
-classifiers = [
-    "Programming Language :: Python :: 3",
-    "Operating System :: OS Independent",
-]
-license = "GPL-3.0-only"
-license-files = ["https://github.com/COINtoolbox/ActSNClass/blob/master/LICENSE"]
+requires-python = ">=3.12"
+authors = [{ name = "Emille E. O. Ishida", email = "emille@cosmostatistics-initiative.org" }]
+license = "GPL-3.0-or-later"         
+license-files = ["LICENSE*"]
 
-[project.urls]
-Homepage = "https://cosmostatistics-initiative.org/projects/active-learning-for-supernova-photometric-classification/"
-Issues = "https://github.com/COINtoolbox/ActSNClass/issues"
+[project.scripts]
+build-canonical   = "actsnclass.scripts.build_canonical:main"
+build-time-domain = "actsnclass.scripts.build_time_domain:main"
+fit-dataset       = "actsnclass.scripts.fit_dataset:main"
+make-metrics-plots= "actsnclass.scripts.make_metrics_plots:main"
+run-loop          = "actsnclass.scripts.run_loop:main"
+run-time-domain   = "actsnclass.scripts.run_time_domain:main"
 
-[build-system]
-requires = ["setuptools>=61", "wheel"]
-build-backend = "setuptools.build_meta"
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["actsnclass*"]
+exclude = ["build*"]
+
+[tool.setuptools.package-data]
+actsnclass = ["scripts/*.py"]
