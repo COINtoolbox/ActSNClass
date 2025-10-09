@@ -21,7 +21,7 @@ import setuptools
 
 setuptools.setup(
     name='actsnclass',
-    version='1.2',
+    version='1.3',
     packages=setuptools.find_packages(),
     py_modules=['bazin',
                 'build_snpcc_canonical',
@@ -38,7 +38,8 @@ setuptools.setup(
              'actsnclass/scripts/fit_dataset.py',
              'actsnclass/scripts/make_metrics_plots.py',
              'actsnclass/scripts/run_loop.py',
-             'actsnclass/scripts/run_time_domain.py'],
+             'actsnclass/scripts/run_time_domain.py',
+             'actsnclass/scripts/'],
     url='https://github.com/COINtoolbox/ActSNClass',
     license='GNU3',
     author='Emille E. O.Ishida',
