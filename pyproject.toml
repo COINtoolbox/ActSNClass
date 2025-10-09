@@ -12,7 +12,7 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 license = "GNU3"
-license-files = ["LICEN[CS]E*"]
+license-files = ["https://github.com/COINtoolbox/ActSNClass/blob/master/LICENSE"]
 
 [project.urls]
 Homepage = "https://cosmostatistics-initiative.org/projects/active-learning-for-supernova-photometric-classification/"
