@@ -38,7 +38,13 @@ Dependencies
 Installing
 ----------
 
-Clone this repository,
+You can install using `pip`,
+
+.. code-block:: bash
+
+    >>> pip install actsnclass
+
+Or by cloning this repository,
 
 .. code-block:: bash
 
@@ -60,9 +66,8 @@ Navigate to the `ActSNClass` directory and you can then install the dependencies
 .. code-block:: bash
 
     (ActSNClass) >> pip install --upgrade pip
-    (ActSNClass) >> pip install -r requirements.txt
 
-You can now install `actsnclass` with:
+You can now install the most up to date version of the pacakge with:
 
 .. code-block:: bash
 
