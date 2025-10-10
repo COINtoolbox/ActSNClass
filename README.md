@@ -47,10 +47,9 @@ Once your environment is created, you can source it :
     
 You will notice a `(ActSNCLass)` to the left of your terminal line.
 This means everything is ok!
-
-In order to install this code you should clone this repository and do::  
+    
+Then, you can install using `pip`::  
 
     (ActSNClass) >> pip install --upgrade pip
-    (ActSNClass) >> pip install -r requirements.txt
-    (ActSNClass) >> pip install .
+    (ActSNClass) >> pip install actsnclass
 
